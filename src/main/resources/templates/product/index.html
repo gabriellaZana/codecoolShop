@@ -37,13 +37,13 @@
 
 
     <div th:each="category,iterStat : ${categories}">
-        <div class="well well-sm">
-            <strong th:attr="data-category-id=${category.id}" th:text="${category.name}">Second Category</strong>
+        <div th:attr="id=${'category'+category.id}"  class="well well-sm">
+            <strong th:text="${category.name}">Second Category</strong>
         </div>
 
-        <div id="products" class="row list-group">
+        <div th:attr="id=${'productsOfCategory'+category.id}" class="row list-group">
 
-            <div class="item col-xs-4 col-lg-4" th:each="prod,iterStat : ${category.getProducts()}">
+            <div th:attr="id=${'product'+prod.id}" class="item col-xs-4 col-lg-4" th:each="prod,iterStat : ${category.getProducts()}">
                 <div class="thumbnail">
                     <img class="group list-group-image" src="http://placehold.it/400x250/000/fff"
                          th:attr="src='/img/product_' + ${prod.id} + '.jpg'" alt=""/>
