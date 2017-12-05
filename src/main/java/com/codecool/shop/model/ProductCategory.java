@@ -1,10 +1,9 @@
 package com.codecool.shop.model;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+
 
 public class ProductCategory extends BaseModel {
-    private static List<ProductCategory> productCategories = new ArrayList<>();
     private String department;
     private ArrayList<Product> products;
 
@@ -13,7 +12,6 @@ public class ProductCategory extends BaseModel {
         this.department = department;
         this.products = new ArrayList<>();
         this.description = description;
-        productCategories.add(this);
     }
 
     public String getDepartment() {
@@ -28,12 +26,21 @@ public class ProductCategory extends BaseModel {
         this.products = products;
     }
 
-    public ArrayList getProducts() {
+    public ArrayList<Product> getProducts() {
         return this.products;
     }
 
     public void addProduct(Product product) {
         this.products.add(product);
+    }
+
+    public Set<Supplier> getSuppliers() {
+        Set<Supplier> suppliers = new HashSet<>();
+        List<Product> products = this.getProducts();
+        for (Product product: products) {
+            suppliers.add(product.getSupplier());
+        }
+        return suppliers;
     }
 
     public String toString() {
@@ -48,7 +55,4 @@ public class ProductCategory extends BaseModel {
                 this.description);
     }
 
-    public static List<ProductCategory> getProductCategories() {
-        return productCategories;
-    }
 }

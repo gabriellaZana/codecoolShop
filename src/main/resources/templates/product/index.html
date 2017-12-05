@@ -35,6 +35,11 @@
         </div>
 
         <div th:attr="id=${'productsOfCategory'+category.id}" class="row list-group">
+            <div>
+                <div th:each="supp, iterStat : ${category.getSuppliers()}">
+                    <button th:text="${supp.name}"></button>
+                </div>
+            </div>
 
             <div th:attr="id=${'product'+prod.id}" class="item col-xs-4 col-lg-4" th:each="prod,iterStat : ${category.getProducts()}">
                 <div class="thumbnail">
