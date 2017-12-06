@@ -10,6 +10,7 @@ import com.codecool.shop.model.Product;
 import com.codecool.shop.model.ProductCategory;
 import com.codecool.shop.model.ShoppingCart;
 import com.codecool.shop.model.Supplier;
+import com.google.gson.Gson;
 import spark.Request;
 import spark.Response;
 import spark.ModelAndView;
@@ -28,10 +29,8 @@ public class ProductController {
         return new ModelAndView(params, "product/index");
     }
 
-    public static ModelAndView renderShoppingCart(Request req, Response res){
-
+    public static String renderShoppingCart(Request req, Response res){
         ShoppingCart shoppingCart = ShoppingCart.getInstance();
-
         System.out.println(shoppingCart.addToCart(req.body()).toString());
 
 
@@ -44,15 +43,27 @@ public class ProductController {
 
         System.out.println(addedProduct.getSupplier());
 
+        List<Product> products = new ArrayList<>();
+
 
         Integer quantity = shoppingCart.getProductsQuantityInCart();
 
+        products.add(addedProduct);
 
+        //System.out.println(quantityList.get(0));
 
         Map params = new HashMap<>();
 
-        params.put("quantity", quantity);
-        return new ModelAndView(params, "product/test" );
+        params.put("products", products);
+        //params.put("price", addedProduct.getPrice());
+
+        Map<String, String> quantityAndPrice = new HashMap<>();
+        quantityAndPrice.put("price", addedProduct.getPrice());
+        quantityAndPrice.put("quantity", quantity.toString());
+
+        Gson gson = new Gson();
+        return gson.toJson(quantityAndPrice);
+        //return new ModelAndView(params, "product/index" );
     }
 
 }

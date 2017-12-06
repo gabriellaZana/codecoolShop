@@ -27,9 +27,12 @@ function getProductId(){
             data: JSON.stringify(clickedProductId),
             success: function(response){
                 console.log(response);
+                
             }
         })
     })
 }
 
 getProductId();
+
+
