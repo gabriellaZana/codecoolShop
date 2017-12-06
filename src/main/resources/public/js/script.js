@@ -17,3 +17,19 @@ for (var i = 0; i < categories.length; i++) {
 }
 
 
+function getProductId(){
+    $(".add-to-cart-button").on('click', function () {
+        var clickedProductId = $(this).parents().eq(4).attr("id");
+        $.ajax({
+            url:'/test',
+            type: 'POST',
+            contentType: 'application/json; charset=UTF-8',
+            data: JSON.stringify(clickedProductId),
+            success: function(response){
+                console.log(response);
+            }
+        })
+    })
+}
+
+getProductId();
