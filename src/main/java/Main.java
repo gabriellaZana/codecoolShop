@@ -42,20 +42,20 @@ public class Main {
         SupplierDao supplierDataStore = SupplierDaoMem.getInstance();
 
         //setting up a new supplier
-        Supplier amazon = new Supplier("Amazon", "Digital content and services");
-        supplierDataStore.add(amazon);
-        Supplier lenovo = new Supplier("Lenovo", "Computers");
-        supplierDataStore.add(lenovo);
+        Supplier Home = new Supplier("Straight from home", "Grannys from home.");
+        supplierDataStore.add(Home);
         Supplier Countryside = new Supplier("Countryside", "Grannys from the countryside");
         supplierDataStore.add(Countryside);
         Supplier City = new Supplier("City", "Grannys from the city");
         supplierDataStore.add(City);
+        Supplier NursingHome = new Supplier("Nursing home", "Grannys fresh from the nursing homes.");
+        supplierDataStore.add(NursingHome);
 
         //setting up a new product category
-        ProductCategory tablet = new ProductCategory("Tablet", "Hardware", "A tablet computer, commonly shortened to tablet, is a thin, flat mobile computer with a touchscreen display.");
-        productCategoryDataStore.add(tablet);
-        ProductCategory accessories1 = new ProductCategory("Accesories1", "Misc1", "All what grannys' need1");
-        productCategoryDataStore.add(accessories1);
+        ProductCategory Granny = new ProductCategory("Granny", "", "Grannys for rent.");
+        productCategoryDataStore.add(Granny);
+        ProductCategory accessoriesForCooking = new ProductCategory("Accesories1", "Misc1", "All what grannys' need1");
+        productCategoryDataStore.add(accessoriesForCooking);
         ProductCategory accessories2 = new ProductCategory("Accesories2", "Misc2", "All what grannys' need2");
         productCategoryDataStore.add(accessories2);
         ProductCategory accessories3 = new ProductCategory("Accesories3", "Misc3", "All what grannys' need3");
@@ -65,11 +65,11 @@ public class Main {
 
 
         //setting up products and printing it
-        productDataStore.add(new Product("Amazon Fire", 49.9f, "USD", "Fantastic price. Large content ecosystem. Good parental controls. Helpful technical support.", tablet, amazon));
-        productDataStore.add(new Product("Lenovo IdeaPad Miix 700", 479, "USD", "Keyboard cover is included. Fanless Core m5 processor. Full-size USB ports. Adjustable kickstand.", tablet, lenovo));
-        productDataStore.add(new Product("Amazon Fire HD 8", 89, "USD", "Amazon's latest Fire HD 8 tablet is a great value for media consumption.", tablet, amazon));
-        productDataStore.add(new Product("Cyber granny", 5, "EUR","Exceptional reading skills, digital nomad", accessories1, City));
-        productDataStore.add(new Product("Muriel", 5, "EUR","Pet-friendly, has a cowardly dog", accessories1, Countryside));
+        productDataStore.add(new Product("Rebel granny", 49.9f, "USD", "Likes metal. Perfect choice for punks and metalheads.", Granny, Home));
+        productDataStore.add(new Product("Rich granny", 479, "USD", "Classic style, royal apperance, two guards included.", Granny, City));
+        productDataStore.add(new Product("Christmas edition granny", 89, "USD", "Singing christmas melodies all the time, smells a bit like eggnog.", Granny, NursingHome));
+        productDataStore.add(new Product("Cyber granny", 5, "EUR","Exceptional reading skills, digital nomad.", Granny, City));
+        productDataStore.add(new Product("Muriel", 5, "EUR","Pet-friendly, has a cowardly dog.", Granny, Countryside));
     }
 
 
