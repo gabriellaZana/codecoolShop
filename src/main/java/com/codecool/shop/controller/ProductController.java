@@ -30,7 +30,7 @@ public class ProductController {
 
     public static ModelAndView renderShoppingCart(Request req, Response res){
 
-        ShoppingCart shoppingCart = ShoppingCart.getInstance();
+        /*ShoppingCart shoppingCart = ShoppingCart.getInstance();
 
         System.out.println(shoppingCart.addToCart(req.body()).toString());
 
@@ -42,17 +42,18 @@ public class ProductController {
         ProductDaoMem productDaoMem = ProductDaoMem.getInstance();
         Product addedProduct = productDaoMem.find(productIdInt);
 
-        System.out.println(addedProduct.getSupplier());
+        System.out.println(addedProduct.getSupplier());*/
 
 
-        Integer quantity = shoppingCart.getProductsQuantityInCart();
+//        Integer quantity = shoppingCart.getProductsQuantityInCart();
 
 
 
         Map params = new HashMap<>();
+        int quantity = 1;
 
         params.put("quantity", quantity);
-        return new ModelAndView(params, "product/test" );
+        return new ModelAndView(params, "product/cart");
     }
 
 }

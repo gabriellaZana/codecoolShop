@@ -29,6 +29,9 @@
 <div class="container">
 
 
+    <div>
+        <a id ="cart" href="/cart" class="btn btn-info">View cart</a>
+    </div>
     <div th:each="category,iterStat : ${categories}">
         <div th:attr="id=${'category'+category.id}" class="well well-sm clickable-category">
             <strong th:text="${category.name}">Second Category</strong>
