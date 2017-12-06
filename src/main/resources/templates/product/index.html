@@ -36,8 +36,9 @@
 
         <div th:attr="id=${'productsOfCategory'+category.id}" class="row list-group">
 
-            <div style="display: inline" th:each="supp, iterStat : ${category.getSuppliers()}">
-                <button th:text="${supp.name}">asd</button>
+            <div style="display: inline">
+                <button>All</button>
+                <button th:text="${supp.name}" th:each="supp, iterStat : ${category.getSuppliers()}">asd</button>
             </div>
 
             <div th:attr="id=${'product'+prod.id}, data-supplier=${prod.supplier.name}"

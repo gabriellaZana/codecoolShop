@@ -25,11 +25,15 @@ $(document).ready(function () {
                 let supplier = button.html();
                 for (let i = 0; i < products.length; i++) {
                     let product = products[i];
-                    let productSuppl = product.getAttribute('data-supplier');
-                    if (supplier === productSuppl) {
+                    if (supplier === "All") {
                         product.style.display = '';
                     } else {
-                        product.style.display = 'none';
+                        let productSuppl = product.getAttribute('data-supplier');
+                        if (supplier === productSuppl) {
+                            product.style.display = '';
+                        } else {
+                            product.style.display = 'none';
+                        }
                     }
                 }
             }
