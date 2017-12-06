@@ -50,17 +50,19 @@ public class Main {
         supplierDataStore.add(City);
         Supplier NursingHome = new Supplier("Nursing home", "Grannys fresh from the nursing homes.");
         supplierDataStore.add(NursingHome);
+        Supplier Amazon = new Supplier("The Amazon", "Everything you ever want in life.");
+        supplierDataStore.add(Amazon);
 
         //setting up a new product category
         ProductCategory Granny = new ProductCategory("Granny", "", "Grannys for rent.");
         productCategoryDataStore.add(Granny);
-        ProductCategory accessoriesForCooking = new ProductCategory("Accesories1", "Misc1", "All what grannys' need1");
+        ProductCategory accessoriesForCooking = new ProductCategory("Accessories for cooking", "Misc1", "All what grannys' need1");
         productCategoryDataStore.add(accessoriesForCooking);
-        ProductCategory accessories2 = new ProductCategory("Accesories2", "Misc2", "All what grannys' need2");
+        ProductCategory accessories2 = new ProductCategory("Accessories2", "Misc2", "All what grannys' need2");
         productCategoryDataStore.add(accessories2);
-        ProductCategory accessories3 = new ProductCategory("Accesories3", "Misc3", "All what grannys' need3");
+        ProductCategory accessories3 = new ProductCategory("Accessories3", "Misc3", "All what grannys' need3");
         productCategoryDataStore.add(accessories3);
-        ProductCategory accessories4 = new ProductCategory("Accesories4", "Misc4", "All what grannys' need4");
+        ProductCategory accessories4 = new ProductCategory("Accessories4", "Misc4", "All what grannys' need4");
         productCategoryDataStore.add(accessories4);
 
 
@@ -70,6 +72,11 @@ public class Main {
         productDataStore.add(new Product("Christmas edition granny", 89, "USD", "Singing christmas melodies all the time, smells a bit like eggnog.", Granny, NursingHome));
         productDataStore.add(new Product("Cyber granny", 5, "EUR","Exceptional reading skills, digital nomad.", Granny, City));
         productDataStore.add(new Product("Muriel", 5, "EUR","Pet-friendly, has a cowardly dog.", Granny, Countryside));
+        productDataStore.add(new Product("Assassin grandma", 5, "EUR","Works silent and fast. Cleans the site after getting the job done.", Granny, Countryside));
+        productDataStore.add(new Product("Wooden spoon", 5, "EUR","Good for cooking or educational purposes.", accessoriesForCooking, Amazon));
+        productDataStore.add(new Product("Oven gloves", 5, "EUR","If you don't want to burn your hand down.", accessoriesForCooking, Amazon));
+        productDataStore.add(new Product("Spotted/dotted pot kit", 5, "EUR","For a good stew!", accessoriesForCooking, Amazon));
+        productDataStore.add(new Product("Cook book", 5, "EUR","Special cook book for special grannys.", accessoriesForCooking, Amazon));
     }
 
 

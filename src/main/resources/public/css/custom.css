@@ -63,3 +63,7 @@
  .filter_buttons{
      margin-bottom: 20px;
  }
+
+ img {
+     height: 250px !important;
+ }
