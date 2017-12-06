@@ -7,7 +7,6 @@ $(document).ready(function () {
         }
         categories[i].addEventListener('click', function () {
             let productDiv = document.getElementById(`productsOfCategory${this.id.slice(8)}`);
-            console.log(productDiv.style.display);
             if (productDiv.style.display === "none") {
                 productDiv.style.display = "";
             } else {
@@ -20,7 +19,6 @@ $(document).ready(function () {
     for (let i = 0; i < buttons.length; i++) {
         buttons[i].addEventListener('click', function () {
                 let button = $(this);
-                console.log(typeof button);
                 let products = button.parent().parent().find(".product");
                 let supplier = button.html();
                 for (let i = 0; i < products.length; i++) {
