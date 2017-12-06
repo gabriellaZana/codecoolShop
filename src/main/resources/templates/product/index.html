@@ -36,9 +36,9 @@
 
 
         <div th:attr="id=${'productsOfCategory'+category.id}" class="row list-group">
-            <div>
-                <button>All</button>
-                <button th:text="${supp.name}" th:each="supp, iterStat : ${category.getSuppliers()}">asd</button>
+            <div class ="col-xs-12 col-lg-12 filter_buttons">
+                <button class="btn btn-info">All</button>
+                <button class="btn btn-info" th:text="${supp.name}" th:each="supp, iterStat : ${category.getSuppliers()}">asd</button>
             </div>
 
 
