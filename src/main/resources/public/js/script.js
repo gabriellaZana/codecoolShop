@@ -26,11 +26,9 @@ function getProductId(){
             contentType: 'application/json; charset=UTF-8',
             data: JSON.stringify(clickedProductId),
             success: function(response){
-                console.log(response);
-                var parsed = $.parseJSON(response);
-                /*var price = parsed['price'];
-                $("#sum").text(parsed['price']);
-                $("#quantity").text(parsed['quantity']);*/
+                var parsed = $.parseJSON(response);;
+                $("#sum").text(parsed['sum']);
+                $("#quantity").text(parsed['quantity']);
 
             }
         })

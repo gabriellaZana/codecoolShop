@@ -32,7 +32,7 @@ public class Main {
         });
 
         post("/test", (Request req, Response res) -> {
-            return ProductController.renderShoppingCart(req, res);
+            return ProductController.renderShoppingCartMini(req, res);
         });
 
         // Add this line to your project to enable the debug screen

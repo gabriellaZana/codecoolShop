@@ -10,6 +10,7 @@ public final class ShoppingCart {
     //private List<Map<String, Integer>> productsList = new ArrayList<>();
     private static ShoppingCart instance = null;
 
+    private static List<Float> prices = new ArrayList<>();
     private ShoppingCart() {}
 
     public static ShoppingCart getInstance() {
@@ -35,6 +36,14 @@ public final class ShoppingCart {
         return productsInCart;
     }
 
+    public List<Float> addPrice(Float price){
+        prices.add(price);
+        return prices;
+    }
+
+    public List<Float> getPrices(){
+        return prices;
+    }
 
 /*    public List<Map<String, Integer>> getProductsList(){
         System.out.println("getproductlist" + productsList);
