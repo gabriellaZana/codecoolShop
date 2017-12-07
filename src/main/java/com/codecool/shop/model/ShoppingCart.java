@@ -1,16 +1,16 @@
 package com.codecool.shop.model;
 
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 public final class ShoppingCart {
-    private Map<String, Integer> productsInCart = new HashMap<>();
-
+    private List<String> productsInCart = new ArrayList<>();
+    //private List<Map<String, Integer>> productsList = new ArrayList<>();
     private static ShoppingCart instance = null;
 
     private ShoppingCart() {}
-    private static Integer quantity = 0;
 
     public static ShoppingCart getInstance() {
         if(instance == null){
@@ -19,23 +19,39 @@ public final class ShoppingCart {
         return instance;
     }
 
-    public Map<String, Integer> addToCart(String productId){
-        if(productsInCart.containsKey(productId)){
-            Integer productQuantity = productsInCart.get(productId);
-            productsInCart.put(productId, productQuantity+1);
-        } else{
-            productsInCart.put(productId, 1);
-        }
+    public List<String> addToCart(String productId){
+        productsInCart.add(productId);
+        //System.out.println("addtocartProdList" + productsList);
+        System.out.println(productsInCart);
         return productsInCart;
     }
 
-    public Integer getProductsQuantityInCart() {
-        Iterator iterator = productsInCart.entrySet().iterator();
-        while (iterator.hasNext()) {
-            Map.Entry pair = (Map.Entry) iterator.next();
-            Integer value = (Integer) pair.getValue();
-            quantity += value;
+
+    public Integer getCartSize(){
+        return productsInCart.size();
+    }
+
+    public List<String> getProductsInCart(){
+        return productsInCart;
+    }
+
+
+/*    public List<Map<String, Integer>> getProductsList(){
+        System.out.println("getproductlist" + productsList);
+        return productsList;
+    }*/
+
+
+/*    public Integer getProductsQuantityInCart() {
+        Integer sum = 0;
+        for(Integer i : productsInCart.values()){
+            //System.out.println(i);
+            sum += i;
         }
-        return quantity;
+        return sum;
+    }*/
+
+    public Float getSumOfCart(){
+        return 0f;
     }
 }

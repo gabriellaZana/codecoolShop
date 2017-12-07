@@ -31,38 +31,47 @@ public class ProductController {
 
     public static String renderShoppingCart(Request req, Response res){
         ShoppingCart shoppingCart = ShoppingCart.getInstance();
-        System.out.println(shoppingCart.addToCart(req.body()).toString());
-
-
-        String productId = req.body().substring(8, req.body().length() - 1);
-
-        Integer productIdInt = Integer.parseInt(productId);
-
-        ProductDaoMem productDaoMem = ProductDaoMem.getInstance();
-        Product addedProduct = productDaoMem.find(productIdInt);
-
-        System.out.println(addedProduct.getSupplier());
+        shoppingCart.addToCart(req.body());
 
         List<Product> products = new ArrayList<>();
 
+        List<String> productList = shoppingCart.getProductsInCart();
+        for (String prod: productList
+             ) {
+            String productId = prod.substring(8, prod.length() - 1);
+            Integer productIdInt = Integer.parseInt(productId);
+            ProductDaoMem productDaoMem = ProductDaoMem.getInstance();
+            Product addedProduct = productDaoMem.find(productIdInt);
+            products.add(addedProduct);
 
-        Integer quantity = shoppingCart.getProductsQuantityInCart();
+        }
 
-        products.add(addedProduct);
+
+
+        Integer quantity = shoppingCart.getCartSize();
+        System.out.println(products);
+
+
+
 
         //System.out.println(quantityList.get(0));
 
         Map params = new HashMap<>();
 
         params.put("products", products);
+        params.put("quantity", quantity);
         //params.put("price", addedProduct.getPrice());
 
-        Map<String, String> quantityAndPrice = new HashMap<>();
-        quantityAndPrice.put("price", addedProduct.getPrice());
+
+        Map<String, List> quantityAndPrice = new HashMap<>();
+
+
+      /*  quantityAndPrice.put("price", addedProduct.getPrice());
         quantityAndPrice.put("quantity", quantity.toString());
+        quantityAndPrice.put("id", String.valueOf(addedProduct.getId()));*/
 
         Gson gson = new Gson();
-        return gson.toJson(quantityAndPrice);
+        return gson.toJson(quantity);
         //return new ModelAndView(params, "product/index" );
     }
 
