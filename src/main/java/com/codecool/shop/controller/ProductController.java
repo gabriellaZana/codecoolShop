@@ -51,6 +51,9 @@ public class ProductController {
 
         Map params = new HashMap<>();
         int quantity = 1;
+        ProductDaoMem products = ProductDaoMem.getInstance();
+        List<Product> productList = products.getAll();
+        params.put("productsInCart", productList);
 
         params.put("quantity", quantity);
         return new ModelAndView(params, "product/cart");

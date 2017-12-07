@@ -1,0 +1,7 @@
+img{
+    max-height: 100px;
+}
+td{
+    height: 50px;
+    vertical-align: 50% !important;
+}

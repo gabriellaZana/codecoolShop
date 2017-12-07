@@ -33,3 +33,10 @@ function getProductId(){
 }
 
 getProductId();
+
+
+finalPrice = $(".finalPrice");
+$(document).ready(function () {
+    alert("asd")
+
+})
