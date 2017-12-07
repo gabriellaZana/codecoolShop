@@ -10,11 +10,13 @@ import com.codecool.shop.model.Product;
 import com.codecool.shop.model.ProductCategory;
 import com.codecool.shop.model.ShoppingCart;
 import com.codecool.shop.model.Supplier;
+import com.google.gson.Gson;
 import spark.Request;
 import spark.Response;
 import spark.ModelAndView;
 
 import java.util.*;
+import java.util.stream.IntStream;
 
 public class ProductController {
 
@@ -28,35 +30,64 @@ public class ProductController {
         return new ModelAndView(params, "product/index");
     }
 
-    public static ModelAndView renderShoppingCart(Request req, Response res){
+    public static String renderShoppingCartMini(Request req, Response res){
+        ShoppingCart shoppingCart = ShoppingCart.getInstance();
+        shoppingCart.addToCart(req.body());
+        List<Float> prices = new ArrayList<>();
+        List<String> productList = shoppingCart.getProductsInCart();
 
-        /*ShoppingCart shoppingCart = ShoppingCart.getInstance();
-
-        System.out.println(shoppingCart.addToCart(req.body()).toString());
-
-
-        String productId = req.body().substring(8, req.body().length() - 1);
-
-        Integer productIdInt = Integer.parseInt(productId);
-
-        ProductDaoMem productDaoMem = ProductDaoMem.getInstance();
-        Product addedProduct = productDaoMem.find(productIdInt);
-
-        System.out.println(addedProduct.getSupplier());*/
-
-
-//        Integer quantity = shoppingCart.getProductsQuantityInCart();
+        for (String prod: productList
+                ) {
+            String productId = prod.substring(8, prod.length() - 1);
+            Integer productIdInt = Integer.parseInt(productId);
+            ProductDaoMem productDaoMem = ProductDaoMem.getInstance();
+            Product addedProduct = productDaoMem.find(productIdInt);
+            prices.add(addedProduct.getDefaultPrice());
+        }
 
 
+
+        Integer quantity = shoppingCart.getCartSize();
+        Float quant = quantity.floatValue();
+        Map params = new HashMap<>();
+        Float sum = 0f;
+        for (Float price: prices
+                ) {sum += price;
+        }
+
+
+        Map<String, Float> sumAndQuantity = new HashMap<>();
+        sumAndQuantity.put("quantity", quant);
+        sumAndQuantity.put("sum", sum);
+
+        params.put("sumandquantity", sumAndQuantity);
+
+        Gson gson = new Gson();
+        return gson.toJson(sumAndQuantity);
+    }
+
+
+    public static ModelAndView renderShoppingCart(Request req, Response res) {
+        ShoppingCart shoppingCart = ShoppingCart.getInstance();
+
+        List<Product> products = new ArrayList<>();
+
+        List<String> productList = shoppingCart.getProductsInCart();
+        for (String prod: productList
+                ) {
+            String productId = prod.substring(8, prod.length() - 1);
+            Integer productIdInt = Integer.parseInt(productId);
+            ProductDaoMem productDaoMem = ProductDaoMem.getInstance();
+            Product addedProduct = productDaoMem.find(productIdInt);
+            products.add(addedProduct);
+
+        }
 
         Map params = new HashMap<>();
-        int quantity = 1;
-        ProductDaoMem products = ProductDaoMem.getInstance();
-        List<Product> productList = products.getAll();
-        params.put("productsInCart", productList);
 
-        params.put("quantity", quantity);
+        params.put("products", products);
         return new ModelAndView(params, "product/cart");
     }
+
 
 }

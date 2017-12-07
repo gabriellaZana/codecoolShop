@@ -35,7 +35,7 @@
                 <th>Final Price</th>
                 <th></th>
             </tr>
-            <tr th:each="product,iterStat : ${productsInCart}">
+            <tr th:each="product,iterStat : ${products}">
                 <td><img class="group list-group-image" src="http://placehold.it/100x100/000/fff"
                          th:attr="src='/img/product_' + ${product.id} + '.jpg'" alt=""/></td>
                 <td th:text="${product.name}">Product name</td>

@@ -21,18 +21,24 @@ function getProductId() {
     $(".add-to-cart-button").on('click', function () {
         var clickedProductId = $(this).parents().eq(4).attr("id");
         $.ajax({
-            url: '/cart',
+
+            url:'/shopping-cart',
             type: 'POST',
             contentType: 'application/json; charset=UTF-8',
             data: JSON.stringify(clickedProductId),
-            success: function (response) {
-                console.log(response);
+            success: function(response){
+                var parsed = $.parseJSON(response);;
+                $("#sum").text('Sum: ' + parsed['sum'] + 'bitcoin');
+                $("#quantity").text(parsed['quantity'] + ' item(s)');
+
+
             }
         })
     })
 }
 
 getProductId();
+
 finalPrice = $(".finalPrice");
 defaultPrice = $(".default_price");
 quantity = $(".quantity");
@@ -54,5 +60,6 @@ $(".trash_bin").on("click", function (event) {
     trash=event.target;
     trash.parentNode.parentNode.parentNode.removeChild(trash.parentNode.parentNode)
 })
+
 
 
