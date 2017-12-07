@@ -11,6 +11,7 @@ public final class ShoppingCart {
     private static ShoppingCart instance = null;
 
     private static List<Float> prices = new ArrayList<>();
+    private static List<Product> products = new ArrayList<>();
     private ShoppingCart() {}
 
     public static ShoppingCart getInstance() {
@@ -44,6 +45,14 @@ public final class ShoppingCart {
         return prices;
     }
 
+    public void putProductToCart(Product product){
+        products.add(product);
+    }
+
+    public List<Product> getProductsFromCart(){
+        return products;
+    }
+
 /*    public List<Map<String, Integer>> getProductsList(){
         System.out.println("getproductlist" + productsList);
         return productsList;
@@ -61,5 +70,17 @@ public final class ShoppingCart {
 
     public Float getSumOfCart(){
         return 0f;
+    }
+
+    public Integer getQuantity(String productId) {
+        Integer quant = 0;
+        List<String> products = getProductsInCart();
+        for (String prod: products) {
+            String subprod = prod.substring(1,prod.length()-1);
+            if (subprod.equals(productId)) {
+                quant ++;
+            }
+        }
+        return quant;
     }
 }

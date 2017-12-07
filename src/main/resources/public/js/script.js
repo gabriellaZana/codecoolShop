@@ -37,7 +37,7 @@ function getProductId() {
     })
 }
 
-getProductId();
+//getProductId();
 
 finalPrice = $(".finalPrice");
 defaultPrice = $(".default_price");
@@ -54,6 +54,7 @@ function changeFinalPrice() {
 }
 
 $(document).ready(changeFinalPrice());
+//$(document).ready(getProductId());
 
 
 $(".trash_bin").on("click", function (event) {

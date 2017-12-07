@@ -23,9 +23,19 @@ public class ProductController {
     public static ModelAndView renderProducts(Request req, Response res) {
         ProductCategoryDao productCategoryDataStore = ProductCategoryDaoMem.getInstance();
         List<ProductCategory> categories = productCategoryDataStore.getAll();
+        ShoppingCart shoppingCart = ShoppingCart.getInstance();
+
+        Float price = 0f;
+
+        for (Product product: shoppingCart.getProductsFromCart()
+             ) {
+            price += product.getDefaultPrice();
+
+        }
 
         Map params = new HashMap<>();
-
+        params.put("productNumber", shoppingCart.getCartSize());
+        params.put("Price", price);
         params.put("categories", categories);
         return new ModelAndView(params, "product/index");
     }
@@ -43,6 +53,7 @@ public class ProductController {
             ProductDaoMem productDaoMem = ProductDaoMem.getInstance();
             Product addedProduct = productDaoMem.find(productIdInt);
             prices.add(addedProduct.getDefaultPrice());
+            shoppingCart.putProductToCart(addedProduct);
         }
 
 
@@ -82,10 +93,12 @@ public class ProductController {
             products.add(addedProduct);
 
         }
+        Set<Product> setProduct = new HashSet<>(products);
 
         Map params = new HashMap<>();
+        params.put("cart", shoppingCart);
 
-        params.put("products", products);
+        params.put("products", setProduct);
         return new ModelAndView(params, "product/cart");
     }
 
