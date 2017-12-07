@@ -67,7 +67,7 @@ $(document).ready(function () {
                 success: function (response) {
                     var parsed = $.parseJSON(response);
                     ;
-                    $("#sum").text('Sum: ' + parsed['sum'] + 'bitcoin');
+                    $("#sum").text('Sum: ' +'$' + parsed['sum']);
                     $("#quantity").text(parsed['quantity'] + ' item(s)');
 
 
@@ -85,11 +85,17 @@ $(document).ready(function () {
     function changeFinalPrice() {
         for (let i = 0; i < defaultPrice.length; i++) {
             productQuantity = quantity[i].value;
+            console.log(productQuantity)
             productDefaultPrice = defaultPrice[i].innerHTML;
-            finalPrice[i].innerHTML = productDefaultPrice * productQuantity + "Ƀ";
+            console.log(productDefaultPrice)
+            finalPrice[i].innerHTML = (productDefaultPrice * productQuantity).toFixed(2);
 
         }
     }
+    changeFinalPrice()
+    $('.quantity').on('change', function () {
+        changeFinalPrice()
+    })
 
     $(".trash_bin").on("click", function (event) {
         prodId = event.target.parentNode.parentNode.id

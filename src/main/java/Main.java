@@ -27,21 +27,13 @@ public class Main {
         // Always add generic routes to the end
         get("/", ProductController::renderProducts, new ThymeleafTemplateEngine());
         // Equivalent with above
-        get("/index", (Request req, Response res) -> {
-           return new ThymeleafTemplateEngine().render( ProductController.renderProducts(req, res) );
-        });
+        get("/index", (Request req, Response res) -> new ThymeleafTemplateEngine().render( ProductController.renderProducts(req, res) ));
 
-        post("/shopping-cart", (Request req, Response res) -> {
-            return ProductController.renderShoppingCartMini(req, res);
-        });
+        post("/shopping-cart", ProductController::renderShoppingCartMini);
 
-        get("/cart", (Request req, Response res) -> {
-            return new ThymeleafTemplateEngine().render( ProductController.renderShoppingCart(req, res) );
-        });
+        get("/cart", (Request req, Response res) -> new ThymeleafTemplateEngine().render( ProductController.renderShoppingCart(req, res) ));
 
-        post("delete-item", (Request req, Response res) ->{
-            return ProductController.deleteItem(req, res);
-        });
+        post("delete-item", ProductController::deleteItem);
 
         // Add this line to your project to enable the debug screen
         enableDebugScreen();
@@ -66,29 +58,23 @@ public class Main {
         supplierDataStore.add(Amazon);
 
         //setting up a new product category
-        ProductCategory Granny = new ProductCategory("Granny", "", "Grannys for rent.");
+        ProductCategory Granny = new ProductCategory("Grannys", "", "Grannys for rent.");
         productCategoryDataStore.add(Granny);
         ProductCategory accessoriesForCooking = new ProductCategory("Accessories for cooking", "Misc1", "All what grannys' need1");
         productCategoryDataStore.add(accessoriesForCooking);
-        ProductCategory accessories2 = new ProductCategory("Accessories2", "Misc2", "All what grannys' need2");
-        productCategoryDataStore.add(accessories2);
-        ProductCategory accessories3 = new ProductCategory("Accessories3", "Misc3", "All what grannys' need3");
-        productCategoryDataStore.add(accessories3);
-        ProductCategory accessories4 = new ProductCategory("Accessories4", "Misc4", "All what grannys' need4");
-        productCategoryDataStore.add(accessories4);
 
 
         //setting up products and printing it
-        productDataStore.add(new Product("Rebel granny", 49.9f, "USD", "Likes metal. Perfect choice for punks and metalheads.", Granny, Home));
-        productDataStore.add(new Product("Rich granny", 479, "USD", "Classic style, royal apperance, two guards included.", Granny, City));
-        productDataStore.add(new Product("Christmas edition granny", 89, "USD", "Singing christmas melodies all the time, smells a bit like eggnog.", Granny, NursingHome));
-        productDataStore.add(new Product("Cyber granny", 5, "EUR","Exceptional reading skills, digital nomad.", Granny, City));
-        productDataStore.add(new Product("Muriel", 5, "EUR","Pet-friendly, has a cowardly dog.", Granny, Countryside));
-        productDataStore.add(new Product("Assassin grandma", 5, "EUR","Works silent and fast. Cleans the site after getting the job done.", Granny, Countryside));
-        productDataStore.add(new Product("Wooden spoon", 5, "EUR","Good for cooking or educational purposes.", accessoriesForCooking, Amazon));
-        productDataStore.add(new Product("Oven gloves", 5, "EUR","If you don't want to burn your hand down.", accessoriesForCooking, Amazon));
-        productDataStore.add(new Product("Spotted/dotted pot kit", 5, "EUR","For a good stew!", accessoriesForCooking, Amazon));
-        productDataStore.add(new Product("Cook book", 5, "EUR","Special cook book for special grannys.", accessoriesForCooking, Amazon));
+        productDataStore.add(new Product("Rebel granny", 666, "USD", "Likes metal. Perfect choice for punks and metalheads.", Granny, Home));
+        productDataStore.add(new Product("Rich granny", 9999, "USD", "Classic style, royal apperance, two guards included.", Granny, City));
+        productDataStore.add(new Product("Christmas edition granny", 0.99f, "USD", "Singing christmas melodies all the time, smells a bit like eggnog.", Granny, NursingHome));
+        productDataStore.add(new Product("Cyber granny", 10101, "USD","Exceptional reading skills, digital nomad.", Granny, City));
+        productDataStore.add(new Product("Muriel", 49.99f, "USD","Pet-friendly, has a cowardly dog.", Granny, Countryside));
+        productDataStore.add(new Product("Assassin grandma", 1499, "USD","Works silent and fast. Cleans the site after getting the job done.", Granny, Countryside));
+        productDataStore.add(new Product("Wooden spoon", 5, "USD","Good for cooking or educational purposes.", accessoriesForCooking, Amazon));
+        productDataStore.add(new Product("Oven gloves", 4.99f, "USD","If you don't want to burn your hand down.", accessoriesForCooking, Amazon));
+        productDataStore.add(new Product("Spotted/dotted pot kit", 15, "USD","For a good stew!", accessoriesForCooking, Amazon));
+        productDataStore.add(new Product("Cook book", 42.0f, "USD","Special cook book for special grannys.", accessoriesForCooking, Amazon));
     }
 
 
