@@ -1,16 +1,10 @@
 package com.codecool.shop.model;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public final class ShoppingCart {
-    private List<String> productsInCart = new ArrayList<>();
-    //private List<Map<String, Integer>> productsList = new ArrayList<>();
     private static ShoppingCart instance = null;
-
-    private static List<Float> prices = new ArrayList<>();
     private static List<Product> products = new ArrayList<>();
     private ShoppingCart() {}
 
@@ -21,29 +15,6 @@ public final class ShoppingCart {
         return instance;
     }
 
-    public List<String> addToCart(String productId){
-        productsInCart.add(productId);
-        System.out.println("prod in cart add to cart" + getProductsInCart());
-        return productsInCart;
-    }
-
-
-    public Integer getCartSize(){
-        return productsInCart.size();
-    }
-
-    public List<String> getProductsInCart(){
-        return productsInCart;
-    }
-
-    public List<Float> addPrice(Float price){
-        prices.add(price);
-        return prices;
-    }
-
-    public List<Float> getPrices(){
-        return prices;
-    }
 
     public void putProductToCart(Product product){
         System.out.println("put prod to cart" + product.name);
@@ -56,24 +27,6 @@ public final class ShoppingCart {
         return products;
     }
 
-/*    public List<Map<String, Integer>> getProductsList(){
-        System.out.println("getproductlist" + productsList);
-        return productsList;
-    }*/
-
-
-/*    public Integer getProductsQuantityInCart() {
-        Integer sum = 0;
-        for(Integer i : productsInCart.values()){
-            //System.out.println(i);
-            sum += i;
-        }
-        return sum;
-    }*/
-
-    public Float getSumOfCart(){
-        return 0f;
-    }
 
     public Integer getQuantity(Product product) {
         Integer quant = 0;
@@ -83,5 +36,13 @@ public final class ShoppingCart {
             }
         }
         return quant;
+    }
+
+    public void deleteItemFromCard(int id){
+        for (int i=0; i<products.size(); i++) {
+            if(products.get(i).id == id){
+                products.remove(i);
+            }
+        }
     }
 }

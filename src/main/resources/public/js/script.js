@@ -58,8 +58,20 @@ $(document).ready(changeFinalPrice());
 
 
 $(".trash_bin").on("click", function (event) {
+    prodId = event.target.parentNode.parentNode.id
+    console.log(prodId);
+    console.log(event.target.parentNode.parentNode.id)
+    $.ajax({
+        url:'/delete-item',
+        type:'POST',
+        contentType: 'application/json; charset=UTF-8',
+        data:JSON.stringify(prodId)
+    })
+
+
     trash=event.target;
-    trash.parentNode.parentNode.parentNode.removeChild(trash.parentNode.parentNode)
+
+    trash.parentNode.parentNode.parentNode.removeChild(trash.parentNode.parentNode);
 })
 
 

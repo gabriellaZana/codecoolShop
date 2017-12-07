@@ -27,8 +27,8 @@ public class ProductController {
 
         Float sum = 0f;
 
-        for (Product prod: shoppingCart.getProductsFromCart()
-             ) {
+        for (Product prod : shoppingCart.getProductsFromCart()
+                ) {
             sum += prod.getDefaultPrice();
         }
 
@@ -40,22 +40,19 @@ public class ProductController {
         return new ModelAndView(params, "product/index");
     }
 
-    public static String renderShoppingCartMini(Request req, Response res){
+    public static String renderShoppingCartMini(Request req, Response res) {
         ShoppingCart shoppingCart = ShoppingCart.getInstance();
         ProductDaoMem productDaoMem = ProductDaoMem.getInstance();
-        shoppingCart.putProductToCart(productDaoMem.find(Integer.parseInt(req.body().substring(1, req.body().length()-1))));
-
+        shoppingCart.putProductToCart(productDaoMem.find(Integer.parseInt(req.body().substring(1, req.body().length() - 1))));
 
 
         Float price = 0f;
         Float quant = 0f;
-        for (Product prod: shoppingCart.getProductsFromCart()
-             ) {
+        for (Product prod : shoppingCart.getProductsFromCart()
+                ) {
             price += prod.getDefaultPrice();
             quant++;
         }
-
-
 
 
         Map<String, Float> sumAndQuantity = new HashMap<>();
@@ -79,5 +76,10 @@ public class ProductController {
         return new ModelAndView(params, "product/cart");
     }
 
-
+    public static String deleteItem(Request req, Response res) {
+        ShoppingCart shoppingCart = ShoppingCart.getInstance();
+        shoppingCart.deleteItemFromCard(Integer.parseInt(req.body().substring(1, req.body().length() - 1)));
+        return "Deleted";
+    }
 }
+
