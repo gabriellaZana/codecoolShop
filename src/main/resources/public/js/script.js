@@ -2,7 +2,7 @@ categories = $(".clickable-category");
 
 console.log(categories);
 for (var i = 0; i < categories.length; i++) {
-    if(i>0){
+    if (i > 0) {
         document.getElementById(`productsOfCategory${categories[i].id.slice(8)}`).style.display = "none";
     }
     categories[i].addEventListener('click', function () {
@@ -17,15 +17,15 @@ for (var i = 0; i < categories.length; i++) {
 }
 
 
-function getProductId(){
+function getProductId() {
     $(".add-to-cart-button").on('click', function () {
         var clickedProductId = $(this).parents().eq(4).attr("id");
         $.ajax({
-            url:'/cart',
+            url: '/cart',
             type: 'POST',
             contentType: 'application/json; charset=UTF-8',
             data: JSON.stringify(clickedProductId),
-            success: function(response){
+            success: function (response) {
                 console.log(response);
             }
         })
@@ -33,17 +33,21 @@ function getProductId(){
 }
 
 getProductId();
-
-
 finalPrice = $(".finalPrice");
-$(document).ready(function () {
-    defaultPrice = $(".default_price");
-    quantity = $(".quantity");
-    for (let i=0; i<defaultPrice.length; i++){
-        productQuantity= quantity[i].value;
-        productDefaultPrice= defaultPrice[i].innerHTML;
+defaultPrice = $(".default_price");
+quantity = $(".quantity");
+
+function changeFinalPrice() {
+    for (let i = 0; i < defaultPrice.length; i++) {
+        productQuantity = quantity[i].value;
+        productDefaultPrice = defaultPrice[i].innerHTML;
         finalPrice[i].innerHTML = productDefaultPrice * productQuantity + "Ƀ";
         console.log(defaultPrice[i].innerHTML, productQuantity);
 
     }
-});
+}
+
+$(document).ready(changeFinalPrice());
+
+$(".quantity").on("change", changeFinalPrice());
+
