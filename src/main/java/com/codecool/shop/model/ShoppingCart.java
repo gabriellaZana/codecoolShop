@@ -75,12 +75,10 @@ public final class ShoppingCart {
         return 0f;
     }
 
-    public Integer getQuantity(String productId) {
+    public Integer getQuantity(Product product) {
         Integer quant = 0;
-        List<String> products = getProductsInCart();
-        for (String prod: products) {
-            String subprod = prod.substring(1,prod.length()-1);
-            if (subprod.equals(productId)) {
+        for (Product prod: getProductsFromCart()) {
+            if (prod.id == product.id) {
                 quant ++;
             }
         }

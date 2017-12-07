@@ -25,25 +25,16 @@ public class ProductController {
         List<ProductCategory> categories = productCategoryDataStore.getAll();
         ShoppingCart shoppingCart = ShoppingCart.getInstance();
 
-        List<Float> prices = new ArrayList<>();
-        List<String> productList = shoppingCart.getProductsInCart();
-        for (String prod: productList
-                ) {
-            String productId = prod.substring(8, prod.length() - 1);
-            Integer productIdInt = Integer.parseInt(productId);
-            ProductDaoMem productDaoMem = ProductDaoMem.getInstance();
-            Product addedProduct = productDaoMem.find(productIdInt);
-            prices.add(addedProduct.getDefaultPrice());
-        }
-
         Float sum = 0f;
-        for (Float price: prices
-                ) {sum += price;
+
+        for (Product prod: shoppingCart.getProductsFromCart()
+             ) {
+            sum += prod.getDefaultPrice();
         }
 
 
         Map params = new HashMap<>();
-        params.put("productNumber", shoppingCart.getCartSize());
+        params.put("productNumber", shoppingCart.getProductsFromCart().size());
         params.put("Price", sum);
         params.put("categories", categories);
         return new ModelAndView(params, "product/index");
@@ -51,36 +42,26 @@ public class ProductController {
 
     public static String renderShoppingCartMini(Request req, Response res){
         ShoppingCart shoppingCart = ShoppingCart.getInstance();
-        shoppingCart.addToCart(req.body());
-        List<Float> prices = new ArrayList<>();
-        List<String> productList = shoppingCart.getProductsInCart();
+        ProductDaoMem productDaoMem = ProductDaoMem.getInstance();
+        shoppingCart.putProductToCart(productDaoMem.find(Integer.parseInt(req.body().substring(1, req.body().length()-1))));
 
-        for (String prod: productList
-                ) {
-            String productId = prod.substring(8, prod.length() - 1);
-            Integer productIdInt = Integer.parseInt(productId);
-            ProductDaoMem productDaoMem = ProductDaoMem.getInstance();
-            Product addedProduct = productDaoMem.find(productIdInt);
-            prices.add(addedProduct.getDefaultPrice());
-            //shoppingCart.putProductToCart(addedProduct);
+
+
+        Float price = 0f;
+        Float quant = 0f;
+        for (Product prod: shoppingCart.getProductsFromCart()
+             ) {
+            price += prod.getDefaultPrice();
+            quant++;
         }
 
 
-
-        Integer quantity = shoppingCart.getCartSize();
-        Float quant = quantity.floatValue();
-        Map params = new HashMap<>();
-        Float sum = 0f;
-        for (Float price: prices
-                ) {sum += price;
-        }
 
 
         Map<String, Float> sumAndQuantity = new HashMap<>();
         sumAndQuantity.put("quantity", quant);
-        sumAndQuantity.put("sum", sum);
+        sumAndQuantity.put("sum", price);
 
-        params.put("sumandquantity", sumAndQuantity);
 
         Gson gson = new Gson();
         return gson.toJson(sumAndQuantity);
@@ -89,25 +70,12 @@ public class ProductController {
 
     public static ModelAndView renderShoppingCart(Request req, Response res) {
         ShoppingCart shoppingCart = ShoppingCart.getInstance();
-
-        List<Product> products = new ArrayList<>();
-
-        List<String> productList = shoppingCart.getProductsInCart();
-        for (String prod: productList
-                ) {
-            String productId = prod.substring(8, prod.length() - 1);
-            Integer productIdInt = Integer.parseInt(productId);
-            ProductDaoMem productDaoMem = ProductDaoMem.getInstance();
-            Product addedProduct = productDaoMem.find(productIdInt);
-            products.add(addedProduct);
-
-        }
-        Set<Product> setProduct = new HashSet<>(products);
+        Set<Product> productSet = new HashSet<>(shoppingCart.getProductsFromCart());
 
         Map params = new HashMap<>();
-        params.put("cart", shoppingCart);
 
-        params.put("products", setProduct);
+        params.put("cart", shoppingCart);
+        params.put("products", productSet);
         return new ModelAndView(params, "product/cart");
     }
 
