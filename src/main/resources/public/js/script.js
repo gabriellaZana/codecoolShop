@@ -37,6 +37,13 @@ getProductId();
 
 finalPrice = $(".finalPrice");
 $(document).ready(function () {
-    alert("asd")
+    defaultPrice = $(".default_price");
+    quantity = $(".quantity");
+    for (let i=0; i<defaultPrice.length; i++){
+        productQuantity= quantity[i].value;
+        productDefaultPrice= defaultPrice[i].innerHTML;
+        finalPrice[i].innerHTML = productDefaultPrice * productQuantity + "Ƀ";
+        console.log(defaultPrice[i].innerHTML, productQuantity);
 
-})
+    }
+});

@@ -38,8 +38,8 @@
             <td><img class="group list-group-image" src="http://placehold.it/100x100/000/fff"
                      th:attr="src='/img/product_' + ${product.id} + '.jpg'" alt=""/></td>
             <td th:text="${product.name}">Product name</td>
-            <td class=  th:text="${product.defaultPrice}">Product price</td>
-            <td><input type="number" min="0" th:value="${product.id}"></input></td>
+            <td class="default_price"  th:text="${product.defaultPrice}">Product price</td>
+            <td><input class="quantity" type="number" min="0" th:value="${product.id}"></input></td>
             <td class="finalPrice">Final Price</td>
         </tr>
     </table>
