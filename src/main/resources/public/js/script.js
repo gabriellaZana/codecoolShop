@@ -27,8 +27,8 @@ function getProductId(){
             data: JSON.stringify(clickedProductId),
             success: function(response){
                 var parsed = $.parseJSON(response);;
-                $("#sum").text(parsed['sum']);
-                $("#quantity").text(parsed['quantity']);
+                $("#sum").text('Sum: ' + parsed['sum'] + 'bitcoin');
+                $("#quantity").text(parsed['quantity'] + ' item(s)');
 
             }
         })
