@@ -109,15 +109,19 @@ $(document).ready(function () {
         trash.parentNode.parentNode.parentNode.removeChild(trash.parentNode.parentNode);
     })
 
-    let user_form = document.getElementById("user_form");
 
-    document.getElementById("shop").addEventListener('click', function () {
-        console.log("kattintottam");
-        if (user_form.style.display === "none") {
-            user_form.style.display = "inline";
-        } else {
-            user_form.style.display = "none";
-        }
-    })
+    let user_form = document.getElementById("user_form");
+    let shop = document.getElementsByClassName("shop");
+
+    for (i=0; i<shop.length; i++) {
+        shop[i].addEventListener('click', function () {
+            console.log("kattintottam");
+            if (user_form.style.display === "none") {
+                user_form.style.display = "inline";
+            } else {
+                user_form.style.display = "none";
+            }
+        })
+    }
 
 });
