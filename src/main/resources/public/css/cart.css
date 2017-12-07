@@ -5,3 +5,6 @@ td{
     height: 50px;
     vertical-align: 50% !important;
 }
+.trash_bin{
+    max-height: 30px;
+}

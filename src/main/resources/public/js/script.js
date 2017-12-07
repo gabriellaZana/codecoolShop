@@ -38,6 +38,7 @@ defaultPrice = $(".default_price");
 quantity = $(".quantity");
 
 function changeFinalPrice() {
+    console.log("click")
     for (let i = 0; i < defaultPrice.length; i++) {
         productQuantity = quantity[i].value;
         productDefaultPrice = defaultPrice[i].innerHTML;
@@ -47,5 +48,11 @@ function changeFinalPrice() {
 }
 
 $(document).ready(changeFinalPrice());
+
+
+$(".trash_bin").on("click", function (event) {
+    trash=event.target
+    trash.parentNode.parentNode.parentNode.removeChild(trash.parentNode.parentNode)
+})
 
 
