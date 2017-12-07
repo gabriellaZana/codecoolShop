@@ -50,16 +50,17 @@
             <strong th:text="${category.name}">Second Category</strong>
         </div>
 
+
         <div th:attr="id=${'productsOfCategory'+category.id}" class="row list-group">
-            <div>
-                <div th:each="supp, iterStat : ${category.getSuppliers()}">
-                    <button th:text="${supp.name}"></button>
-                </div>
+            <div class ="col-xs-12 col-lg-12 filter_buttons">
+                <button class="btn btn-info">All</button>
+                <button class="btn btn-info" th:text="${supp.name}" th:each="supp, iterStat : ${category.getSuppliers()}">asd</button>
             </div>
 
-            <div th:attr="id=${prod.id}" class="item col-xs-4 col-lg-4" th:each="prod,iterStat : ${category.getProducts()}">
+            <div th:attr="id=${prod.id}, data-supplier=${prod.supplier.name}" class="item col-xs-4 col-lg-4 product" th:each="prod,iterStat : ${category.getProducts()}">
+
                 <div class="thumbnail">
-                    <img class="group list-group-image" src="http://placehold.it/400x250/000/fff"
+                    <img class="group list-group-image mama" src="http://placehold.it/400x250/000/fff"
                          th:attr="src='/img/product_' + ${prod.id} + '.jpg'" alt=""/>
                     <div class="caption">
                         <h4 class="group inner list-group-item-heading" th:text="${prod.name}">Product name</h4>
@@ -84,9 +85,11 @@
 
 <div th:replace="footer :: copy"></div>
 
+
 <script src="https://code.jquery.com/jquery-3.2.1.js" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" crossorigin="anonymous"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" crossorigin="anonymous"></script>
+
 
 
 </body>

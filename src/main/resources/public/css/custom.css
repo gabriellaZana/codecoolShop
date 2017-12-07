@@ -67,6 +67,7 @@ body
 }
 
 
+
 #cart {
     margin-bottom: 10px;
 }
@@ -75,3 +76,12 @@ body
     width: 10%;
     height: 10%;
 }
+
+ .filter_buttons{
+     margin-bottom: 20px;
+ }
+
+ .mama {
+     height: 250px !important;
+ }
+
