@@ -109,12 +109,12 @@ $(document).ready(function () {
         trash.parentNode.parentNode.parentNode.removeChild(trash.parentNode.parentNode);
     })
 
-    var user_form = $("#user_form");
-    var shop_button = $("#shop")
-    shop_button.addEventListener('click', function () {
+    let user_form = document.getElementById("user_form");
+
+    document.getElementById("shop").addEventListener('click', function () {
         console.log("kattintottam");
         if (user_form.style.display === "none") {
-            user_form.style.display = "";
+            user_form.style.display = "inline";
         } else {
             user_form.style.display = "none";
         }
