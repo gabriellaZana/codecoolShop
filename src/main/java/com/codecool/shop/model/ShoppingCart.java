@@ -23,7 +23,7 @@ public final class ShoppingCart {
 
     public List<String> addToCart(String productId){
         productsInCart.add(productId);
-        //System.out.println("addtocartProdList" + productsList);
+        System.out.println("prod in cart add to cart" + getProductsInCart());
         return productsInCart;
     }
 
@@ -46,10 +46,13 @@ public final class ShoppingCart {
     }
 
     public void putProductToCart(Product product){
+        System.out.println("put prod to cart" + product.name);
         products.add(product);
     }
 
     public List<Product> getProductsFromCart(){
+        System.out.println(products);
+        System.out.println(products.size());
         return products;
     }
 

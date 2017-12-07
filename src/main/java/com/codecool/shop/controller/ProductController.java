@@ -25,17 +25,26 @@ public class ProductController {
         List<ProductCategory> categories = productCategoryDataStore.getAll();
         ShoppingCart shoppingCart = ShoppingCart.getInstance();
 
-        Float price = 0f;
-
-        for (Product product: shoppingCart.getProductsFromCart()
-             ) {
-            price += product.getDefaultPrice();
-
+        List<Float> prices = new ArrayList<>();
+        List<String> productList = shoppingCart.getProductsInCart();
+        for (String prod: productList
+                ) {
+            String productId = prod.substring(8, prod.length() - 1);
+            Integer productIdInt = Integer.parseInt(productId);
+            ProductDaoMem productDaoMem = ProductDaoMem.getInstance();
+            Product addedProduct = productDaoMem.find(productIdInt);
+            prices.add(addedProduct.getDefaultPrice());
         }
+
+        Float sum = 0f;
+        for (Float price: prices
+                ) {sum += price;
+        }
+
 
         Map params = new HashMap<>();
         params.put("productNumber", shoppingCart.getCartSize());
-        params.put("Price", price);
+        params.put("Price", sum);
         params.put("categories", categories);
         return new ModelAndView(params, "product/index");
     }
@@ -53,7 +62,7 @@ public class ProductController {
             ProductDaoMem productDaoMem = ProductDaoMem.getInstance();
             Product addedProduct = productDaoMem.find(productIdInt);
             prices.add(addedProduct.getDefaultPrice());
-            shoppingCart.putProductToCart(addedProduct);
+            //shoppingCart.putProductToCart(addedProduct);
         }
 
 
