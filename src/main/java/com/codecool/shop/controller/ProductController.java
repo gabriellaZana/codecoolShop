@@ -85,7 +85,8 @@ public class ProductController {
         Map params = new HashMap<>();
 
         params.put("products", products);
-        return new ModelAndView(params, "product/cart");
+        System.out.println(products);
+        return new ModelAndView(params, "product/test");
     }
 
 }

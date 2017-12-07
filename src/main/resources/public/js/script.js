@@ -21,7 +21,7 @@ function getProductId(){
     $(".add-to-cart-button").on('click', function () {
         var clickedProductId = $(this).parents().eq(4).attr("id");
         $.ajax({
-            url:'/test',
+            url:'/shopping-cart',
             type: 'POST',
             contentType: 'application/json; charset=UTF-8',
             data: JSON.stringify(clickedProductId),

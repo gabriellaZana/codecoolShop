@@ -31,8 +31,12 @@ public class Main {
            return new ThymeleafTemplateEngine().render( ProductController.renderProducts(req, res) );
         });
 
-        post("/test", (Request req, Response res) -> {
+        post("/shopping-cart", (Request req, Response res) -> {
             return ProductController.renderShoppingCartMini(req, res);
+        });
+
+        get("/test", (Request req, Response res) -> {
+            return new ThymeleafTemplateEngine().render( ProductController.renderShoppingCart(req, res) );
         });
 
         // Add this line to your project to enable the debug screen
