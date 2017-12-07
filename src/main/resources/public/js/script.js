@@ -1,8 +1,6 @@
 $(document).ready(function () {
     let categories = $(".clickable-category");
 
-
-    console.log(categories);
     for (var i = 0; i < categories.length; i++) {
         if (i > 0) {
             document.getElementById(`productsOfCategory${categories[i].id.slice(8)}`).style.display = "none";
@@ -33,15 +31,12 @@ $(document).ready(function () {
                 let button = $(this);
                 let products = button.parent().parent().find(".product");
                 let supplier = button.html();
-                console.log(products)
-                console.log(supplier)
                 for (let i = 0; i < products.length; i++) {
                     let product = products[i];
                     if (supplier === "All") {
                         product.style.display = '';
                     } else {
                         let productSuppl = product.getAttribute('data-supplier');
-                        console.log(productSuppl)
                         if (supplier === productSuppl) {
                             product.style.display = '';
                         } else {
@@ -112,6 +107,17 @@ $(document).ready(function () {
         trash = event.target;
 
         trash.parentNode.parentNode.parentNode.removeChild(trash.parentNode.parentNode);
+    })
+
+    var user_form = $("#user_form");
+    var shop_button = $("#shop")
+    shop_button.addEventListener('click', function () {
+        console.log("kattintottam");
+        if (user_form.style.display === "none") {
+            user_form.style.display = "";
+        } else {
+            user_form.style.display = "none";
+        }
     })
 
 });
