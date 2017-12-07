@@ -51,7 +51,7 @@ $(document).ready(changeFinalPrice());
 
 
 $(".trash_bin").on("click", function (event) {
-    trash=event.target
+    trash=event.target;
     trash.parentNode.parentNode.parentNode.removeChild(trash.parentNode.parentNode)
 })
 
