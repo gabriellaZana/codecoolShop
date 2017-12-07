@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="author" content="Codecool"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>Codecool Shop Cart</title>
+
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"/>
+
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
+          integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous"/>
+
+    <script src="/js/script.js" defer=""></script>
+
+    <link rel="stylesheet" type="text/css" href="/css/cart.css"/>
+</head>
+<body>
+
+<div class="jumbotron text-center">
+    <div id="back"><a href="/" class="btn btn-primary">Back to the shop</a></div>
+    <h1>Codecool Shop Cart</h1>
+    </div>
+
+    <div class="container">
+        <table class="table">
+            <tr>
+                <th></th>
+                <th>Product</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Final Price</th>
+                <th></th>
+            </tr>
+            <tr th:attr="id=${product.id}" th:each="product,iterStat : ${products}">
+                <td><img class="group list-group-image" src="http://placehold.it/100x100/000/fff"
+                         th:attr="src='/img/product_' + ${product.id} + '.jpg'" alt=""/></td>
+                <td th:text="${product.name}">Product name</td>
+                <td class="default_price"  th:text="${product.defaultPrice}">Product price</td>
+                <td><input class="quantity" onchange="changeFinalPrice()" type="number" min="1" th:value="${cart.getQuantity(product)}"></input></td>
+                <td class="finalPrice">Final Price</td>
+                <td><img class="trash_bin" src="http://www.free-icons-download.net/images/trash-can-symbol-icon-504.png"/></td>
+            </tr>
+        </table>
+    </div>
+
+
+    <div th:replace="footer :: copy"></div>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"
+            integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh"
+            crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"
+            integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ"
+            crossorigin="anonymous"></script>
+</body>
+</html>

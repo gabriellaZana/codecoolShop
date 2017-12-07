@@ -1,3 +1,8 @@
+body
+{
+    font-family: "courier new", Arial;
+}
+
 .glyphicon {
     margin-right:5px;
 }
@@ -60,6 +65,18 @@
 {
     margin: 0 0 11px;
 }
+
+#trolley
+{
+    width: 10%;
+    height: 10%;
+}
+
  .filter_buttons{
      margin-bottom: 20px;
  }
+
+ .mama {
+     height: 250px !important;
+ }
+

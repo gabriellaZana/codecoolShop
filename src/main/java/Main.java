@@ -27,9 +27,13 @@ public class Main {
         // Always add generic routes to the end
         get("/", ProductController::renderProducts, new ThymeleafTemplateEngine());
         // Equivalent with above
-        get("/index", (Request req, Response res) -> {
-           return new ThymeleafTemplateEngine().render( ProductController.renderProducts(req, res) );
-        });
+        get("/index", (Request req, Response res) -> new ThymeleafTemplateEngine().render( ProductController.renderProducts(req, res) ));
+
+        post("/shopping-cart", ProductController::renderShoppingCartMini);
+
+        get("/cart", (Request req, Response res) -> new ThymeleafTemplateEngine().render( ProductController.renderShoppingCart(req, res) ));
+
+        post("delete-item", ProductController::deleteItem);
 
         // Add this line to your project to enable the debug screen
         enableDebugScreen();
@@ -42,31 +46,35 @@ public class Main {
         SupplierDao supplierDataStore = SupplierDaoMem.getInstance();
 
         //setting up a new supplier
-        Supplier amazon = new Supplier("Amazon", "Digital content and services");
-        supplierDataStore.add(amazon);
-        Supplier lenovo = new Supplier("Lenovo", "Computers");
-        supplierDataStore.add(lenovo);
-        Supplier Countryside = new Supplier("Countryside", "Grannys");
+        Supplier Home = new Supplier("Straight from home", "Grannys from home.");
+        supplierDataStore.add(Home);
+        Supplier Countryside = new Supplier("Countryside", "Grannys from the countryside");
         supplierDataStore.add(Countryside);
+        Supplier City = new Supplier("City", "Grannys from the city");
+        supplierDataStore.add(City);
+        Supplier NursingHome = new Supplier("Nursing home", "Grannys fresh from the nursing homes.");
+        supplierDataStore.add(NursingHome);
+        Supplier Amazon = new Supplier("The Amazon", "Everything you ever want in life.");
+        supplierDataStore.add(Amazon);
 
         //setting up a new product category
-        ProductCategory tablet = new ProductCategory("Tablet", "Hardware", "A tablet computer, commonly shortened to tablet, is a thin, flat mobile computer with a touchscreen display.");
-        productCategoryDataStore.add(tablet);
-        ProductCategory accessories1 = new ProductCategory("Accesories1", "Misc1", "All what grannys' need1");
-        productCategoryDataStore.add(accessories1);
-        ProductCategory accessories2 = new ProductCategory("Accesories2", "Misc2", "All what grannys' need2");
-        productCategoryDataStore.add(accessories2);
-        ProductCategory accessories3 = new ProductCategory("Accesories3", "Misc3", "All what grannys' need3");
-        productCategoryDataStore.add(accessories3);
-        ProductCategory accessories4 = new ProductCategory("Accesories4", "Misc4", "All what grannys' need4");
-        productCategoryDataStore.add(accessories4);
+        ProductCategory Granny = new ProductCategory("Grannys", "", "Grannys for rent.");
+        productCategoryDataStore.add(Granny);
+        ProductCategory accessoriesForCooking = new ProductCategory("Accessories for cooking", "Misc1", "All what grannys' need1");
+        productCategoryDataStore.add(accessoriesForCooking);
 
 
         //setting up products and printing it
-        productDataStore.add(new Product("Amazon Fire", 49.9f, "USD", "Fantastic price. Large content ecosystem. Good parental controls. Helpful technical support.", tablet, amazon));
-        productDataStore.add(new Product("Lenovo IdeaPad Miix 700", 479, "USD", "Keyboard cover is included. Fanless Core m5 processor. Full-size USB ports. Adjustable kickstand.", tablet, lenovo));
-        productDataStore.add(new Product("Amazon Fire HD 8", 89, "USD", "Amazon's latest Fire HD 8 tablet is a great value for media consumption.", tablet, amazon));
-        productDataStore.add(new Product("Cyber granny", 5, "EUR","Exceptional reading skills, digital nomad", accessories1, Countryside));
+        productDataStore.add(new Product("Rebel granny", 666, "USD", "Likes metal. Perfect choice for punks and metalheads.", Granny, Home));
+        productDataStore.add(new Product("Rich granny", 9999, "USD", "Classic style, royal apperance, two guards included.", Granny, City));
+        productDataStore.add(new Product("Christmas edition granny", 0.99f, "USD", "Singing christmas melodies all the time, smells a bit like eggnog.", Granny, NursingHome));
+        productDataStore.add(new Product("Cyber granny", 10101, "USD","Exceptional reading skills, digital nomad.", Granny, City));
+        productDataStore.add(new Product("Muriel", 49.99f, "USD","Pet-friendly, has a cowardly dog.", Granny, Countryside));
+        productDataStore.add(new Product("Assassin grandma", 1499, "USD","Works silent and fast. Cleans the site after getting the job done.", Granny, Countryside));
+        productDataStore.add(new Product("Wooden spoon", 5, "USD","Good for cooking or educational purposes.", accessoriesForCooking, Amazon));
+        productDataStore.add(new Product("Oven gloves", 4.99f, "USD","If you don't want to burn your hand down.", accessoriesForCooking, Amazon));
+        productDataStore.add(new Product("Spotted/dotted pot kit", 15, "USD","For a good stew!", accessoriesForCooking, Amazon));
+        productDataStore.add(new Product("Cook book", 42.0f, "USD","Special cook book for special grannys.", accessoriesForCooking, Amazon));
     }
 
 

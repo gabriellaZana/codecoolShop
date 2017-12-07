@@ -1,0 +1,19 @@
+img{
+    max-height: 100px;
+}
+td{
+    height: 50px;
+    vertical-align: 50% !important;
+}
+.trash_bin{
+    max-height: 30px;
+}
+
+#back {
+    text-align: left;
+    margin-left: 20px;
+}
+
+.jumbotron {
+    padding-top: 20px !important;
+}
