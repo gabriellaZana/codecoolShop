@@ -42,12 +42,10 @@ function changeFinalPrice() {
         productQuantity = quantity[i].value;
         productDefaultPrice = defaultPrice[i].innerHTML;
         finalPrice[i].innerHTML = productDefaultPrice * productQuantity + "Ƀ";
-        console.log(defaultPrice[i].innerHTML, productQuantity);
 
     }
 }
 
 $(document).ready(changeFinalPrice());
 
-$(".quantity").on("change", changeFinalPrice());
 
