@@ -115,12 +115,7 @@ $(document).ready(function () {
 
     for (i=0; i<shop.length; i++) {
         shop[i].addEventListener('click', function () {
-            console.log("kattintottam");
-            if (user_form.style.display === "none") {
-                user_form.style.display = "inline";
-            } else {
-                user_form.style.display = "none";
-            }
+            user_form.style.display = "inline";
         })
     }
 
