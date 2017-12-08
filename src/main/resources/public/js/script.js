@@ -1,8 +1,6 @@
 $(document).ready(function () {
     let categories = $(".clickable-category");
 
-
-    console.log(categories);
     for (var i = 0; i < categories.length; i++) {
         if (i > 0) {
             document.getElementById(`productsOfCategory${categories[i].id.slice(8)}`).style.display = "none";
@@ -33,15 +31,12 @@ $(document).ready(function () {
                 let button = $(this);
                 let products = button.parent().parent().find(".product");
                 let supplier = button.html();
-                console.log(products)
-                console.log(supplier)
                 for (let i = 0; i < products.length; i++) {
                     let product = products[i];
                     if (supplier === "All") {
                         product.style.display = '';
                     } else {
                         let productSuppl = product.getAttribute('data-supplier');
-                        console.log(productSuppl)
                         if (supplier === productSuppl) {
                             product.style.display = '';
                         } else {
@@ -113,5 +108,15 @@ $(document).ready(function () {
 
         trash.parentNode.parentNode.parentNode.removeChild(trash.parentNode.parentNode);
     })
+
+
+    let user_form = document.getElementById("user_form");
+    let shop = document.getElementsByClassName("shop");
+
+    for (i=0; i<shop.length; i++) {
+        shop[i].addEventListener('click', function () {
+            user_form.style.display = "inline";
+        })
+    }
 
 });

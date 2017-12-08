@@ -17,13 +17,10 @@ public final class ShoppingCart {
 
 
     public void putProductToCart(Product product){
-        System.out.println("put prod to cart" + product.name);
         products.add(product);
     }
 
     public List<Product> getProductsFromCart(){
-        System.out.println(products);
-        System.out.println(products.size());
         return products;
     }
 
