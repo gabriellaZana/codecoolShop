@@ -40,7 +40,7 @@
                          th:attr="src='/img/product_' + ${product.id} + '.jpg'" alt=""/></td>
                 <td th:text="${product.name}">Product name</td>
                 <td class="default_price"  th:text="${product.defaultPrice}">Product price</td>
-                <td><input class="quantity" onchange="changeFinalPrice()" type="number" min="1" th:value="${cart.getQuantity(product)}"></input></td>
+                <td><input class="quantity" onchange="countFinalPrice()" type="number" min="1" th:value="${cart.getQuantity(product)}"></input></td>
                 <td class="finalPrice">Final Price</td>
                 <td><img class="trash_bin" src="http://www.free-icons-download.net/images/trash-can-symbol-icon-504.png"/></td>
             </tr>
@@ -50,7 +50,7 @@
                 <td></td>
                 <td></td>
                 <td></td>
-                <td><div class="shop btn btn-primary">Shop</div></td>
+                <td><div id="shop" class="btn btn-primary">Shop</div></td>
             </tr>
         </table>
         <div class="container" id="user_form">

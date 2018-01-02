@@ -1,30 +1,4 @@
-$(document).ready(function () {
-    let categories = $(".clickable-category");
-
-    for (var i = 0; i < categories.length; i++) {
-        if (i > 0) {
-            document.getElementById(`productsOfCategory${categories[i].id.slice(8)}`).style.display = "none";
-        }
-        categories[i].addEventListener('click', function () {
-            productDiv = document.getElementById(`productsOfCategory${this.id.slice(8)}`);
-            console.log(productDiv.style.display);
-            if (productDiv.style.display === "none") {
-                productDiv.style.display = "";
-            } else {
-                productDiv.style.display = "none";
-
-            }
-            categories[i].addEventListener('click', function () {
-                let productDiv = document.getElementById(`productsOfCategory${this.id.slice(8)}`);
-                if (productDiv.style.display === "none") {
-                    productDiv.style.display = "";
-                } else {
-                    productDiv.style.display = "none";
-                }
-            })
-        })
-    }
-
+function addEventListenerToSupplierButtons() {
     let buttons = $('button');
     for (let i = 0; i < buttons.length; i++) {
         buttons[i].addEventListener('click', function () {
@@ -47,76 +21,114 @@ $(document).ready(function () {
             }
         )
     }
+}
 
 
-    function getProductId() {
-        $(".add-to-cart-button").on('click', function () {
-            var clickedProductId = $(this).parents().eq(4).attr("id");
-            console.log(clickedProductId.slice(7));
+function addEventListenerToSupplierBanners() {
+    let categories = $(".clickable-category");
+    for (let i = 0; i < categories.length; i++) {
+        if (i > 0) {
+            document.getElementById(`productsOfCategory${categories[i].id.slice(8)}`).style.display = "none";
+        }
+
+        categories[i].addEventListener('click', function () {
+            let productDiv = document.getElementById(`productsOfCategory${this.id.slice(8)}`);
+            console.log(productDiv.style.display);
+            if (productDiv.style.display === "none") {
+                productDiv.style.display = "";
+            } else {
+                productDiv.style.display = "none";
+
+            }
+            categories[i].addEventListener('click', function () {
+                let productDiv = document.getElementById(`productsOfCategory${this.id.slice(8)}`);
+                if (productDiv.style.display === "none") {
+                    productDiv.style.display = "";
+                } else {
+                    productDiv.style.display = "none";
+                }
+            })
+        })
+    }
+}
+
+
+function getProductId() {
+    $(".add-to-cart-button").on('click', function () {
+            let clickedProductId = $(this).parents().eq(4).attr("id");
             $.ajax({
-
                 url: '/shopping-cart',
                 type: 'POST',
                 contentType: 'application/json; charset=UTF-8',
                 data: JSON.stringify(clickedProductId),
                 success: function (response) {
-                    var parsed = $.parseJSON(response);
-                    ;
-                    $("#sum").text('Sum: ' +'$' + parsed['sum']);
+                    console.log("sent")
+                    let parsed = $.parseJSON(response);
+                    $("#sum").text('Sum: ' + '$' + parsed['sum']);
                     $("#quantity").text(parsed['quantity'] + ' item(s)');
-
-
                 }
             })
-        })
-    }
-
-    getProductId();
-
-    finalPrice = $(".finalPrice");
-    defaultPrice = $(".default_price");
-    quantity = $(".quantity");
-
-    function changeFinalPrice() {
-        for (let i = 0; i < defaultPrice.length; i++) {
-            productQuantity = quantity[i].value;
-            console.log(productQuantity)
-            productDefaultPrice = defaultPrice[i].innerHTML;
-            console.log(productDefaultPrice)
-            finalPrice[i].innerHTML = (productDefaultPrice * productQuantity).toFixed(2);
-
         }
-    }
-    changeFinalPrice()
-    $('.quantity').on('change', function () {
-        changeFinalPrice()
-    })
+    )
+}
 
+
+function addEventListenerToTrashBin() {
     $(".trash_bin").on("click", function (event) {
-        prodId = event.target.parentNode.parentNode.id
+        let prodId = event.target.parentNode.parentNode.id;
         console.log(prodId);
-        console.log(event.target.parentNode.parentNode.id)
+        console.log(event.target.parentNode.parentNode.id);
         $.ajax({
             url: '/delete-item',
             type: 'POST',
             contentType: 'application/json; charset=UTF-8',
             data: JSON.stringify(prodId)
-        })
-
-
-        trash = event.target;
-
+        });
+        let trash = event.target;
         trash.parentNode.parentNode.parentNode.removeChild(trash.parentNode.parentNode);
-    })
+    });
+}
 
 
-    let user_form = document.getElementById("user_form");
-    let shop = document.getElementsByClassName("shop");
-
-    for (i=0; i<shop.length; i++) {
-        shop[i].addEventListener('click', function () {
-            user_form.style.display = "inline";
-        })
+function countFinalPrice() {
+    let quantity = $(".quantity");
+    let finalPrice = $(".finalPrice");
+    let defaultPrice = $(".default_price");
+    let productQuantity;
+    let productDefaultPrice;
+    for (let i = 0; i < defaultPrice.length; i++) {
+        productQuantity = quantity[i].value;
+        productDefaultPrice = defaultPrice[i].innerHTML;
+        finalPrice[i].innerHTML = (productDefaultPrice * productQuantity).toFixed(2);
     }
+}
 
+
+function addEventListenerToQuantity() {
+    let quantity = $(".quantity");
+    quantity.on('change', function() {
+        countFinalPrice()
+    });
+}
+
+
+function AddEventListenerToShopButton() {
+    let user_form = document.getElementById("user_form");
+    let shop = document.getElementById("shop");
+    if (shop) {
+        shop.addEventListener('click', function() {
+            user_form.style.display = "inline";
+        });
+    }
+}
+
+
+$(document).ready(function () {
+    addEventListenerToSupplierButtons();
+    addEventListenerToSupplierBanners();
+    addEventListenerToQuantity();
+    addEventListenerToTrashBin();
+    AddEventListenerToShopButton();
+    getProductId();
+    countFinalPrice();
 });
