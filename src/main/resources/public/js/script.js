@@ -33,7 +33,7 @@ function addEventListenerToSupplierBanners() {
 
         categories[i].addEventListener('click', function () {
             let productDiv = document.getElementById(`productsOfCategory${this.id.slice(8)}`);
-            console.log(productDiv.style.display);
+            //console.log(productDiv.style.display);
             if (productDiv.style.display === "none") {
                 productDiv.style.display = "";
             } else {
@@ -62,7 +62,7 @@ function getProductId() {
                 contentType: 'application/json; charset=UTF-8',
                 data: JSON.stringify(clickedProductId),
                 success: function (response) {
-                    console.log("sent")
+                    //console.log("sent")
                     let parsed = $.parseJSON(response);
                     $("#sum").text('Sum: ' + '$' + parsed['sum']);
                     $("#quantity").text(parsed['quantity'] + ' item(s)');
@@ -76,8 +76,8 @@ function getProductId() {
 function addEventListenerToTrashBin() {
     $(".trash_bin").on("click", function (event) {
         let prodId = event.target.parentNode.parentNode.id;
-        console.log(prodId);
-        console.log(event.target.parentNode.parentNode.id);
+        //console.log(prodId);
+        //console.log(event.target.parentNode.parentNode.id);
         $.ajax({
             url: '/delete-item',
             type: 'POST',
@@ -86,6 +86,7 @@ function addEventListenerToTrashBin() {
         });
         let trash = event.target;
         trash.parentNode.parentNode.parentNode.removeChild(trash.parentNode.parentNode);
+        displayTotalPrice();
     });
 }
 
@@ -101,6 +102,7 @@ function countFinalPrice() {
         productDefaultPrice = defaultPrice[i].innerHTML;
         finalPrice[i].innerHTML = (productDefaultPrice * productQuantity).toFixed(2);
     }
+    displayTotalPrice();
 }
 
 
@@ -122,6 +124,25 @@ function AddEventListenerToShopButton() {
     }
 }
 
+function displayTotalPrice(){
+    let totalPrice = 0;
+    $('.finalPrice').each(function (i, obj) {
+        console.log(obj.innerHTML);
+        totalPrice += parseFloat(obj.innerHTML);
+    })
+
+    $('#total_price').text( 'Total price is: ' + totalPrice);
+    //console.log(totalPrice);
+
+}
+
+function submitClicked(){
+    $('#submit').on('click', function () {
+        alert('Successful order!');
+        $(location).attr('href', '/');
+    })
+}
+
 
 $(document).ready(function () {
     addEventListenerToSupplierButtons();
@@ -131,4 +152,7 @@ $(document).ready(function () {
     AddEventListenerToShopButton();
     getProductId();
     countFinalPrice();
+    displayTotalPrice();
+    submitClicked();
+    
 });
