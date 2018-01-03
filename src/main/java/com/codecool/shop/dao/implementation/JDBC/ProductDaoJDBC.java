@@ -44,6 +44,8 @@ public class ProductDaoJDBC implements ProductDao{
             statement.setInt(4, product.getProductCategory().getId());
             statement.setInt(5, product.getSupplier().getId());
             statement.setString(6, product.getDefaultCurrency().toString());
+
+            statement.execute();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -56,10 +58,8 @@ public class ProductDaoJDBC implements ProductDao{
         try {
             String getProductQuery = "SELECT * FROM products WHERE id=?;";
             statement = connection.prepareStatement(getProductQuery);
-
             statement.setInt(1, id);
             ResultSet result = statement.executeQuery();
-            Integer product_category_id = result.getInt("product_category_id");
 
             ProductCategoryDaoJDBC category = ProductCategoryDaoJDBC.getInstance();
             SupplierDaoJDBC supplier = Supplier.getInstance();
@@ -72,14 +72,23 @@ public class ProductDaoJDBC implements ProductDao{
         return resultProduct;
     }
 
+
     @Override
     public void remove(int id) {
-        DATA.remove(find(id));
+        try {
+            String removeProductQuery = "DELETE FROM products WHERE id=?;";
+            statement = connection.prepareStatement(removeProductQuery);
+            statement.setInt(1, id);
+            statement.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
+
 
     @Override
     public List<Product> getAll() {
-        return DATA;
+
     }
 
     @Override
