@@ -33,7 +33,9 @@ public class Main {
 
         get("/cart", (Request req, Response res) -> new ThymeleafTemplateEngine().render( ProductController.renderShoppingCart(req, res) ));
 
-        post("delete-item", ProductController::deleteItem);
+        post("/delete-item", ProductController::deleteItem);
+
+        post("/submit-cart", ProductController::submitCart);
 
         // Add this line to your project to enable the debug screen
         enableDebugScreen();
