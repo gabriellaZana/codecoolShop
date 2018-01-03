@@ -1,8 +1,8 @@
 package com.codecool.shop.controller;
 
 import com.codecool.shop.dao.ProductCategoryDao;
-import com.codecool.shop.dao.implementation.ProductCategoryDaoMem;
-import com.codecool.shop.dao.implementation.ProductDaoMem;
+import com.codecool.shop.dao.implementation.Memory.ProductCategoryDaoMem;
+import com.codecool.shop.dao.implementation.Memory.ProductDaoMem;
 import com.codecool.shop.model.Product;
 import com.codecool.shop.model.ProductCategory;
 import com.codecool.shop.model.ShoppingCart;
@@ -23,14 +23,13 @@ public class ProductController {
 
         Float sum = 0f;
 
-        for (Product prod : shoppingCart.getProductsFromCart()
-                ) {
-            sum += prod.getDefaultPrice();
+        for (Product product : shoppingCart.getProductsFromCart()) {
+            sum += product.getDefaultPrice();
         }
 
 
-        Map params = new HashMap<>();
-        params.put("productNumber", shoppingCart.getProductsFromCart().size());
+        Map<String, Object> params = new HashMap<>();
+        params.put("productAmount", shoppingCart.getProductsFromCart().size());
         params.put("Price", sum);
         params.put("categories", categories);
         return new ModelAndView(params, "product/index");
