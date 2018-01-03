@@ -1,9 +1,0 @@
-1. Create two file named "connection.properties" and "wrong_connection.properties"
-    in the sql folder (here).
-
-2. Add these properties to both of them:
-
-    url = localhost:5432
-    database = codecoolshop
-    user = {Your db username here}
-    password = {Your db password here}

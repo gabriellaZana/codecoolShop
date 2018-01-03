@@ -3,6 +3,7 @@ import static spark.debug.DebugScreen.enableDebugScreen;
 
 import com.codecool.shop.controller.ProductController;
 import com.codecool.shop.dao.*;
+import com.codecool.shop.dao.implementation.JDBC.ProductCategoryDaoJDBC;
 import com.codecool.shop.dao.implementation.Memory.ProductCategoryDaoMem;
 import com.codecool.shop.dao.implementation.Memory.ProductDaoMem;
 import com.codecool.shop.dao.implementation.Memory.SupplierDaoMem;
@@ -47,6 +48,9 @@ public class Main {
         ProductCategoryDao productCategoryDataStore = ProductCategoryDaoMem.getInstance();
         SupplierDao supplierDataStore = SupplierDaoMem.getInstance();
 
+
+        ProductCategoryDao productCategoryDaoJDBC = ProductCategoryDaoJDBC.getInstance();
+
         //setting up a new supplier
         Supplier Home = new Supplier("Straight from home", "Grannys from home.");
         supplierDataStore.add(Home);
@@ -60,10 +64,13 @@ public class Main {
         supplierDataStore.add(Amazon);
 
         //setting up a new product category
-        ProductCategory Granny = new ProductCategory("Grannys", "", "Grannys for rent.");
+        ProductCategory Granny = new ProductCategory("Grannys", "Grannys for rent.");
         productCategoryDataStore.add(Granny);
-        ProductCategory accessoriesForCooking = new ProductCategory("Accessories for cooking", "Misc1", "All what grannys' need1");
+        productCategoryDaoJDBC.add(Granny);
+        productCategoryDaoJDBC.remove(4);
+        ProductCategory accessoriesForCooking = new ProductCategory("Accessories for cooking", "All what grannys' need1");
         productCategoryDataStore.add(accessoriesForCooking);
+        productCategoryDaoJDBC.add(accessoriesForCooking);
 
 
         //setting up products and printing it
