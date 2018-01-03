@@ -29,24 +29,31 @@ public class ProductDaoJDBC implements ProductDao{
 
 
     @Override
-    public void add(Product product) throws SQLException {
+    public void add(Product product) {
+        try {
+            if (find(product.getId()) != null) {
+                return;
+            }
+            String addQuery = "INSERT INTO products (name, description, price, product_category_id, supplier_id, currency) " +
+                            "VALUES (?, ?, ?, ?, ?, ?);";
+            statement = connection.prepareStatement(addQuery);
 
-        String addQuery = "INSERT INTO products (name, description, price, product_category_id, supplier_id, currency) " +
-                        "VALUES (?, ?, ?, ?, ?, ?);";
-        statement = connection.prepareStatement(addQuery);
-
-        statement.setString(1, product.getName());
-        statement.setString(2, product.getDescription());
-        statement.setFloat(3, product.getDefaultPrice());
-        statement.setInt(4, product.getProductCategory().getId());
-        statement.setInt(5, product.getSupplier().getId());
-        statement.setString(6, product.getDefaultCurrency().toString());
+            statement.setString(1, product.getName());
+            statement.setString(2, product.getDescription());
+            statement.setFloat(3, product.getDefaultPrice());
+            statement.setInt(4, product.getProductCategory().getId());
+            statement.setInt(5, product.getSupplier().getId());
+            statement.setString(6, product.getDefaultCurrency().toString());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
+
 
     @Override
     public Product find(int id) {
+        Product resultProduct = null;
         try {
-
             String getProductQuery = "SELECT * FROM products WHERE id=?;";
             statement = connection.prepareStatement(getProductQuery);
 
@@ -56,13 +63,13 @@ public class ProductDaoJDBC implements ProductDao{
 
             ProductCategoryDaoJDBC category = ProductCategoryDaoJDBC.getInstance();
             SupplierDaoJDBC supplier = Supplier.getInstance();
-            Product resultProduct = new Product(result.getString("name"), result.getFloat("price"),
+            resultProduct = new Product(result.getString("name"), result.getFloat("price"),
                                                 result.getString("currency"), result.getString("description"),
                                                 category.find(result.getInt("product_category_id")), supplier.find(result.getInt("supplier_id")));
-            return resultProduct;
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return resultProduct;
     }
 
     @Override
