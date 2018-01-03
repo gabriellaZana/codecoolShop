@@ -88,6 +88,8 @@ public class ProductDaoJDBC implements ProductDao{
 
     @Override
     public List<Product> getAll() {
+        List<Product> productList;
+        return productList;
 
     }
 
