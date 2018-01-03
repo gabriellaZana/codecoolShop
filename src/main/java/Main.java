@@ -67,6 +67,7 @@ public class Main {
         ProductCategory Granny = new ProductCategory("Grannys", "Grannys for rent.");
         productCategoryDataStore.add(Granny);
         productCategoryDaoJDBC.add(Granny);
+        productCategoryDaoJDBC.remove(4);
         ProductCategory accessoriesForCooking = new ProductCategory("Accessories for cooking", "All what grannys' need1");
         productCategoryDataStore.add(accessoriesForCooking);
         productCategoryDaoJDBC.add(accessoriesForCooking);

@@ -4,6 +4,7 @@ import com.codecool.shop.dao.ProductCategoryDao;
 import com.codecool.shop.model.ProductCategory;
 import com.codecool.shop.utils.DatabaseConnection;
 
+import javax.xml.crypto.Data;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -67,6 +68,17 @@ public class ProductCategoryDaoJDBC implements ProductCategoryDao {
 
     @Override
     public void remove(int id) {
+        DatabaseConnection databaseConnection = DatabaseConnection.getInstance();
+        Connection connection = databaseConnection.getConnection();
+
+        String query = "DELETE FROM product_categories WHERE id = ?;";
+
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1, id);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
     }
 
