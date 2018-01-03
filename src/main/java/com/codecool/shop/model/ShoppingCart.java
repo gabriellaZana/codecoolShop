@@ -44,9 +44,6 @@ public final class ShoppingCart {
     }
 
     public void removeAllItem(){
-        System.out.println(products.size() + "asd");
-        for (Product prod: products) {
-            products.remove(prod);
-        }
+        products.clear();
     }
 }

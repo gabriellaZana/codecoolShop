@@ -143,7 +143,10 @@ function submitClicked(){
             url: '/submit-cart',
             type: 'POST',
             contentType: 'application/json; charset=UTF-8',
-            data: JSON.stringify("asd")
+            data: JSON.stringify("asd"),
+            success: function (response) {
+                $(location).attr('href', '/');
+            }
         });
 
     })
