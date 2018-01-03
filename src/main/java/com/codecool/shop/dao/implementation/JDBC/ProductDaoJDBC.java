@@ -30,10 +30,10 @@ public class ProductDaoJDBC implements ProductDao {
 
     @Override
     public void add(Product product) {
+        if (find(product.getId()) != null) {
+            return;
+        }
         try {
-            if (find(product.getId()) != null) {
-                return;
-            }
             String addQuery = "INSERT INTO products (name, description, price, product_category_id, supplier_id, currency) " +
                             "VALUES (?, ?, ?, ?, ?, ?);";
             statement = connection.prepareStatement(addQuery);
@@ -62,7 +62,7 @@ public class ProductDaoJDBC implements ProductDao {
             ResultSet result = statement.executeQuery();
 
             ProductCategoryDaoJDBC category = ProductCategoryDaoJDBC.getInstance();
-            SupplierDaoJDBC supplier = Supplier.getInstance();
+            SupplierDaoJDBC supplier = SupplierDaoJDBC.getInstance();
             resultProduct = new Product(result.getString("name"), result.getFloat("price"),
                                                 result.getString("currency"), result.getString("description"),
                                                 category.find(result.getInt("product_category_id")), supplier.find(result.getInt("supplier_id")));
@@ -94,10 +94,10 @@ public class ProductDaoJDBC implements ProductDao {
             statement = connection.prepareStatement(getProductsQuery);
             ResultSet result = statement.executeQuery();
             ProductCategoryDaoJDBC category = ProductCategoryDaoJDBC.getInstance();
-            SupplierDaoJDBC supplier = Supplier.getInstance();
+            SupplierDaoJDBC supplier = SupplierDaoJDBC.getInstance();
 
             while (result.next()) {
-                Product product =  new Product((result.getString("name"), result.getFloat("price"),
+                Product product = new Product((result.getString("name")), result.getFloat("price"),
                                             result.getString("currency"), result.getString("description"),
                                             category.find(result.getInt("product_category_id")), supplier.find(result.getInt("supplier_id")));
                 productList.add(product);
@@ -118,10 +118,10 @@ public class ProductDaoJDBC implements ProductDao {
             statement.setInt(1, supplier.getId());
             ResultSet result = statement.executeQuery();
             ProductCategoryDaoJDBC category = ProductCategoryDaoJDBC.getInstance();
-            SupplierDaoJDBC supplier = Supplier.getInstance();
+            SupplierDaoJDBC supplier = SupplierDaoJDBC.getInstance();
 
             while (result.next()) {
-                Product product = new Product((result.getString("name"), result.getFloat("price"),
+                Product product = new Product((result.getString("name")), result.getFloat("price"),
                                         result.getString("currency"), result.getString("description"),
                                         category.find(result.getInt("product_category_id")), supplier.find(result.getInt("supplier_id")));
                 productListBySupplier.add(product);
@@ -145,7 +145,7 @@ public class ProductDaoJDBC implements ProductDao {
             SupplierDaoJDBC supplier = Supplier.getInstance();
 
             while (result.next()) {
-                Product product = new Product((result.getString("name"), result.getFloat("price"),
+                Product product = new Product((result.getString("name")), result.getFloat("price"),
                             result.getString("currency"), result.getString("description"),
                             category.find(result.getInt("product_category_id")), supplier.find(result.getInt("supplier_id")));
                 productListByCategory.add(product);
