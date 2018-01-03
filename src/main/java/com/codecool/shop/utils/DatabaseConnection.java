@@ -8,6 +8,9 @@ import java.sql.SQLException;
 import java.util.Properties;
 
 public class DatabaseConnection {
+
+    private static DatabaseConnection instance = null;
+
     // INFOs from Properties
     private static Properties properties = new Properties();
 
@@ -23,7 +26,7 @@ public class DatabaseConnection {
     private static String PASSWORD;
 
 
-    public DatabaseConnection() {
+    private DatabaseConnection() {
         // load a properties file
         try {
             InputStream input = new FileInputStream("src/main/resources/sql/connection.properties");
@@ -35,6 +38,14 @@ public class DatabaseConnection {
         setup();
     }
 
+    public static DatabaseConnection getInstance() {
+        if (instance == null) {
+            instance = new DatabaseConnection();
+        }
+        return instance;
+    }
+
+    
     private static void setup() {
         host = properties.getProperty("url");
         databaseName = properties.getProperty("database");
