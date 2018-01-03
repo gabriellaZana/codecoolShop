@@ -8,15 +8,18 @@ import com.codecool.shop.model.ProductCategory;
 import com.codecool.shop.model.Supplier;
 import com.codecool.shop.utils.DatabaseConnection;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ProductDaoJDBC implements ProductDao {
+    private static ProductDaoJDBC instance = null;
     private DatabaseConnection databaseConnection = DatabaseConnection.getInstance();
     private Connection connection = databaseConnection.getConnection();
     private PreparedStatement statement = null;
-    private static ProductDaoJDBC instance = null;
 
     private ProductDaoJDBC() {
 
@@ -25,7 +28,8 @@ public class ProductDaoJDBC implements ProductDao {
     public static ProductDaoJDBC getInstance() {
         if (instance == null) {
             instance = new ProductDaoJDBC();
-        } return instance;
+        }
+        return instance;
     }
 
 
@@ -36,7 +40,7 @@ public class ProductDaoJDBC implements ProductDao {
         }
         try {
             String addQuery = "INSERT INTO products (name, description, price, product_category_id, supplier_id, currency) " +
-                            "VALUES (?, ?, ?, ?, ?, ?);";
+                    "VALUES (?, ?, ?, ?, ?, ?);";
             statement = connection.prepareStatement(addQuery);
 
             statement.setString(1, product.getName());
@@ -64,9 +68,11 @@ public class ProductDaoJDBC implements ProductDao {
 
             ProductCategoryDao category = ProductCategoryDaoJDBC.getInstance();
             SupplierDao supplier = SupplierDaoJDBC.getInstance();
-            resultProduct = new Product(result.getString("name"), result.getFloat("price"),
-                                        result.getString("currency"), result.getString("description"),
-                                        category.find(result.getInt("product_category_id")), supplier.find(result.getInt("supplier_id")));
+            while (result.next()) {
+                resultProduct = new Product(result.getString("name"), result.getFloat("price"),
+                        result.getString("currency"), result.getString("description"),
+                        category.find(result.getInt("product_category_id")), supplier.find(result.getInt("supplier_id")));
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -99,8 +105,8 @@ public class ProductDaoJDBC implements ProductDao {
 
             while (result.next()) {
                 Product product = new Product(result.getString("name"), result.getFloat("price"),
-                                            result.getString("currency"), result.getString("description"),
-                                            category.find(result.getInt("product_category_id")), supplier.find(result.getInt("supplier_id")));
+                        result.getString("currency"), result.getString("description"),
+                        category.find(result.getInt("product_category_id")), supplier.find(result.getInt("supplier_id")));
                 productList.add(product);
             }
         } catch (SQLException e) {
@@ -109,7 +115,7 @@ public class ProductDaoJDBC implements ProductDao {
         return productList;
     }
 
-    
+
     @Override
     public List<Product> getBy(Supplier supplier) {
         List<Product> productListBySupplier = new ArrayList<>();
@@ -123,8 +129,8 @@ public class ProductDaoJDBC implements ProductDao {
 
             while (result.next()) {
                 Product product = new Product(result.getString("name"), result.getFloat("price"),
-                                              result.getString("currency"), result.getString("description"),
-                                              category.find(result.getInt("product_category_id")), supplierJDBC.find(result.getInt("supplier_id")));
+                        result.getString("currency"), result.getString("description"),
+                        category.find(result.getInt("product_category_id")), supplierJDBC.find(result.getInt("supplier_id")));
                 productListBySupplier.add(product);
             }
         } catch (SQLException e) {
@@ -147,8 +153,8 @@ public class ProductDaoJDBC implements ProductDao {
 
             while (result.next()) {
                 Product product = new Product(result.getString("name"), result.getFloat("price"),
-                            result.getString("currency"), result.getString("description"),
-                            category.find(result.getInt("product_category_id")), supplier.find(result.getInt("supplier_id")));
+                        result.getString("currency"), result.getString("description"),
+                        category.find(result.getInt("product_category_id")), supplier.find(result.getInt("supplier_id")));
                 productListByCategory.add(product);
             }
         } catch (SQLException e) {
