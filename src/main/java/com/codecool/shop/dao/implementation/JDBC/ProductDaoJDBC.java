@@ -35,7 +35,9 @@ public class ProductDaoJDBC implements ProductDao {
 
     @Override
     public void add(Product product) {
-        if (find(product.getId()) != null) {
+        SupplierDaoJDBC supplierDaoJDBC = SupplierDaoJDBC.getInstance();
+        ProductCategoryDaoJDBC productCategoryDaoJDBC = ProductCategoryDaoJDBC.getInstance();
+        if (find(product.getName()) != null) {
             return;
         }
         try {
@@ -46,8 +48,8 @@ public class ProductDaoJDBC implements ProductDao {
             statement.setString(1, product.getName());
             statement.setString(2, product.getDescription());
             statement.setFloat(3, product.getDefaultPrice());
-            statement.setInt(4, product.getProductCategory().getId());
-            statement.setInt(5, product.getSupplier().getId());
+            statement.setInt(4, productCategoryDaoJDBC.find(product.getProductCategory().getName()).getId());
+            statement.setInt(5, supplierDaoJDBC.find(product.getSupplier().getName()).getId());
             statement.setString(6, product.getDefaultCurrency().toString());
 
             statement.execute();
@@ -72,6 +74,7 @@ public class ProductDaoJDBC implements ProductDao {
                 resultProduct = new Product(result.getString("name"), result.getFloat("price"),
                         result.getString("currency"), result.getString("description"),
                         category.find(result.getInt("product_category_id")), supplier.find(result.getInt("supplier_id")));
+                resultProduct.setId(result.getInt("id"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -79,6 +82,28 @@ public class ProductDaoJDBC implements ProductDao {
         return resultProduct;
     }
 
+
+    public Product find(String name){
+        Product resultProduct = null;
+        try {
+            String getProductQuery = "SELECT * FROM products WHERE name=?;";
+            statement = connection.prepareStatement(getProductQuery);
+            statement.setString(1, name);
+            ResultSet result = statement.executeQuery();
+
+            ProductCategoryDao category = ProductCategoryDaoJDBC.getInstance();
+            SupplierDao supplier = SupplierDaoJDBC.getInstance();
+            while (result.next()) {
+                resultProduct = new Product(result.getString("name"), result.getFloat("price"),
+                        result.getString("currency"), result.getString("description"),
+                        category.find(result.getInt("product_category_id")), supplier.find(result.getInt("supplier_id")));
+                resultProduct.setId(result.getInt("id"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return resultProduct;
+    }
 
     @Override
     public void remove(int id) {

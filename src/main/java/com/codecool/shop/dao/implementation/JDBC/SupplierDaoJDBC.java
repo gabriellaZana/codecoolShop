@@ -30,7 +30,7 @@ public class SupplierDaoJDBC implements SupplierDao {
 
     @Override
     public void add(Supplier supplier) {
-        if (find(supplier.getId()) != null) {
+        if (find(supplier.getName()) != null) {
             return;
         }
         try {
@@ -55,13 +55,31 @@ public class SupplierDaoJDBC implements SupplierDao {
             ResultSet result = statement.executeQuery();
             while (result.next()) {
                 resultSupplier = new Supplier(result.getString("name"), result.getString("description"));
+                resultSupplier.setId(result.getInt("id"));
             }
-        } catch(SQLException e){
-                e.printStackTrace();
-            }
-            return resultSupplier;
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
+        return resultSupplier;
+    }
 
+
+    public Supplier find(String name) {
+        Supplier resultSupplier = null;
+        try {
+            String getProductQuery = "SELECT * FROM suppliers WHERE name=?;";
+            statement = connection.prepareStatement(getProductQuery);
+            statement.setString(1, name);
+            ResultSet result = statement.executeQuery();
+            while (result.next()) {
+                resultSupplier = new Supplier(result.getString("name"), result.getString("description"));
+                resultSupplier.setId(result.getInt("id"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return resultSupplier;
+    }
 
     @Override
     public void remove(int id) {
@@ -84,7 +102,7 @@ public class SupplierDaoJDBC implements SupplierDao {
             ResultSet result = statement.executeQuery();
 
             while (result.next()) {
-                Supplier supplier =  new Supplier(result.getString("name"), result.getString("description"));
+                Supplier supplier = new Supplier(result.getString("name"), result.getString("description"));
                 supplierList.add(supplier);
             }
         } catch (SQLException e) {

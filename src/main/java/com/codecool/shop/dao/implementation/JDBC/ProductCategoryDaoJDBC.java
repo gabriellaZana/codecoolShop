@@ -29,7 +29,8 @@ public class ProductCategoryDaoJDBC implements ProductCategoryDao {
         Connection connection = databaseConnection.getConnection();
 
         String query = "INSERT INTO product_categories (name, description) VALUES (?, ?);";
-        if (find(category.getId()) == null) {
+        if (find(category.getName()) == null) {
+            System.out.println("VAN NAGYI");
             try {
                 PreparedStatement preparedStatement = connection.prepareStatement(query);
 
@@ -56,7 +57,30 @@ public class ProductCategoryDaoJDBC implements ProductCategoryDao {
             preparedStatement.setInt(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
-                return new ProductCategory(resultSet.getString("name"), resultSet.getString("description"));
+                ProductCategory productCategory = new ProductCategory(resultSet.getString("name"), resultSet.getString("description"));
+                productCategory.setId(resultSet.getInt("id"));
+                return productCategory;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public ProductCategory find(String name){
+        DatabaseConnection databaseConnection = DatabaseConnection.getInstance();
+        Connection connection = databaseConnection.getConnection();
+
+        String query = "SELECT * FROM product_categories WHERE name=?";
+
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, name);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                ProductCategory productCategory = new ProductCategory(resultSet.getString("name"), resultSet.getString("description"));
+                productCategory.setId(resultSet.getInt("id"));
+                return productCategory;
             }
         } catch (SQLException e) {
             e.printStackTrace();
