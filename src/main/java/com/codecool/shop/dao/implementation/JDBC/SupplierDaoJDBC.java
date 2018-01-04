@@ -13,9 +13,8 @@ import java.util.List;
 
 public class SupplierDaoJDBC implements SupplierDao {
     private static SupplierDaoJDBC instance = null;
-    private DatabaseConnection databaseConnection = DatabaseConnection.getInstance();
-    private Connection connection = databaseConnection.getConnection();
     private PreparedStatement statement = null;
+    private String filePath = "src/main/resources/sql/connection.properties";
 
     private SupplierDaoJDBC() {
     }
@@ -28,8 +27,14 @@ public class SupplierDaoJDBC implements SupplierDao {
 
     }
 
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
+    }
+
     @Override
     public void add(Supplier supplier) {
+        DatabaseConnection databaseConnection = DatabaseConnection.getInstance(this.filePath);
+        Connection connection = databaseConnection.getConnection();
         if (find(supplier.getName()) != null) {
             return;
         }
@@ -47,6 +52,8 @@ public class SupplierDaoJDBC implements SupplierDao {
 
     @Override
     public Supplier find(int id) {
+        DatabaseConnection databaseConnection = DatabaseConnection.getInstance(this.filePath);
+        Connection connection = databaseConnection.getConnection();
         Supplier resultSupplier = null;
         try {
             String getProductQuery = "SELECT * FROM suppliers WHERE id=?;";
@@ -65,6 +72,8 @@ public class SupplierDaoJDBC implements SupplierDao {
 
 
     public Supplier find(String name) {
+        DatabaseConnection databaseConnection = DatabaseConnection.getInstance(this.filePath);
+        Connection connection = databaseConnection.getConnection();
         Supplier resultSupplier = null;
         try {
             String getProductQuery = "SELECT * FROM suppliers WHERE name=?;";
@@ -83,6 +92,8 @@ public class SupplierDaoJDBC implements SupplierDao {
 
     @Override
     public void remove(int id) {
+        DatabaseConnection databaseConnection = DatabaseConnection.getInstance(this.filePath);
+        Connection connection = databaseConnection.getConnection();
         try {
             String removeSupplierQuery = "DELETE FROM products WHERE id=?;";
             statement = connection.prepareStatement(removeSupplierQuery);
@@ -95,6 +106,8 @@ public class SupplierDaoJDBC implements SupplierDao {
 
     @Override
     public List<Supplier> getAll() {
+        DatabaseConnection databaseConnection = DatabaseConnection.getInstance(this.filePath);
+        Connection connection = databaseConnection.getConnection();
         List<Supplier> supplierList = new ArrayList<>();
         try {
             String getSuppliersQuery = "SELECT * FROM suppliers;";
