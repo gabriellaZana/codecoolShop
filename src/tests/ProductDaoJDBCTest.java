@@ -79,7 +79,7 @@ public class ProductDaoJDBCTest {
         testProductCategory.setId(1);
         System.out.println(productDaoJDBC.getBy(testProductCategory).size());
         String testProduct = productDaoJDBC.getBy(testProductCategory).get(1).getName();
-        assertEquals(testProduct, "testCategory");
+        assertEquals(testProduct, "testCategorys");
     }
 }
 

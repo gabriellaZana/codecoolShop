@@ -1,5 +1,10 @@
 package com.codecool.shop.model;
 
+import com.codecool.shop.dao.ProductDao;
+import com.codecool.shop.dao.implementation.JDBC.ProductCategoryDaoJDBC;
+import com.codecool.shop.dao.implementation.JDBC.ProductDaoJDBC;
+import com.codecool.shop.dao.implementation.JDBC.SupplierDaoJDBC;
+
 import java.util.*;
 
 
@@ -16,9 +21,6 @@ public class ProductCategory extends BaseModel {
         this.products = products;
     }
 
-    public ArrayList<Product> getProducts() {
-        return this.products;
-    }
 
     public void addProduct(Product product) {
         this.products.add(product);
@@ -27,10 +29,24 @@ public class ProductCategory extends BaseModel {
     public Set<Supplier> getSuppliers() {
         Set<Supplier> suppliers = new HashSet<>();
         List<Product> products = this.getProducts();
+        List<Integer> supplierIds = new ArrayList<>();
+        SupplierDaoJDBC supplierDaoJDBC = SupplierDaoJDBC.getInstance();
         for (Product product: products) {
-            suppliers.add(product.getSupplier());
+            if (!supplierIds.contains(product.getSupplier().getId())) {
+                supplierIds.add(product.getSupplier().getId());
+            }
+        }
+
+        for (Integer id:supplierIds) {
+            Supplier supplier = supplierDaoJDBC.find(id);
+            suppliers.add(supplier);
         }
         return suppliers;
+    }
+
+    public List<Product> getProducts() {
+        ProductDaoJDBC productDaoJDBC = ProductDaoJDBC.getInstance();
+        return productDaoJDBC.getBy(this);
     }
 
     public String toString() {
