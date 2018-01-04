@@ -35,6 +35,7 @@ public class ProductController {
         params.put("productAmount", shoppingCart.getProductsFromCart().size());
         params.put("Price", sum);
         params.put("categories", categories);
+        params.put("productAmount", shoppingCart.getProductsFromCart().size());
         return new ModelAndView(params, "product/index");
     }
 
@@ -78,6 +79,14 @@ public class ProductController {
         ShoppingCart shoppingCart = ShoppingCart.getInstance();
         shoppingCart.deleteItemFromCard(Integer.parseInt(req.body().substring(1, req.body().length() - 1)));
         return "Deleted";
+    }
+
+    public static String submitCart(Request req, Response res) {
+        System.out.println("submit carrt");
+        ShoppingCart shoppingCart = ShoppingCart.getInstance();
+        shoppingCart.removeAllItem();
+
+        return "Shopping cart is empty";
     }
 }
 

@@ -28,4 +28,10 @@ public class ShoppingCartDaoMem implements ShoppingCartDao {
     public List<ShoppingCart> getAll() {
         return null;
     }
+
+    @Override
+    public void removeAll() {
+
+    }
+
 }

@@ -11,4 +11,5 @@ public interface ShoppingCartDao {
     void remove(int id);
 
     List<ShoppingCart> getAll();
+    void removeAll();
 }
