@@ -116,6 +116,7 @@ public class SupplierDaoJDBC implements SupplierDao {
 
             while (result.next()) {
                 Supplier supplier = new Supplier(result.getString("name"), result.getString("description"));
+                supplier.setId(result.getInt("id"));
                 supplierList.add(supplier);
             }
         } catch (SQLException e) {
