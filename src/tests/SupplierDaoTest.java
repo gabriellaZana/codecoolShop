@@ -26,17 +26,24 @@ public abstract class SupplierDaoTest<T extends SupplierDao> {
 
     @Test
     public void testFind() {
-        
+        Supplier supp = new Supplier("another_test_name", "another_test_desc");
+        instance.add(supp);
+        String expected = supp.getDescription();
+        String actual = instance.find(2).getDescription();
+        assertEquals(expected, actual);
     }
 
     @Test
     public void testRemove() {
-        fail(" ");
+        instance.remove(2);
+        Supplier actual = instance.find(2);
+        System.out.println(actual);
+        assertNull(actual);
     }
 
     @Test
     public void testGetAll() {
-        fail(" ");
+        fail("This test has failed");
     }
 
 

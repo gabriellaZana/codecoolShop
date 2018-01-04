@@ -95,7 +95,7 @@ public class SupplierDaoJDBC implements SupplierDao {
         DatabaseConnection databaseConnection = DatabaseConnection.getInstance(this.filePath);
         Connection connection = databaseConnection.getConnection();
         try {
-            String removeSupplierQuery = "DELETE FROM products WHERE id=?;";
+            String removeSupplierQuery = "DELETE FROM suppliers WHERE id=?;";
             statement = connection.prepareStatement(removeSupplierQuery);
             statement.setInt(1, id);
             statement.executeUpdate();
