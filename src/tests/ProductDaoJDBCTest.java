@@ -20,6 +20,7 @@ public class ProductDaoJDBCTest {
 
     ProductCategory testProductCategory = new ProductCategory("testCategory", "testDescription");
     Supplier testSupplier = new Supplier("testSupplier", "testDescription");
+
     Product product = new Product("testName", 999, "USD", "testDesciption", testProductCategory, testSupplier );
 
 
@@ -67,13 +68,18 @@ public class ProductDaoJDBCTest {
 
     @Test
     void testGetBySupplier(){
+        testSupplier.setId(1);
+        //System.out.println(productDaoJDBC.getBy(testSupplier).size());
         String testProduct = productDaoJDBC.getBy(testSupplier).get(0).getName();
-        assertEquals(testProduct, product.getName());
+        assertEquals(testProduct, "testName2");
     }
 
     @Test
     void testGetByCategory(){
-        assertEquals(productDaoJDBC.getBy(testProductCategory).get(0), product);
+        testProductCategory.setId(1);
+        System.out.println(productDaoJDBC.getBy(testProductCategory).size());
+        String testProduct = productDaoJDBC.getBy(testProductCategory).get(1).getName();
+        assertEquals(testProduct, "testCategory");
     }
 }
 
