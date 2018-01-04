@@ -180,6 +180,7 @@ public class ProductDaoJDBC implements ProductDao {
                 Product product = new Product(result.getString("name"), result.getFloat("price"),
                         result.getString("currency"), result.getString("description"),
                         category.find(result.getInt("product_category_id")), supplier.find(result.getInt("supplier_id")));
+                product.setId(result.getInt("id"));
                 productListByCategory.add(product);
             }
         } catch (SQLException e) {

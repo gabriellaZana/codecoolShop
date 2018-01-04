@@ -126,34 +126,4 @@ public class ProductCategoryDaoJDBC implements ProductCategoryDao {
         }
         return productCategories;
     }
-
-    public List<Product> getAllProductsByCategory(ProductCategory productCategory){
-        DatabaseConnection databaseConnection = DatabaseConnection.getInstance();
-        Connection connection = databaseConnection.getConnection();
-        ProductCategoryDaoJDBC productCategoryDaoJDBC = ProductCategoryDaoJDBC.getInstance();
-        SupplierDaoJDBC supplierDaoJDBC = SupplierDaoJDBC.getInstance();
-
-        List<Product> productList = new ArrayList<>();
-
-        String query = "SELECT * FROM products WHERE product_category_id=?;";
-
-        try{
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setInt(1, productCategory.getId());
-            ResultSet resultSet = preparedStatement.executeQuery();
-            while(resultSet.next()){
-                Product product = new Product(resultSet.getString("name"),
-                                                resultSet.getFloat("price"),
-                                                resultSet.getString("currency"),
-                                                resultSet.getString("description"),
-                                                productCategoryDaoJDBC.find(resultSet.getInt("product_category_id")),
-                                                supplierDaoJDBC.find(resultSet.getInt("supplier_id")));
-                product.setId(resultSet.getInt("id"));
-                productList.add(product);
-            }
-        } catch (SQLException e){
-            e.printStackTrace();
-        }
-        return productList;
-    }
 }

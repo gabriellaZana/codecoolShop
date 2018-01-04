@@ -21,6 +21,7 @@ public class ProductController {
         ProductCategoryDao productCategoryDataStore = ProductCategoryDaoJDBC.getInstance();
         List<ProductCategory> categories = productCategoryDataStore.getAll();
         ShoppingCart shoppingCart = ShoppingCart.getInstance();
+        ProductDaoJDBC productDaoJDBC = ProductDaoJDBC.getInstance();
 
         Float sum = 0f;
 
@@ -30,7 +31,7 @@ public class ProductController {
 
 
         Map<String, Object> params = new HashMap<>();
-        params.put("productCategory", productCategoryDataStore);
+        params.put("productDao", productDaoJDBC);
         params.put("productAmount", shoppingCart.getProductsFromCart().size());
         params.put("Price", sum);
         params.put("categories", categories);
