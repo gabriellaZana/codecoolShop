@@ -103,6 +103,7 @@ public class ProductCategoryDaoJDBC implements ProductCategoryDao {
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setInt(1, id);
+            preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }

@@ -95,7 +95,7 @@ public class SupplierDaoJDBC implements SupplierDao {
         DatabaseConnection databaseConnection = DatabaseConnection.getInstance(this.filePath);
         Connection connection = databaseConnection.getConnection();
         try {
-            String removeSupplierQuery = "DELETE FROM products WHERE id=?;";
+            String removeSupplierQuery = "DELETE FROM suppliers WHERE id=?;";
             statement = connection.prepareStatement(removeSupplierQuery);
             statement.setInt(1, id);
             statement.executeUpdate();
@@ -116,6 +116,7 @@ public class SupplierDaoJDBC implements SupplierDao {
 
             while (result.next()) {
                 Supplier supplier = new Supplier(result.getString("name"), result.getString("description"));
+                supplier.setId(result.getInt("id"));
                 supplierList.add(supplier);
             }
         } catch (SQLException e) {
