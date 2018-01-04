@@ -12,43 +12,46 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public abstract class ProductCategoryDaoTest<T extends ProductCategoryDao> {
 
-    private T instance = null;
+    T instance = null;
+    static ProductCategory objectToTest = null;
     protected abstract T createInstance();
 
+    @BeforeAll
+    static void beforeAll() {
+        objectToTest = new ProductCategory("1st_test_category", "1st_test_category_desc");
+        objectToTest.setId(1);
+    }
+
     @BeforeEach
-    public void setup() {
+    void setup() {
         instance = createInstance();
     }
 
     @Test
-    public void testAdd() {
-        ProductCategory cat = new ProductCategory("test_product", "test_product_description");
-        instance.add(cat);
-        String expected = cat.getName();
-        String actual = instance.find(1).getName();
-        assertEquals(expected, actual);
+    void testAdd() {
+        instance.add(objectToTest);
+        ProductCategory expected = objectToTest;
+        ProductCategory actual = instance.find(objectToTest.getId());
+        assertEquals(expected.getName(), actual.getName());
     }
 
     @Test
-    public void testFind() {
-        ProductCategory cat = new ProductCategory("another_test_product", "another_test_product_desc");
-        instance.add(cat);
-        String expected = cat.getDescription();
-        String actual = instance.find(2).getDescription();
-        assertEquals(expected, actual);
+    void testFind() {
+        ProductCategory actual = instance.find(objectToTest.getId());
+        assertNotNull(actual);
     }
 
     @Test
-    public void testRemove() {
-        instance.remove(2);
-        ProductCategory actual = instance.find(2);
-        System.out.println(actual);
+    void testRemove() {
+        instance.add(objectToTest);
+        instance.remove(objectToTest.getId());
+        ProductCategory actual = instance.find(objectToTest.getId());
         assertNull(actual);
     }
 
     @Test
-    public void testGetAll() {
-        List<ProductCategory> expected = new ArrayList<>(Arrays.asList(instance.find(1)));
+    void testGetAll() {
+        List<ProductCategory> expected = new ArrayList<>(Arrays.asList(objectToTest));
         List<ProductCategory> actual = instance.getAll();
         assertEquals(expected.toString(), actual.toString());
     }
