@@ -2,8 +2,8 @@ package com.codecool.shop.controller;
 
 import com.codecool.shop.dao.ProductCategoryDao;
 import com.codecool.shop.dao.implementation.JDBC.ProductCategoryDaoJDBC;
-import com.codecool.shop.dao.implementation.Memory.ProductCategoryDaoMem;
-import com.codecool.shop.dao.implementation.Memory.ProductDaoMem;
+import com.codecool.shop.dao.implementation.JDBC.ProductDaoJDBC;
+
 import com.codecool.shop.model.Product;
 import com.codecool.shop.model.ProductCategory;
 import com.codecool.shop.model.ShoppingCart;
@@ -39,8 +39,8 @@ public class ProductController {
 
     public static String renderShoppingCartMini(Request req, Response res) {
         ShoppingCart shoppingCart = ShoppingCart.getInstance();
-        ProductDaoMem productDaoMem = ProductDaoMem.getInstance();
-        shoppingCart.putProductToCart(productDaoMem.find(Integer.parseInt(req.body().substring(1, req.body().length() - 1))));
+        ProductDaoJDBC productDaoJdbc = ProductDaoJDBC.getInstance();
+        shoppingCart.putProductToCart(productDaoJdbc.find(Integer.parseInt(req.body().substring(1, req.body().length() - 1))));
 
 
         Float price = 0f;
