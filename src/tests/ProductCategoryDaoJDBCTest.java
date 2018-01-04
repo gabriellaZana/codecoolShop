@@ -1,6 +1,8 @@
 import com.codecool.shop.dao.implementation.JDBC.ProductCategoryDaoJDBC;
 import com.codecool.shop.model.ProductCategory;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class ProductCategoryDaoJDBCTest extends ProductCategoryDaoTest<ProductCategoryDaoJDBC> {
@@ -18,5 +20,14 @@ public class ProductCategoryDaoJDBCTest extends ProductCategoryDaoTest<ProductCa
         instance.add(objectToTest);
         ProductCategory actual = instance.find(objectToTest.getName());
         assertNotNull(actual);
+    }
+
+    @Test
+    @Override
+    void testAdd() {
+        instance.add(objectToTest);
+        ProductCategory expected = objectToTest;
+        ProductCategory actual = instance.find(objectToTest.getName());
+        assertEquals(expected.getName(), actual.getName());
     }
 }
