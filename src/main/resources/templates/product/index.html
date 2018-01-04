@@ -57,7 +57,7 @@
                 <button class="btn btn-info" th:text="${supp.name}" th:each="supp, iterStat : ${category.getSuppliers()}">asd</button>
             </div>
 
-            <div th:attr="id=${prod.id}, data-supplier=${prod.supplier.name}" class="item col-xs-4 col-lg-4 product" th:each="prod,iterStat : ${category.getProducts()}">
+            <div th:attr="id=${prod.id}, data-supplier=${prod.supplier.name}" class="item col-xs-4 col-lg-4 product" th:each="prod,iterStat : ${productDao.getBy(category)}">
 
                 <div class="thumbnail">
                     <img class="group list-group-image mama" src="http://placehold.it/400x250/000/fff"
