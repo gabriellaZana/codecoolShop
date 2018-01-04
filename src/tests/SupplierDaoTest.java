@@ -4,6 +4,10 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public abstract class SupplierDaoTest<T extends SupplierDao> {
@@ -37,14 +41,13 @@ public abstract class SupplierDaoTest<T extends SupplierDao> {
     public void testRemove() {
         instance.remove(2);
         Supplier actual = instance.find(2);
-        System.out.println(actual);
         assertNull(actual);
     }
 
     @Test
     public void testGetAll() {
-        fail("This test has failed");
+        List<Supplier> expected = new ArrayList<>(Arrays.asList(instance.find(1)));
+        List<Supplier> actual = instance.getAll();
+        assertEquals(expected.toString(), actual.toString());
     }
-
-
 }
