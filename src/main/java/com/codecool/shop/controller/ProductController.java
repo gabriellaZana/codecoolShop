@@ -1,8 +1,9 @@
 package com.codecool.shop.controller;
 
 import com.codecool.shop.dao.ProductCategoryDao;
-import com.codecool.shop.dao.implementation.ProductCategoryDaoMem;
-import com.codecool.shop.dao.implementation.ProductDaoMem;
+import com.codecool.shop.dao.implementation.JDBC.ProductCategoryDaoJDBC;
+import com.codecool.shop.dao.implementation.JDBC.ProductDaoJDBC;
+
 import com.codecool.shop.model.Product;
 import com.codecool.shop.model.ProductCategory;
 import com.codecool.shop.model.ShoppingCart;
@@ -17,29 +18,31 @@ import java.util.*;
 public class ProductController {
 
     public static ModelAndView renderProducts(Request req, Response res) {
-        ProductCategoryDao productCategoryDataStore = ProductCategoryDaoMem.getInstance();
+        ProductCategoryDao productCategoryDataStore = ProductCategoryDaoJDBC.getInstance();
         List<ProductCategory> categories = productCategoryDataStore.getAll();
         ShoppingCart shoppingCart = ShoppingCart.getInstance();
+        ProductDaoJDBC productDaoJDBC = ProductDaoJDBC.getInstance();
 
         Float sum = 0f;
 
-        for (Product prod : shoppingCart.getProductsFromCart()
-                ) {
-            sum += prod.getDefaultPrice();
+        for (Product product : shoppingCart.getProductsFromCart()) {
+            sum += product.getDefaultPrice();
         }
 
 
-        Map params = new HashMap<>();
-        params.put("productNumber", shoppingCart.getProductsFromCart().size());
+        Map<String, Object> params = new HashMap<>();
+        params.put("productDao", productDaoJDBC);
+        params.put("productAmount", shoppingCart.getProductsFromCart().size());
         params.put("Price", sum);
         params.put("categories", categories);
+        params.put("productAmount", shoppingCart.getProductsFromCart().size());
         return new ModelAndView(params, "product/index");
     }
 
     public static String renderShoppingCartMini(Request req, Response res) {
         ShoppingCart shoppingCart = ShoppingCart.getInstance();
-        ProductDaoMem productDaoMem = ProductDaoMem.getInstance();
-        shoppingCart.putProductToCart(productDaoMem.find(Integer.parseInt(req.body().substring(1, req.body().length() - 1))));
+        ProductDaoJDBC productDaoJdbc = ProductDaoJDBC.getInstance();
+        shoppingCart.putProductToCart(productDaoJdbc.find(Integer.parseInt(req.body().substring(1, req.body().length() - 1))));
 
 
         Float price = 0f;
@@ -76,6 +79,14 @@ public class ProductController {
         ShoppingCart shoppingCart = ShoppingCart.getInstance();
         shoppingCart.deleteItemFromCard(Integer.parseInt(req.body().substring(1, req.body().length() - 1)));
         return "Deleted";
+    }
+
+    public static String submitCart(Request req, Response res) {
+        System.out.println("submit carrt");
+        ShoppingCart shoppingCart = ShoppingCart.getInstance();
+        shoppingCart.removeAllItem();
+
+        return "Shopping cart is empty";
     }
 }
 

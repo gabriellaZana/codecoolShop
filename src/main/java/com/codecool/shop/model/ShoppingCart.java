@@ -42,4 +42,8 @@ public final class ShoppingCart {
             }
         }
     }
+
+    public void removeAllItem(){
+        products.clear();
+    }
 }

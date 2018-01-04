@@ -1,4 +1,4 @@
-package com.codecool.shop.dao.implementation;
+package com.codecool.shop.dao.implementation.Memory;
 
 import com.codecool.shop.dao.ShoppingCartDao;
 import com.codecool.shop.model.ShoppingCart;
@@ -28,4 +28,10 @@ public class ShoppingCartDaoMem implements ShoppingCartDao {
     public List<ShoppingCart> getAll() {
         return null;
     }
+
+    @Override
+    public void removeAll() {
+
+    }
+
 }

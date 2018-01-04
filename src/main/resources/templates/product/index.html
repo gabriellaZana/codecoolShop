@@ -31,8 +31,11 @@
                 <img class="col-sm-11 text-right" id="trolley" src="/img/trolley.png"/>
             </a>
         </div>
-        <div>
+        <div th:if="${productAmount}>0">
             <h3 id="quantity" class="col-sm-10 text-right" th:text="${productAmount + ' item(s)'}">0 item</h3>
+        </div>
+        <div th:unless="${productAmount}>0">
+            <h3 id="quantity" class="col-sm-10 text-right" th:text="'0 item(s)'">0 item</h3>
         </div>
         <div class="shop"></div>
     </div>
@@ -54,7 +57,7 @@
                 <button class="btn btn-info" th:text="${supp.name}" th:each="supp, iterStat : ${category.getSuppliers()}">asd</button>
             </div>
 
-            <div th:attr="id=${prod.id}, data-supplier=${prod.supplier.name}" class="item col-xs-4 col-lg-4 product" th:each="prod,iterStat : ${category.getProducts()}">
+            <div th:attr="id=${prod.id}, data-supplier=${prod.supplier.name}" class="item col-xs-4 col-lg-4 product" th:each="prod,iterStat : ${productDao.getBy(category)}">
 
                 <div class="thumbnail">
                     <img class="group list-group-image mama" src="http://placehold.it/400x250/000/fff"
