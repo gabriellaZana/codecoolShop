@@ -81,12 +81,12 @@ public class ProductController {
         return "Deleted";
     }
 
-    public static String submitCart(Request req, Response res) {
+    public static ModelAndView submitCart(Request req, Response res) {
         System.out.println("submit carrt");
         ShoppingCart shoppingCart = ShoppingCart.getInstance();
         shoppingCart.removeAllItem();
 
-        return "Shopping cart is empty";
+        return renderProducts(req, res);
     }
 }
 
