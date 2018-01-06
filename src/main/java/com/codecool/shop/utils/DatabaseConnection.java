@@ -24,12 +24,13 @@ public class DatabaseConnection {
     private static String JDBC_DRIVER = "org.postgresql.Driver";
     private static String USER;
     private static String PASSWORD;
+    private String pass= "src/main/resources/sql/connection.properties";
 
 
-    private DatabaseConnection() {
+    private DatabaseConnection(String filePath) {
         // load a properties file
         try {
-            InputStream input = new FileInputStream("src/main/resources/sql/connection.properties");
+            InputStream input = new FileInputStream(filePath);
             properties.load(input);
             input.close();
         } catch (Exception e) {
@@ -38,9 +39,9 @@ public class DatabaseConnection {
         setup();
     }
 
-    public static DatabaseConnection getInstance() {
+    public static DatabaseConnection getInstance(String filePath) {
         if (instance == null) {
-            instance = new DatabaseConnection();
+            instance = new DatabaseConnection(filePath);
         }
         return instance;
     }

@@ -13,6 +13,7 @@ import java.util.List;
 public class ProductCategoryDaoJDBC implements ProductCategoryDao {
 
     private static ProductCategoryDaoJDBC instance = null;
+    private String filePath = "src/main/resources/sql/connection.properties";
 
     private ProductCategoryDaoJDBC() {
     }
@@ -24,9 +25,13 @@ public class ProductCategoryDaoJDBC implements ProductCategoryDao {
         return instance;
     }
 
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
+    }
+
     @Override
     public void add(ProductCategory category) {
-        DatabaseConnection databaseConnection = DatabaseConnection.getInstance();
+        DatabaseConnection databaseConnection = DatabaseConnection.getInstance(this.filePath);
         Connection connection = databaseConnection.getConnection();
 
         String query = "INSERT INTO product_categories (name, description) VALUES (?, ?);";
@@ -47,7 +52,7 @@ public class ProductCategoryDaoJDBC implements ProductCategoryDao {
 
     @Override
     public ProductCategory find(int id) {
-        DatabaseConnection databaseConnection = DatabaseConnection.getInstance();
+        DatabaseConnection databaseConnection = DatabaseConnection.getInstance(this.filePath);
         Connection connection = databaseConnection.getConnection();
 
         String query = "SELECT * FROM product_categories WHERE id=?";
@@ -68,7 +73,7 @@ public class ProductCategoryDaoJDBC implements ProductCategoryDao {
     }
 
     public ProductCategory find(String name){
-        DatabaseConnection databaseConnection = DatabaseConnection.getInstance();
+        DatabaseConnection databaseConnection = DatabaseConnection.getInstance(this.filePath);
         Connection connection = databaseConnection.getConnection();
 
         String query = "SELECT * FROM product_categories WHERE name=?";
@@ -90,7 +95,7 @@ public class ProductCategoryDaoJDBC implements ProductCategoryDao {
 
     @Override
     public void remove(int id) {
-        DatabaseConnection databaseConnection = DatabaseConnection.getInstance();
+        DatabaseConnection databaseConnection = DatabaseConnection.getInstance(this.filePath);
         Connection connection = databaseConnection.getConnection();
 
         String query = "DELETE FROM product_categories WHERE id = ?;";
@@ -98,6 +103,7 @@ public class ProductCategoryDaoJDBC implements ProductCategoryDao {
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setInt(1, id);
+            preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -106,7 +112,7 @@ public class ProductCategoryDaoJDBC implements ProductCategoryDao {
 
     @Override
     public List<ProductCategory> getAll() {
-        DatabaseConnection databaseConnection = DatabaseConnection.getInstance();
+        DatabaseConnection databaseConnection = DatabaseConnection.getInstance(this.filePath);
         Connection connection = databaseConnection.getConnection();
 
         String query = "SELECT * FROM product_categories;";

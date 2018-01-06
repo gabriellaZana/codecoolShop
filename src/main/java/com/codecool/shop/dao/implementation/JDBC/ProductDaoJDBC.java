@@ -17,9 +17,8 @@ import java.util.List;
 
 public class ProductDaoJDBC implements ProductDao {
     private static ProductDaoJDBC instance = null;
-    private DatabaseConnection databaseConnection = DatabaseConnection.getInstance();
-    private Connection connection = databaseConnection.getConnection();
     private PreparedStatement statement = null;
+    private String filePath = "src/main/resources/sql/connection.properties";
 
     private ProductDaoJDBC() {
 
@@ -32,9 +31,15 @@ public class ProductDaoJDBC implements ProductDao {
         return instance;
     }
 
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
+    }
+
 
     @Override
     public void add(Product product) {
+        DatabaseConnection databaseConnection = DatabaseConnection.getInstance(this.filePath);
+        Connection connection = databaseConnection.getConnection();
         SupplierDaoJDBC supplierDaoJDBC = SupplierDaoJDBC.getInstance();
         ProductCategoryDaoJDBC productCategoryDaoJDBC = ProductCategoryDaoJDBC.getInstance();
         if (find(product.getName()) != null) {
@@ -61,6 +66,8 @@ public class ProductDaoJDBC implements ProductDao {
 
     @Override
     public Product find(int id) {
+        DatabaseConnection databaseConnection = DatabaseConnection.getInstance(this.filePath);
+        Connection connection = databaseConnection.getConnection();
         Product resultProduct = null;
         try {
             String getProductQuery = "SELECT * FROM products WHERE id=?;";
@@ -84,6 +91,8 @@ public class ProductDaoJDBC implements ProductDao {
 
 
     public Product find(String name){
+        DatabaseConnection databaseConnection = DatabaseConnection.getInstance(this.filePath);
+        Connection connection = databaseConnection.getConnection();
         Product resultProduct = null;
         try {
             String getProductQuery = "SELECT * FROM products WHERE name=?;";
@@ -107,6 +116,8 @@ public class ProductDaoJDBC implements ProductDao {
 
     @Override
     public void remove(int id) {
+        DatabaseConnection databaseConnection = DatabaseConnection.getInstance(this.filePath);
+        Connection connection = databaseConnection.getConnection();
         try {
             String removeProductQuery = "DELETE FROM products WHERE id=?;";
             statement = connection.prepareStatement(removeProductQuery);
@@ -120,6 +131,8 @@ public class ProductDaoJDBC implements ProductDao {
 
     @Override
     public List<Product> getAll() {
+        DatabaseConnection databaseConnection = DatabaseConnection.getInstance(this.filePath);
+        Connection connection = databaseConnection.getConnection();
         List<Product> productList = new ArrayList<>();
         try {
             String getProductsQuery = "SELECT * FROM products;";
@@ -143,6 +156,8 @@ public class ProductDaoJDBC implements ProductDao {
 
     @Override
     public List<Product> getBy(Supplier supplier) {
+        DatabaseConnection databaseConnection = DatabaseConnection.getInstance(this.filePath);
+        Connection connection = databaseConnection.getConnection();
         List<Product> productListBySupplier = new ArrayList<>();
         try {
             String getProductsBySupplierQuery = "SELECT * FROM products WHERE supplier_id=?;";
@@ -167,6 +182,8 @@ public class ProductDaoJDBC implements ProductDao {
 
     @Override
     public List<Product> getBy(ProductCategory productCategory) {
+        DatabaseConnection databaseConnection = DatabaseConnection.getInstance(this.filePath);
+        Connection connection = databaseConnection.getConnection();
         List<Product> productListByCategory = new ArrayList<>();
         try {
             String getProductsByCategoryQuery = "SELECT * FROM products WHERE product_category_id=?;";
