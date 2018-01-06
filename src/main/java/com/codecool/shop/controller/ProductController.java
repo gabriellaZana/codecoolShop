@@ -14,9 +14,21 @@ import spark.Response;
 
 import java.util.*;
 
-
+/**
+ * ProductController
+ *
+ * <p>Controls the data from the client and the server</p>
+ *
+ * @author Javengers
+ * @version 1.1
+ */
 public class ProductController {
-
+    /**
+     * Collects the ProductCategories and the shopping cart content.
+     * @param req a Request Object gotten from the client side.
+     * @param res a Response Object.
+     * @return Returns a ModelAndView with a Map for the thymeleaf template engine.
+     */
     public static ModelAndView renderProducts(Request req, Response res) {
         ProductCategoryDao productCategoryDataStore = ProductCategoryDaoJDBC.getInstance();
         List<ProductCategory> categories = productCategoryDataStore.getAll();
@@ -39,6 +51,12 @@ public class ProductController {
         return new ModelAndView(params, "product/index");
     }
 
+    /**
+     * Calculate the data for the ShoppingCart.
+     * @param req a Request Object.
+     * @param res a Response Object.
+     * @return Returns a JSON with the ShoppingCart calculated price and Product quantity.
+     */
     public static String renderShoppingCartMini(Request req, Response res) {
         ShoppingCart shoppingCart = ShoppingCart.getInstance();
         ProductDaoJDBC productDaoJdbc = ProductDaoJDBC.getInstance();
@@ -63,7 +81,12 @@ public class ProductController {
         return gson.toJson(sumAndQuantity);
     }
 
-
+    /**
+     * Collects the Products for the ShoppingCart view.
+     * @param req a Request object from the client.
+     * @param res a Response object.
+     * @return Returns a ModelAndView with a Map for the thymeleaf template engine.
+     */
     public static ModelAndView renderShoppingCart(Request req, Response res) {
         ShoppingCart shoppingCart = ShoppingCart.getInstance();
         Set<Product> productSet = new HashSet<>(shoppingCart.getProductsFromCart());
@@ -75,12 +98,24 @@ public class ProductController {
         return new ModelAndView(params, "product/cart");
     }
 
+    /**
+     * Deletes an Product from the ShoppingCart.
+     * @param req a Request object.
+     * @param res a Response object.
+     * @return Returns a String.
+     */
     public static String deleteItem(Request req, Response res) {
         ShoppingCart shoppingCart = ShoppingCart.getInstance();
         shoppingCart.deleteItemFromCard(Integer.parseInt(req.body().substring(1, req.body().length() - 1)));
         return "Deleted";
     }
 
+    /**
+     * Removes all Product from the ShoppingCart.
+     * @param req a Request object.
+     * @param res a Response object.
+     * @return Returns the renderProducts ModelAndView.
+     */
     public static ModelAndView submitCart(Request req, Response res) {
         System.out.println("submit carrt");
         ShoppingCart shoppingCart = ShoppingCart.getInstance();
