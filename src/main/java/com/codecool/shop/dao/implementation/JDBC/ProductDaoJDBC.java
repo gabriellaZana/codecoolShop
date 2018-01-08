@@ -8,17 +8,16 @@ import com.codecool.shop.model.ProductCategory;
 import com.codecool.shop.model.Supplier;
 import com.codecool.shop.utils.DatabaseConnection;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class ProductDaoJDBC implements ProductDao {
     private static ProductDaoJDBC instance = null;
-    private PreparedStatement statement = null;
     private String filePath = "src/main/resources/sql/connection.properties";
+    private DatabaseConnection databaseConnection = DatabaseConnection.getInstance(this.filePath);
 
     private ProductDaoJDBC() {
 
@@ -38,18 +37,18 @@ public class ProductDaoJDBC implements ProductDao {
 
     @Override
     public void add(Product product) {
-        DatabaseConnection databaseConnection = DatabaseConnection.getInstance(this.filePath);
-        Connection connection = databaseConnection.getConnection();
         SupplierDaoJDBC supplierDaoJDBC = SupplierDaoJDBC.getInstance();
         ProductCategoryDaoJDBC productCategoryDaoJDBC = ProductCategoryDaoJDBC.getInstance();
         if (find(product.getName()) != null) {
             return;
         }
-        try {
-            String addQuery = "INSERT INTO products (name, description, price, product_category_id, supplier_id, currency) " +
-                    "VALUES (?, ?, ?, ?, ?, ?);";
-            statement = connection.prepareStatement(addQuery);
-
+        String addQuery = "INSERT INTO products (name, description, price, product_category_id, supplier_id, currency) " +
+                "VALUES (?, ?, ?, ?, ?, ?);";
+        ArrayList<Object> infos = new ArrayList<>(Arrays.asList(product.getName(),product.getDescription(), product.getDefaultPrice(),
+                productCategoryDaoJDBC.find(product.getProductCategory().getName()).getId(), supplierDaoJDBC.find(product.getSupplier().getName()).getId(),
+                product.getDefaultCurrency().toString()));
+        try (Connection connection = databaseConnection.getConnection();
+             PreparedStatement statement = createAndSetPreparedStatement(connection, infos, addQuery)){
             statement.setString(1, product.getName());
             statement.setString(2, product.getDescription());
             statement.setFloat(3, product.getDefaultPrice());
@@ -57,7 +56,7 @@ public class ProductDaoJDBC implements ProductDao {
             statement.setInt(5, supplierDaoJDBC.find(product.getSupplier().getName()).getId());
             statement.setString(6, product.getDefaultCurrency().toString());
 
-            statement.execute();
+            statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -66,39 +65,23 @@ public class ProductDaoJDBC implements ProductDao {
 
     @Override
     public Product find(int id) {
-        DatabaseConnection databaseConnection = DatabaseConnection.getInstance(this.filePath);
-        Connection connection = databaseConnection.getConnection();
-        Product resultProduct = null;
-        try {
-            String getProductQuery = "SELECT * FROM products WHERE id=?;";
-            statement = connection.prepareStatement(getProductQuery);
-            statement.setInt(1, id);
-            ResultSet result = statement.executeQuery();
-
-            ProductCategoryDao category = ProductCategoryDaoJDBC.getInstance();
-            SupplierDao supplier = SupplierDaoJDBC.getInstance();
-            while (result.next()) {
-                resultProduct = new Product(result.getString("name"), result.getFloat("price"),
-                        result.getString("currency"), result.getString("description"),
-                        category.find(result.getInt("product_category_id")), supplier.find(result.getInt("supplier_id")));
-                resultProduct.setId(result.getInt("id"));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return resultProduct;
+        String getProductQuery = "SELECT * FROM products WHERE id=?;";
+        ArrayList<Object> infos = new ArrayList<>(Collections.singletonList(id));
+        return executeFindQuery(getProductQuery, infos);
     }
 
 
     public Product find(String name){
-        DatabaseConnection databaseConnection = DatabaseConnection.getInstance(this.filePath);
-        Connection connection = databaseConnection.getConnection();
+        String getProductByNameQuery = "SELECT * FROM products WHERE name=?;";
+        ArrayList<Object> infos = new ArrayList<>(Collections.singletonList(name));
+        return executeFindQuery(getProductByNameQuery, infos);
+    }
+
+    private Product executeFindQuery(String query, ArrayList<Object> infos) {
         Product resultProduct = null;
-        try {
-            String getProductQuery = "SELECT * FROM products WHERE name=?;";
-            statement = connection.prepareStatement(getProductQuery);
-            statement.setString(1, name);
-            ResultSet result = statement.executeQuery();
+        try (Connection connection = databaseConnection.getConnection();
+             PreparedStatement statement = createAndSetPreparedStatement(connection, infos, query);
+             ResultSet result = statement.executeQuery()) {
 
             ProductCategoryDao category = ProductCategoryDaoJDBC.getInstance();
             SupplierDao supplier = SupplierDaoJDBC.getInstance();
@@ -116,13 +99,11 @@ public class ProductDaoJDBC implements ProductDao {
 
     @Override
     public void remove(int id) {
-        DatabaseConnection databaseConnection = DatabaseConnection.getInstance(this.filePath);
-        Connection connection = databaseConnection.getConnection();
-        try {
-            String removeProductQuery = "DELETE FROM products WHERE id=?;";
-            statement = connection.prepareStatement(removeProductQuery);
-            statement.setInt(1, id);
-            statement.execute();
+        String removeProductQuery = "DELETE FROM products WHERE id=?;";
+        ArrayList<Object> infos = new ArrayList<>(Collections.singletonList(id));
+        try (Connection connection = databaseConnection.getConnection();
+             PreparedStatement statement = createAndSetPreparedStatement(connection, infos, removeProductQuery)){
+            statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -131,13 +112,12 @@ public class ProductDaoJDBC implements ProductDao {
 
     @Override
     public List<Product> getAll() {
-        DatabaseConnection databaseConnection = DatabaseConnection.getInstance(this.filePath);
-        Connection connection = databaseConnection.getConnection();
         List<Product> productList = new ArrayList<>();
-        try {
-            String getProductsQuery = "SELECT * FROM products;";
-            statement = connection.prepareStatement(getProductsQuery);
-            ResultSet result = statement.executeQuery();
+        String getProductsQuery = "SELECT * FROM products;";
+
+        try (Connection connection = databaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(getProductsQuery);
+             ResultSet result = statement.executeQuery()) {
             ProductCategoryDao category = ProductCategoryDaoJDBC.getInstance();
             SupplierDao supplier = SupplierDaoJDBC.getInstance();
 
@@ -156,14 +136,12 @@ public class ProductDaoJDBC implements ProductDao {
 
     @Override
     public List<Product> getBy(Supplier supplier) {
-        DatabaseConnection databaseConnection = DatabaseConnection.getInstance(this.filePath);
-        Connection connection = databaseConnection.getConnection();
         List<Product> productListBySupplier = new ArrayList<>();
-        try {
-            String getProductsBySupplierQuery = "SELECT * FROM products WHERE supplier_id=?;";
-            statement = connection.prepareStatement(getProductsBySupplierQuery);
-            statement.setInt(1, supplier.getId());
-            ResultSet result = statement.executeQuery();
+        String getProductsBySupplierQuery = "SELECT * FROM products WHERE supplier_id=?;";
+        ArrayList<Object> infos = new ArrayList<>(Collections.singletonList(supplier.getId()));
+        try (Connection connection = databaseConnection.getConnection();
+             PreparedStatement statement = createAndSetPreparedStatement(connection, infos, getProductsBySupplierQuery);
+             ResultSet result = statement.executeQuery()){
             ProductCategoryDao category = ProductCategoryDaoJDBC.getInstance();
             SupplierDao supplierJDBC = SupplierDaoJDBC.getInstance();
 
@@ -182,14 +160,12 @@ public class ProductDaoJDBC implements ProductDao {
 
     @Override
     public List<Product> getBy(ProductCategory productCategory) {
-        DatabaseConnection databaseConnection = DatabaseConnection.getInstance(this.filePath);
-        Connection connection = databaseConnection.getConnection();
         List<Product> productListByCategory = new ArrayList<>();
-        try {
-            String getProductsByCategoryQuery = "SELECT * FROM products WHERE product_category_id=?;";
-            statement = connection.prepareStatement(getProductsByCategoryQuery);
-            statement.setInt(1, productCategory.getId());
-            ResultSet result = statement.executeQuery();
+        String getProductsByCategoryQuery = "SELECT * FROM products WHERE product_category_id=?;";
+        ArrayList<Object> infos = new ArrayList<>(Collections.singletonList(productCategory.getId()));
+        try (Connection connection = databaseConnection.getConnection();
+             PreparedStatement statement = createAndSetPreparedStatement(connection, infos, getProductsByCategoryQuery);
+             ResultSet result = statement.executeQuery()){
             ProductCategoryDao category = ProductCategoryDaoJDBC.getInstance();
             SupplierDao supplier = SupplierDaoJDBC.getInstance();
 
@@ -204,5 +180,24 @@ public class ProductDaoJDBC implements ProductDao {
             e.printStackTrace();
         }
         return productListByCategory;
+    }
+
+
+    private PreparedStatement createAndSetPreparedStatement(Connection conn, List<Object> infos, String sql) throws SQLException {
+        PreparedStatement ps = conn.prepareStatement(sql);
+        for (int i = 0; i < infos.size(); i++) {
+            int ColumnIndex = i+1;
+            Object actualInfo = infos.get(i);
+            if(actualInfo instanceof String) {
+                ps.setString(ColumnIndex, actualInfo.toString());
+            }
+            else if (actualInfo instanceof Integer) {
+                ps.setInt(ColumnIndex, (int) actualInfo);
+            }
+            else if (actualInfo instanceof Float) {
+                ps.setFloat(ColumnIndex, (float) actualInfo);
+            }
+        }
+        return ps;
     }
 }
