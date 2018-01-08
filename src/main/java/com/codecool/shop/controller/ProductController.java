@@ -45,7 +45,6 @@ public class ProductController {
         params.put("productAmount", shoppingCart.getProductsFromCart().size());
         params.put("Price", sum);
         params.put("categories", categories);
-        params.put("productAmount", shoppingCart.getProductsFromCart().size());
         return new ModelAndView(params, "product/index");
     }
 

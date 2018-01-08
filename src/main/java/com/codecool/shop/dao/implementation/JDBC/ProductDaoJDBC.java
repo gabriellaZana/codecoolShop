@@ -102,7 +102,6 @@ public class ProductDaoJDBC implements ProductDao {
     public List<Product> getAll() throws SQLException {
         List<Product> productList = new ArrayList<>();
         String getProductsQuery = "SELECT * FROM products;";
-
         try (Connection connection = databaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(getProductsQuery);
              ResultSet result = statement.executeQuery()) {
@@ -148,9 +147,9 @@ public class ProductDaoJDBC implements ProductDao {
                                                 result.getString("currency"),
                                                 result.getString("description"),
                         new ProductCategory(result.getString("product_category_name"),
-                                            result.getString("product_category_desc")),
+                                            result.getString("product_category_desc")){{ setId(result.getInt("product_category_id"));}},
                         new Supplier(result.getString("supplier_name"),
-                                    result.getString("supplier_desc")));
+                                    result.getString("supplier_desc")){{ setId(result.getInt("supplier_id"));}});
                 productListBySupplier.add(product);
             }
         }

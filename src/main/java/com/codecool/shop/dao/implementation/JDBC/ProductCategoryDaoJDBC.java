@@ -100,6 +100,7 @@ public class ProductCategoryDaoJDBC implements ProductCategoryDao {
             while (result.next()) {
                 ProductCategory productCategory = new ProductCategory(result.getString("name"),
                                                                       result.getString("description"));
+                productCategory.setId(result.getInt("id"));
                 productCategoryList.add(productCategory);
             }
         }

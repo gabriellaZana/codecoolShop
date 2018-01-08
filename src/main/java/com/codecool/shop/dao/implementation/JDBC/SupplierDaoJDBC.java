@@ -9,12 +9,14 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class SupplierDaoJDBC implements SupplierDao {
     private static SupplierDaoJDBC instance = null;
-    private PreparedStatement statement = null;
     private String filePath = "src/main/resources/sql/connection.properties";
+    private DatabaseConnection databaseConnection = DatabaseConnection.getInstance(this.filePath);
 
     private SupplierDaoJDBC() {
     }
@@ -24,7 +26,6 @@ public class SupplierDaoJDBC implements SupplierDao {
             instance = new SupplierDaoJDBC();
         }
         return instance;
-
     }
 
     public void setFilePath(String filePath) {
@@ -33,75 +34,84 @@ public class SupplierDaoJDBC implements SupplierDao {
 
     @Override
     public void add(Supplier supplier) throws SQLException {
-        DatabaseConnection databaseConnection = DatabaseConnection.getInstance(this.filePath);
-        Connection connection = databaseConnection.getConnection();
         if (find(supplier.getName()) != null) {
             return;
         }
         String addQuery = "INSERT INTO suppliers (name, description) VALUES (?, ?);";
-        statement = connection.prepareStatement(addQuery);
-        statement.setString(1, supplier.getName());
-        statement.setString(2, supplier.getDescription());
-        statement.executeUpdate();
+        ArrayList<Object> infos = new ArrayList<>(Arrays.asList(supplier.getName(), supplier.getDescription()));
+        try (Connection connection = databaseConnection.getConnection();
+             PreparedStatement statement = createAndSetPreparedStatement(connection, infos, addQuery)) {
+            statement.executeUpdate();
+        }
     }
 
 
     @Override
     public Supplier find(int id) throws SQLException {
-        DatabaseConnection databaseConnection = DatabaseConnection.getInstance(this.filePath);
-        Connection connection = databaseConnection.getConnection();
-        Supplier resultSupplier = null;
         String getProductQuery = "SELECT * FROM suppliers WHERE id=?;";
-        statement = connection.prepareStatement(getProductQuery);
-        statement.setInt(1, id);
-        ResultSet result = statement.executeQuery();
-        while (result.next()) {
-            resultSupplier = new Supplier(result.getString("name"), result.getString("description"));
-            resultSupplier.setId(result.getInt("id"));
-        }
-        return resultSupplier;
+        ArrayList<Object> infos = new ArrayList<>(Collections.singletonList(id));
+        return executeFindQuery(getProductQuery, infos);
     }
 
 
     public Supplier find(String name) throws SQLException {
-        DatabaseConnection databaseConnection = DatabaseConnection.getInstance(this.filePath);
-        Connection connection = databaseConnection.getConnection();
-        Supplier resultSupplier = null;
         String getProductQuery = "SELECT * FROM suppliers WHERE name=?;";
-        statement = connection.prepareStatement(getProductQuery);
-        statement.setString(1, name);
-        ResultSet result = statement.executeQuery();
-        while (result.next()) {
-            resultSupplier = new Supplier(result.getString("name"), result.getString("description"));
-            resultSupplier.setId(result.getInt("id"));
+        ArrayList<Object> infos = new ArrayList<>(Collections.singletonList(name));
+        return executeFindQuery(getProductQuery, infos);
+
+    }
+
+    private Supplier executeFindQuery(String query, ArrayList<Object> infos) throws SQLException {
+        Supplier resultSupplier = null;
+        try (Connection connection = databaseConnection.getConnection();
+             PreparedStatement statement = createAndSetPreparedStatement(connection, infos, query);
+             ResultSet result = statement.executeQuery()) {
+            while (result.next()) {
+                resultSupplier = new Supplier(result.getString("name"), result.getString("description"));
+            }
         }
         return resultSupplier;
     }
 
     @Override
     public void remove(int id) throws SQLException {
-        DatabaseConnection databaseConnection = DatabaseConnection.getInstance(this.filePath);
-        Connection connection = databaseConnection.getConnection();
         String removeSupplierQuery = "DELETE FROM suppliers WHERE id=?;";
-        statement = connection.prepareStatement(removeSupplierQuery);
-        statement.setInt(1, id);
-        statement.executeUpdate();
+        ArrayList<Object> infos = new ArrayList<>(Collections.singletonList(id));
+        try (Connection connection = databaseConnection.getConnection();
+             PreparedStatement statement = createAndSetPreparedStatement(connection, infos, removeSupplierQuery)) {
+            statement.executeUpdate();
+        }
     }
 
     @Override
     public List<Supplier> getAll() throws SQLException {
-        DatabaseConnection databaseConnection = DatabaseConnection.getInstance(this.filePath);
-        Connection connection = databaseConnection.getConnection();
-        List<Supplier> supplierList = new ArrayList<>();
         String getSuppliersQuery = "SELECT * FROM suppliers;";
-        statement = connection.prepareStatement(getSuppliersQuery);
-        ResultSet result = statement.executeQuery();
-
-        while (result.next()) {
-            Supplier supplier = new Supplier(result.getString("name"), result.getString("description"));
-            supplier.setId(result.getInt("id"));
-            supplierList.add(supplier);
+        List<Supplier> supplierList = new ArrayList<>();
+        try (Connection connection = databaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(getSuppliersQuery);
+             ResultSet result = statement.executeQuery()) {
+            while (result.next()) {
+                Supplier supplier = new Supplier(result.getString("name"), result.getString("description"));
+                supplier.setId(result.getInt("id"));
+                supplierList.add(supplier);
+            }
         }
         return supplierList;
+    }
+
+    private PreparedStatement createAndSetPreparedStatement(Connection conn, List<Object> infos, String sql) throws SQLException {
+        PreparedStatement ps = conn.prepareStatement(sql);
+        for (int i = 0; i < infos.size(); i++) {
+            int ColumnIndex = i + 1;
+            Object actualInfo = infos.get(i);
+            if (actualInfo instanceof String) {
+                ps.setString(ColumnIndex, actualInfo.toString());
+            } else if (actualInfo instanceof Integer) {
+                ps.setInt(ColumnIndex, (int) actualInfo);
+            } else if (actualInfo instanceof Float) {
+                ps.setFloat(ColumnIndex, (float) actualInfo);
+            }
+        }
+        return ps;
     }
 }
