@@ -14,9 +14,6 @@ public class DatabaseConnection {
     // INFOs from Properties
     private static Properties properties = new Properties();
 
-    // Connection object
-    private static Connection connection = null;
-
     //  Database credentials
     private static String host;
     private static String databaseName;
@@ -57,9 +54,7 @@ public class DatabaseConnection {
 
 
     public Connection getConnection() {
-        if (connection != null) {
-            return connection;
-        }
+        Connection connection = null;
         try {
             //STEP 2: Register JDBC driver
             Class.forName(JDBC_DRIVER);
