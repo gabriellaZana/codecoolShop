@@ -8,16 +8,26 @@ import com.codecool.shop.model.Product;
 import com.codecool.shop.model.ProductCategory;
 import com.codecool.shop.model.ShoppingCart;
 import com.google.gson.Gson;
+import com.sun.org.apache.regexp.internal.RE;
+import org.eclipse.jetty.http.HttpStatus;
 import spark.ModelAndView;
 import spark.Request;
 import spark.Response;
 
+import java.sql.SQLException;
 import java.util.*;
 
 
 public class ProductController {
 
-    public static ModelAndView renderProducts(Request req, Response res) {
+    public static ModelAndView dummy(Request request, Response response) {
+        Map<String, Object> params = new HashMap<>();
+        response.status(HttpStatus.SERVICE_UNAVAILABLE_503);
+
+        return new ModelAndView(params, "product/cart");
+    }
+
+    public static ModelAndView renderProducts(Request req, Response res) throws SQLException{
         ProductCategoryDao productCategoryDataStore = ProductCategoryDaoJDBC.getInstance();
         List<ProductCategory> categories = productCategoryDataStore.getAll();
         ShoppingCart shoppingCart = ShoppingCart.getInstance();
@@ -39,7 +49,7 @@ public class ProductController {
         return new ModelAndView(params, "product/index");
     }
 
-    public static String renderShoppingCartMini(Request req, Response res) {
+    public static String renderShoppingCartMini(Request req, Response res) throws SQLException {
         ShoppingCart shoppingCart = ShoppingCart.getInstance();
         ProductDaoJDBC productDaoJdbc = ProductDaoJDBC.getInstance();
 
@@ -90,7 +100,7 @@ public class ProductController {
         return "Deleted";
     }
 
-    public static ModelAndView submitCart(Request req, Response res) {
+    public static ModelAndView submitCart(Request req, Response res) throws SQLException {
         System.out.println("submit carrt");
         ShoppingCart shoppingCart = ShoppingCart.getInstance();
         shoppingCart.removeAllItem();

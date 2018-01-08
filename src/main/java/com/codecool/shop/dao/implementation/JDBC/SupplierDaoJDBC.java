@@ -32,95 +32,75 @@ public class SupplierDaoJDBC implements SupplierDao {
     }
 
     @Override
-    public void add(Supplier supplier) {
+    public void add(Supplier supplier) throws SQLException {
         DatabaseConnection databaseConnection = DatabaseConnection.getInstance(this.filePath);
         Connection connection = databaseConnection.getConnection();
         if (find(supplier.getName()) != null) {
             return;
         }
-        try {
-            String addQuery = "INSERT INTO suppliers (name, description) VALUES (?, ?);";
-            statement = connection.prepareStatement(addQuery);
-            statement.setString(1, supplier.getName());
-            statement.setString(2, supplier.getDescription());
-            statement.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        String addQuery = "INSERT INTO suppliers (name, description) VALUES (?, ?);";
+        statement = connection.prepareStatement(addQuery);
+        statement.setString(1, supplier.getName());
+        statement.setString(2, supplier.getDescription());
+        statement.executeUpdate();
     }
 
 
     @Override
-    public Supplier find(int id) {
+    public Supplier find(int id) throws SQLException {
         DatabaseConnection databaseConnection = DatabaseConnection.getInstance(this.filePath);
         Connection connection = databaseConnection.getConnection();
         Supplier resultSupplier = null;
-        try {
-            String getProductQuery = "SELECT * FROM suppliers WHERE id=?;";
-            statement = connection.prepareStatement(getProductQuery);
-            statement.setInt(1, id);
-            ResultSet result = statement.executeQuery();
-            while (result.next()) {
-                resultSupplier = new Supplier(result.getString("name"), result.getString("description"));
-                resultSupplier.setId(result.getInt("id"));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        String getProductQuery = "SELECT * FROM suppliers WHERE id=?;";
+        statement = connection.prepareStatement(getProductQuery);
+        statement.setInt(1, id);
+        ResultSet result = statement.executeQuery();
+        while (result.next()) {
+            resultSupplier = new Supplier(result.getString("name"), result.getString("description"));
+            resultSupplier.setId(result.getInt("id"));
         }
         return resultSupplier;
     }
 
 
-    public Supplier find(String name) {
+    public Supplier find(String name) throws SQLException {
         DatabaseConnection databaseConnection = DatabaseConnection.getInstance(this.filePath);
         Connection connection = databaseConnection.getConnection();
         Supplier resultSupplier = null;
-        try {
-            String getProductQuery = "SELECT * FROM suppliers WHERE name=?;";
-            statement = connection.prepareStatement(getProductQuery);
-            statement.setString(1, name);
-            ResultSet result = statement.executeQuery();
-            while (result.next()) {
-                resultSupplier = new Supplier(result.getString("name"), result.getString("description"));
-                resultSupplier.setId(result.getInt("id"));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        String getProductQuery = "SELECT * FROM suppliers WHERE name=?;";
+        statement = connection.prepareStatement(getProductQuery);
+        statement.setString(1, name);
+        ResultSet result = statement.executeQuery();
+        while (result.next()) {
+            resultSupplier = new Supplier(result.getString("name"), result.getString("description"));
+            resultSupplier.setId(result.getInt("id"));
         }
         return resultSupplier;
     }
 
     @Override
-    public void remove(int id) {
+    public void remove(int id) throws SQLException {
         DatabaseConnection databaseConnection = DatabaseConnection.getInstance(this.filePath);
         Connection connection = databaseConnection.getConnection();
-        try {
-            String removeSupplierQuery = "DELETE FROM suppliers WHERE id=?;";
-            statement = connection.prepareStatement(removeSupplierQuery);
-            statement.setInt(1, id);
-            statement.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        String removeSupplierQuery = "DELETE FROM suppliers WHERE id=?;";
+        statement = connection.prepareStatement(removeSupplierQuery);
+        statement.setInt(1, id);
+        statement.executeUpdate();
     }
 
     @Override
-    public List<Supplier> getAll() {
+    public List<Supplier> getAll() throws SQLException {
         DatabaseConnection databaseConnection = DatabaseConnection.getInstance(this.filePath);
         Connection connection = databaseConnection.getConnection();
         List<Supplier> supplierList = new ArrayList<>();
-        try {
-            String getSuppliersQuery = "SELECT * FROM suppliers;";
-            statement = connection.prepareStatement(getSuppliersQuery);
-            ResultSet result = statement.executeQuery();
+        String getSuppliersQuery = "SELECT * FROM suppliers;";
+        statement = connection.prepareStatement(getSuppliersQuery);
+        ResultSet result = statement.executeQuery();
 
-            while (result.next()) {
-                Supplier supplier = new Supplier(result.getString("name"), result.getString("description"));
-                supplier.setId(result.getInt("id"));
-                supplierList.add(supplier);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        while (result.next()) {
+            Supplier supplier = new Supplier(result.getString("name"), result.getString("description"));
+            supplier.setId(result.getInt("id"));
+            supplierList.add(supplier);
         }
         return supplierList;
     }

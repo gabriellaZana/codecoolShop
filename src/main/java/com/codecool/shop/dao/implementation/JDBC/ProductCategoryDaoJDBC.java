@@ -30,88 +30,72 @@ public class ProductCategoryDaoJDBC implements ProductCategoryDao {
     }
 
     @Override
-    public void add(ProductCategory category) {
+    public void add(ProductCategory category) throws SQLException {
         DatabaseConnection databaseConnection = DatabaseConnection.getInstance(this.filePath);
         Connection connection = databaseConnection.getConnection();
 
         String query = "INSERT INTO product_categories (name, description) VALUES (?, ?);";
         if (find(category.getName()) == null) {
-            try {
-                PreparedStatement preparedStatement = connection.prepareStatement(query);
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
 
-                preparedStatement.setString(1, category.getName());
-                preparedStatement.setString(2, category.getDescription());
+            preparedStatement.setString(1, category.getName());
+            preparedStatement.setString(2, category.getDescription());
 
 
-                preparedStatement.executeUpdate();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            preparedStatement.executeUpdate();
         }
     }
 
     @Override
-    public ProductCategory find(int id) {
+    public ProductCategory find(int id) throws SQLException {
         DatabaseConnection databaseConnection = DatabaseConnection.getInstance(this.filePath);
         Connection connection = databaseConnection.getConnection();
 
         String query = "SELECT * FROM product_categories WHERE id=?";
 
-        try {
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setInt(1, id);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {
-                ProductCategory productCategory = new ProductCategory(resultSet.getString("name"), resultSet.getString("description"));
-                productCategory.setId(resultSet.getInt("id"));
-                return productCategory;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        PreparedStatement preparedStatement = connection.prepareStatement(query);
+        preparedStatement.setInt(1, id);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        while (resultSet.next()) {
+            ProductCategory productCategory = new ProductCategory(resultSet.getString("name"), resultSet.getString("description"));
+            productCategory.setId(resultSet.getInt("id"));
+            return productCategory;
         }
         return null;
     }
 
-    public ProductCategory find(String name){
+    public ProductCategory find(String name) throws SQLException {
         DatabaseConnection databaseConnection = DatabaseConnection.getInstance(this.filePath);
         Connection connection = databaseConnection.getConnection();
 
         String query = "SELECT * FROM product_categories WHERE name=?";
 
-        try {
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setString(1, name);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {
-                ProductCategory productCategory = new ProductCategory(resultSet.getString("name"), resultSet.getString("description"));
-                productCategory.setId(resultSet.getInt("id"));
-                return productCategory;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        PreparedStatement preparedStatement = connection.prepareStatement(query);
+        preparedStatement.setString(1, name);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        while (resultSet.next()) {
+            ProductCategory productCategory = new ProductCategory(resultSet.getString("name"), resultSet.getString("description"));
+            productCategory.setId(resultSet.getInt("id"));
+            return productCategory;
         }
         return null;
     }
 
     @Override
-    public void remove(int id) {
+    public void remove(int id) throws SQLException {
         DatabaseConnection databaseConnection = DatabaseConnection.getInstance(this.filePath);
         Connection connection = databaseConnection.getConnection();
 
         String query = "DELETE FROM product_categories WHERE id = ?;";
 
-        try {
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setInt(1, id);
-            preparedStatement.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        PreparedStatement preparedStatement = connection.prepareStatement(query);
+        preparedStatement.setInt(1, id);
+        preparedStatement.executeUpdate();
 
     }
 
     @Override
-    public List<ProductCategory> getAll() {
+    public List<ProductCategory> getAll() throws SQLException {
         DatabaseConnection databaseConnection = DatabaseConnection.getInstance(this.filePath);
         Connection connection = databaseConnection.getConnection();
 
@@ -119,16 +103,12 @@ public class ProductCategoryDaoJDBC implements ProductCategoryDao {
 
         List<ProductCategory> productCategories = new ArrayList<>();
 
-        try {
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {
-                ProductCategory productCategory = new ProductCategory(resultSet.getString("name"), resultSet.getString("description"));
-                productCategory.setId(resultSet.getInt("id"));
-                productCategories.add(productCategory);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        PreparedStatement preparedStatement = connection.prepareStatement(query);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        while (resultSet.next()) {
+            ProductCategory productCategory = new ProductCategory(resultSet.getString("name"), resultSet.getString("description"));
+            productCategory.setId(resultSet.getInt("id"));
+            productCategories.add(productCategory);
         }
         //System.out.println(productCategories.size());
         return productCategories;

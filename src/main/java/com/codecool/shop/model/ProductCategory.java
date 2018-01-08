@@ -5,6 +5,7 @@ import com.codecool.shop.dao.implementation.JDBC.ProductCategoryDaoJDBC;
 import com.codecool.shop.dao.implementation.JDBC.ProductDaoJDBC;
 import com.codecool.shop.dao.implementation.JDBC.SupplierDaoJDBC;
 
+import java.sql.SQLException;
 import java.util.*;
 
 
@@ -26,7 +27,7 @@ public class ProductCategory extends BaseModel {
         this.products.add(product);
     }
 
-    public Set<Supplier> getSuppliers() {
+    public Set<Supplier> getSuppliers() throws SQLException{
         Set<Supplier> suppliers = new HashSet<>();
         List<Product> products = this.getProducts();
         List<Integer> supplierIds = new ArrayList<>();
@@ -43,7 +44,7 @@ public class ProductCategory extends BaseModel {
         return suppliers;
     }
 
-    public List<Product> getProducts() {
+    public List<Product> getProducts() throws SQLException{
         ProductDaoJDBC productDaoJDBC = ProductDaoJDBC.getInstance();
         return productDaoJDBC.getBy(this);
     }
