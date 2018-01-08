@@ -42,6 +42,7 @@ public class ProductController {
     public static String renderShoppingCartMini(Request req, Response res) {
         ShoppingCart shoppingCart = ShoppingCart.getInstance();
         ProductDaoJDBC productDaoJdbc = ProductDaoJDBC.getInstance();
+
         shoppingCart.putProductToCart(productDaoJdbc.find(Integer.parseInt(req.body().substring(1, req.body().length() - 1))));
 
 
@@ -66,7 +67,15 @@ public class ProductController {
 
     public static ModelAndView renderShoppingCart(Request req, Response res) {
         ShoppingCart shoppingCart = ShoppingCart.getInstance();
-        Set<Product> productSet = new HashSet<>(shoppingCart.getProductsFromCart());
+        List<Product> productList = shoppingCart.getProductsFromCart();
+        Set<Product> productSet = new HashSet<>();
+        List<Integer> ids = new ArrayList<>();
+        for (Product product: productList) {
+            ids.add(product.getId());
+            if(Collections.frequency(ids, product.getId()) == 1){
+                productSet.add(product);
+            }
+        }
 
         Map params = new HashMap<>();
 

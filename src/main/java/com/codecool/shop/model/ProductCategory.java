@@ -32,14 +32,10 @@ public class ProductCategory extends BaseModel {
         List<Integer> supplierIds = new ArrayList<>();
         SupplierDaoJDBC supplierDaoJDBC = SupplierDaoJDBC.getInstance();
         for (Product product: products) {
-            if (!supplierIds.contains(product.getSupplier().getId())) {
-                supplierIds.add(product.getSupplier().getId());
+            supplierIds.add(product.getSupplier().getId());
+            if(Collections.frequency(supplierIds, product.getSupplier().getId()) == 1){
+                suppliers.add(supplierDaoJDBC.find(product.getSupplier().getId()));
             }
-        }
-
-        for (Integer id:supplierIds) {
-            Supplier supplier = supplierDaoJDBC.find(id);
-            suppliers.add(supplier);
         }
         return suppliers;
     }
