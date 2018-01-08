@@ -130,6 +130,7 @@ public class ProductCategoryDaoJDBC implements ProductCategoryDao {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        //System.out.println(productCategories.size());
         return productCategories;
     }
 }

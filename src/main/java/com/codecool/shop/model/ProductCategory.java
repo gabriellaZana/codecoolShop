@@ -37,6 +37,9 @@ public class ProductCategory extends BaseModel {
                 suppliers.add(supplierDaoJDBC.find(product.getSupplier().getId()));
             }
         }
+        for (Supplier supplier: suppliers) {
+            System.out.println(supplier);
+        }
         return suppliers;
     }
 

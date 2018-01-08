@@ -160,17 +160,34 @@ public class ProductDaoJDBC implements ProductDao {
         Connection connection = databaseConnection.getConnection();
         List<Product> productListBySupplier = new ArrayList<>();
         try {
-            String getProductsBySupplierQuery = "SELECT * FROM products WHERE supplier_id=?;";
+            String getProductsBySupplierQuery = "SELECT products.id," +
+                    "  products.name," +
+                    "  products.description," +
+                    "  products.price," +
+                    "  products.currency," +
+                    "  product_categories.id AS product_category_id," +
+                    "  product_categories.name AS product_category_name," +
+                    "  product_categories.description AS product_category_desc," +
+                    "  suppliers.id AS supplier_id," +
+                    "  suppliers.name AS supplier_name," +
+                    "  suppliers.description AS supplier_desc " +
+                    "FROM products " +
+                    "JOIN product_categories ON products.product_category_id=product_categories.id " +
+                    "JOIN suppliers ON products.supplier_id=suppliers.id " +
+                    "WHERE supplier_id=?;";
             statement = connection.prepareStatement(getProductsBySupplierQuery);
             statement.setInt(1, supplier.getId());
             ResultSet result = statement.executeQuery();
-            ProductCategoryDao category = ProductCategoryDaoJDBC.getInstance();
-            SupplierDao supplierJDBC = SupplierDaoJDBC.getInstance();
 
             while (result.next()) {
-                Product product = new Product(result.getString("name"), result.getFloat("price"),
-                        result.getString("currency"), result.getString("description"),
-                        category.find(result.getInt("product_category_id")), supplierJDBC.find(result.getInt("supplier_id")));
+                Product product = new Product(result.getString("name"),
+                                                result.getFloat("price"),
+                                                result.getString("currency"),
+                                                result.getString("description"),
+                        new ProductCategory(result.getString("product_category_name"),
+                                            result.getString("product_category_desc")),
+                        new Supplier(result.getString("supplier_name"),
+                                    result.getString("supplier_desc")));
                 productListBySupplier.add(product);
             }
         } catch (SQLException e) {
@@ -186,20 +203,39 @@ public class ProductDaoJDBC implements ProductDao {
         Connection connection = databaseConnection.getConnection();
         List<Product> productListByCategory = new ArrayList<>();
         try {
-            String getProductsByCategoryQuery = "SELECT * FROM products WHERE product_category_id=?;";
+            String getProductsByCategoryQuery = "SELECT products.id," +
+                    "  products.name," +
+                    "  products.description," +
+                    "  products.price," +
+                    "  products.currency," +
+                    "  product_categories.id AS product_category_id," +
+                    "  product_categories.name AS product_category_name," +
+                    "  product_categories.description AS product_category_desc," +
+                    "  suppliers.id AS supplier_id," +
+                    "  suppliers.name AS supplier_name," +
+                    "  suppliers.description AS supplier_desc " +
+                    "FROM products " +
+                    "JOIN product_categories ON products.product_category_id=product_categories.id " +
+                    "JOIN suppliers ON products.supplier_id=suppliers.id " +
+                    "WHERE product_category_id=?;";
             statement = connection.prepareStatement(getProductsByCategoryQuery);
             statement.setInt(1, productCategory.getId());
             ResultSet result = statement.executeQuery();
-            ProductCategoryDao category = ProductCategoryDaoJDBC.getInstance();
-            SupplierDao supplier = SupplierDaoJDBC.getInstance();
 
             while (result.next()) {
-                Product product = new Product(result.getString("name"), result.getFloat("price"),
-                        result.getString("currency"), result.getString("description"),
-                        category.find(result.getInt("product_category_id")), supplier.find(result.getInt("supplier_id")));
+                //System.out.println(result.getInt("id"));
+                Product product = new Product(result.getString("name"),
+                        result.getFloat("price"),
+                        result.getString("currency"),
+                        result.getString("description"),
+                        new ProductCategory(result.getString("product_category_name"),
+                                result.getString("product_category_desc")){{ setId(result.getInt("product_category_id"));}},
+                        new Supplier(result.getString("supplier_name"),
+                                result.getString("supplier_desc")){{ setId(result.getInt("supplier_id"));}});
                 product.setId(result.getInt("id"));
                 productListByCategory.add(product);
             }
+            //System.out.println(productListByCategory.size());
         } catch (SQLException e) {
             e.printStackTrace();
         }
