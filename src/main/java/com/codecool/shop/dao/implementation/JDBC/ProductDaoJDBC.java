@@ -49,13 +49,6 @@ public class ProductDaoJDBC implements ProductDao {
                 product.getDefaultCurrency().toString()));
         try (Connection connection = databaseConnection.getConnection();
              PreparedStatement statement = createAndSetPreparedStatement(connection, infos, addQuery)){
-            statement.setString(1, product.getName());
-            statement.setString(2, product.getDescription());
-            statement.setFloat(3, product.getDefaultPrice());
-            statement.setInt(4, productCategoryDaoJDBC.find(product.getProductCategory().getName()).getId());
-            statement.setInt(5, supplierDaoJDBC.find(product.getSupplier().getName()).getId());
-            statement.setString(6, product.getDefaultCurrency().toString());
-
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -197,7 +190,6 @@ public class ProductDaoJDBC implements ProductDao {
              PreparedStatement statement = createAndSetPreparedStatement(connection, infos, getProductsByCategoryQuery);
              ResultSet result = statement.executeQuery()){
             while (result.next()) {
-                //System.out.println(result.getInt("id"));
                 Product product = new Product(result.getString("name"),
                         result.getFloat("price"),
                         result.getString("currency"),
@@ -209,7 +201,6 @@ public class ProductDaoJDBC implements ProductDao {
                 product.setId(result.getInt("id"));
                 productListByCategory.add(product);
             }
-            //System.out.println(productListByCategory.size());
         } catch (SQLException e) {
             e.printStackTrace();
         }

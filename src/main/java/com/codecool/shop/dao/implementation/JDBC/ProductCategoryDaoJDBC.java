@@ -1,6 +1,7 @@
 package com.codecool.shop.dao.implementation.JDBC;
 
 import com.codecool.shop.dao.ProductCategoryDao;
+import com.codecool.shop.dao.SupplierDao;
 import com.codecool.shop.model.Product;
 import com.codecool.shop.model.ProductCategory;
 import com.codecool.shop.utils.DatabaseConnection;
@@ -8,12 +9,15 @@ import com.codecool.shop.utils.DatabaseConnection;
 import javax.xml.crypto.Data;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class ProductCategoryDaoJDBC implements ProductCategoryDao {
 
     private static ProductCategoryDaoJDBC instance = null;
     private String filePath = "src/main/resources/sql/connection.properties";
+    private DatabaseConnection databaseConnection = DatabaseConnection.getInstance(this.filePath);
 
     private ProductCategoryDaoJDBC() {
     }
@@ -31,19 +35,12 @@ public class ProductCategoryDaoJDBC implements ProductCategoryDao {
 
     @Override
     public void add(ProductCategory category) {
-        DatabaseConnection databaseConnection = DatabaseConnection.getInstance(this.filePath);
-        Connection connection = databaseConnection.getConnection();
-
-        String query = "INSERT INTO product_categories (name, description) VALUES (?, ?);";
+        String addQuery = "INSERT INTO product_categories (name, description) VALUES (?, ?);";
+        ArrayList<Object> infos = new ArrayList<>(Arrays.asList(category.getName(), category.getDescription()));
         if (find(category.getName()) == null) {
-            try {
-                PreparedStatement preparedStatement = connection.prepareStatement(query);
-
-                preparedStatement.setString(1, category.getName());
-                preparedStatement.setString(2, category.getDescription());
-
-
-                preparedStatement.executeUpdate();
+            try (Connection connection = databaseConnection.getConnection();
+                 PreparedStatement statement = createAndSetPreparedStatement(connection, infos, addQuery)) {
+                statement.executeUpdate();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -52,85 +49,85 @@ public class ProductCategoryDaoJDBC implements ProductCategoryDao {
 
     @Override
     public ProductCategory find(int id) {
-        DatabaseConnection databaseConnection = DatabaseConnection.getInstance(this.filePath);
-        Connection connection = databaseConnection.getConnection();
-
-        String query = "SELECT * FROM product_categories WHERE id=?";
-
-        try {
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setInt(1, id);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {
-                ProductCategory productCategory = new ProductCategory(resultSet.getString("name"), resultSet.getString("description"));
-                productCategory.setId(resultSet.getInt("id"));
-                return productCategory;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
+        String getProductQuery = "SELECT * FROM product_categories WHERE id=?";
+        ArrayList<Object> infos = new ArrayList<>(Collections.singletonList(id));
+        return executeFindQuery(getProductQuery, infos);
     }
 
     public ProductCategory find(String name){
-        DatabaseConnection databaseConnection = DatabaseConnection.getInstance(this.filePath);
-        Connection connection = databaseConnection.getConnection();
+        String getProductQuery = "SELECT * FROM product_categories WHERE name=?";
+        ArrayList<Object> infos = new ArrayList<>(Collections.singletonList(name));
+        return executeFindQuery(getProductQuery, infos);
+    }
 
-        String query = "SELECT * FROM product_categories WHERE name=?";
 
-        try {
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setString(1, name);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {
-                ProductCategory productCategory = new ProductCategory(resultSet.getString("name"), resultSet.getString("description"));
-                productCategory.setId(resultSet.getInt("id"));
-                return productCategory;
+    private ProductCategory executeFindQuery(String query, ArrayList<Object> infos) {
+        ProductCategory resultProductCategory = null;
+        try (Connection connection = databaseConnection.getConnection();
+             PreparedStatement statement = createAndSetPreparedStatement(connection, infos, query);
+             ResultSet result = statement.executeQuery()) {
+
+            while (result.next()) {
+                resultProductCategory = new ProductCategory(result.getString("name"),
+                                                            result.getString("description"));
+                resultProductCategory.setId(result.getInt("id"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return null;
+        return resultProductCategory;
     }
+
 
     @Override
     public void remove(int id) {
-        DatabaseConnection databaseConnection = DatabaseConnection.getInstance(this.filePath);
-        Connection connection = databaseConnection.getConnection();
+        String removeProductQuery = "DELETE FROM product_categories WHERE id = ?;";
 
-        String query = "DELETE FROM product_categories WHERE id = ?;";
-
-        try {
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setInt(1, id);
-            preparedStatement.executeUpdate();
+        ArrayList<Object> infos = new ArrayList<>(Collections.singletonList(id));
+        try (Connection connection = databaseConnection.getConnection();
+             PreparedStatement statement = createAndSetPreparedStatement(connection, infos, removeProductQuery)){
+            statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
     }
 
     @Override
     public List<ProductCategory> getAll() {
-        DatabaseConnection databaseConnection = DatabaseConnection.getInstance(this.filePath);
-        Connection connection = databaseConnection.getConnection();
+        List<ProductCategory> productCategoryList = new ArrayList<>();
+        String getProductCategoriesQuery = "SELECT * FROM product_categories;";
 
-        String query = "SELECT * FROM product_categories;";
+        try (Connection connection = databaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(getProductCategoriesQuery);
+             ResultSet result = statement.executeQuery()) {
 
-        List<ProductCategory> productCategories = new ArrayList<>();
-
-        try {
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {
-                ProductCategory productCategory = new ProductCategory(resultSet.getString("name"), resultSet.getString("description"));
-                productCategory.setId(resultSet.getInt("id"));
-                productCategories.add(productCategory);
+            while (result.next()) {
+                ProductCategory productCategory = new ProductCategory(result.getString("name"),
+                                                                      result.getString("description"));
+                productCategoryList.add(productCategory);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        //System.out.println(productCategories.size());
-        return productCategories;
+        return productCategoryList;
+    }
+
+
+    private PreparedStatement createAndSetPreparedStatement(Connection conn, List<Object> infos, String sql) throws SQLException {
+        PreparedStatement ps = conn.prepareStatement(sql);
+        for (int i = 0; i < infos.size(); i++) {
+            int ColumnIndex = i+1;
+            Object actualInfo = infos.get(i);
+            if(actualInfo instanceof String) {
+                ps.setString(ColumnIndex, actualInfo.toString());
+            }
+            else if (actualInfo instanceof Integer) {
+                ps.setInt(ColumnIndex, (int) actualInfo);
+            }
+            else if (actualInfo instanceof Float) {
+                ps.setFloat(ColumnIndex, (float) actualInfo);
+            }
+        }
+        return ps;
     }
 }
