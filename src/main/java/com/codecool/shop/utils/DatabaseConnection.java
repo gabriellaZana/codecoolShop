@@ -4,7 +4,9 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Properties;
 
 public class DatabaseConnection {
@@ -71,5 +73,21 @@ public class DatabaseConnection {
             e.printStackTrace();
         }
         return connection;
+    }
+
+    public PreparedStatement createAndSetPreparedStatement(Connection conn, List<Object> infos, String sql) throws SQLException {
+        PreparedStatement ps = conn.prepareStatement(sql);
+        for (int i = 0; i < infos.size(); i++) {
+            int ColumnIndex = i + 1;
+            Object actualInfo = infos.get(i);
+            if (actualInfo instanceof String) {
+                ps.setString(ColumnIndex, actualInfo.toString());
+            } else if (actualInfo instanceof Integer) {
+                ps.setInt(ColumnIndex, (int) actualInfo);
+            } else if (actualInfo instanceof Float) {
+                ps.setFloat(ColumnIndex, (float) actualInfo);
+            }
+        }
+        return ps;
     }
 }

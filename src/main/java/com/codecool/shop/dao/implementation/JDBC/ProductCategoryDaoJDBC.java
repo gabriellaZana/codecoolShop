@@ -39,7 +39,7 @@ public class ProductCategoryDaoJDBC implements ProductCategoryDao {
         ArrayList<Object> infos = new ArrayList<>(Arrays.asList(category.getName(), category.getDescription()));
         if (find(category.getName()) == null) {
             try (Connection connection = databaseConnection.getConnection();
-                 PreparedStatement statement = createAndSetPreparedStatement(connection, infos, addQuery)) {
+                 PreparedStatement statement = databaseConnection.createAndSetPreparedStatement(connection, infos, addQuery)) {
                 statement.executeUpdate();
             }
         }
@@ -62,7 +62,7 @@ public class ProductCategoryDaoJDBC implements ProductCategoryDao {
     private ProductCategory executeFindQuery(String query, ArrayList<Object> infos) throws SQLException {
         ProductCategory resultProductCategory = null;
         try (Connection connection = databaseConnection.getConnection();
-             PreparedStatement statement = createAndSetPreparedStatement(connection, infos, query);
+             PreparedStatement statement = databaseConnection.createAndSetPreparedStatement(connection, infos, query);
              ResultSet result = statement.executeQuery()) {
 
             while (result.next()) {
@@ -77,15 +77,13 @@ public class ProductCategoryDaoJDBC implements ProductCategoryDao {
 
 
     @Override
-    public void remove(int id) throws SQLException{
+    public void remove(int id) throws SQLException {
         String removeProductQuery = "DELETE FROM product_categories WHERE id = ?;";
 
         ArrayList<Object> infos = new ArrayList<>(Collections.singletonList(id));
         try (Connection connection = databaseConnection.getConnection();
-             PreparedStatement statement = createAndSetPreparedStatement(connection, infos, removeProductQuery)){
+             PreparedStatement statement = databaseConnection.createAndSetPreparedStatement(connection, infos, removeProductQuery)){
             statement.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
     }
 
@@ -105,24 +103,5 @@ public class ProductCategoryDaoJDBC implements ProductCategoryDao {
             }
         }
         return productCategoryList;
-    }
-
-
-    private PreparedStatement createAndSetPreparedStatement(Connection conn, List<Object> infos, String sql) throws SQLException {
-        PreparedStatement ps = conn.prepareStatement(sql);
-        for (int i = 0; i < infos.size(); i++) {
-            int ColumnIndex = i+1;
-            Object actualInfo = infos.get(i);
-            if(actualInfo instanceof String) {
-                ps.setString(ColumnIndex, actualInfo.toString());
-            }
-            else if (actualInfo instanceof Integer) {
-                ps.setInt(ColumnIndex, (int) actualInfo);
-            }
-            else if (actualInfo instanceof Float) {
-                ps.setFloat(ColumnIndex, (float) actualInfo);
-            }
-        }
-        return ps;
     }
 }
