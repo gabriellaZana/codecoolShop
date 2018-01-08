@@ -56,14 +56,14 @@ public class ProductDaoJDBC implements ProductDao {
 
 
     @Override
-    public Product find(int id) {
+    public Product find(int id) throws SQLException{
         String getProductQuery = "SELECT * FROM products WHERE id=?;";
         ArrayList<Object> infos = new ArrayList<>(Collections.singletonList(id));
         return executeFindQuery(getProductQuery, infos);
     }
 
 
-    public Product find(String name){
+    public Product find(String name) throws SQLException{
         String getProductByNameQuery = "SELECT * FROM products WHERE name=?;";
         ArrayList<Object> infos = new ArrayList<>(Collections.singletonList(name));
         return executeFindQuery(getProductByNameQuery, infos);

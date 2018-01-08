@@ -46,20 +46,20 @@ public class ProductCategoryDaoJDBC implements ProductCategoryDao {
     }
 
     @Override
-    public ProductCategory find(int id) {
+    public ProductCategory find(int id) throws SQLException{
         String getProductQuery = "SELECT * FROM product_categories WHERE id=?";
         ArrayList<Object> infos = new ArrayList<>(Collections.singletonList(id));
         return executeFindQuery(getProductQuery, infos);
     }
 
-    public ProductCategory find(String name){
+    public ProductCategory find(String name) throws SQLException{
         String getProductQuery = "SELECT * FROM product_categories WHERE name=?";
         ArrayList<Object> infos = new ArrayList<>(Collections.singletonList(name));
         return executeFindQuery(getProductQuery, infos);
     }
 
 
-    private ProductCategory executeFindQuery(String query, ArrayList<Object> infos) {
+    private ProductCategory executeFindQuery(String query, ArrayList<Object> infos) throws SQLException {
         ProductCategory resultProductCategory = null;
         try (Connection connection = databaseConnection.getConnection();
              PreparedStatement statement = createAndSetPreparedStatement(connection, infos, query);
@@ -102,7 +102,7 @@ public class ProductCategoryDaoJDBC implements ProductCategoryDao {
                                                                       result.getString("description"));
                 productCategoryList.add(productCategory);
             }
-        } 
+        }
         return productCategoryList;
     }
 
