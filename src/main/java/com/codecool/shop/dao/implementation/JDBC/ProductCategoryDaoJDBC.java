@@ -1,6 +1,7 @@
 package com.codecool.shop.dao.implementation.JDBC;
 
 import com.codecool.shop.dao.ProductCategoryDao;
+import com.codecool.shop.dao.SupplierDao;
 import com.codecool.shop.model.Product;
 import com.codecool.shop.model.ProductCategory;
 import com.codecool.shop.utils.DatabaseConnection;
@@ -8,12 +9,15 @@ import com.codecool.shop.utils.DatabaseConnection;
 import javax.xml.crypto.Data;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class ProductCategoryDaoJDBC implements ProductCategoryDao {
 
     private static ProductCategoryDaoJDBC instance = null;
     private String filePath = "src/main/resources/sql/connection.properties";
+    private DatabaseConnection databaseConnection = DatabaseConnection.getInstance(this.filePath);
 
     private ProductCategoryDaoJDBC() {
     }
@@ -30,106 +34,74 @@ public class ProductCategoryDaoJDBC implements ProductCategoryDao {
     }
 
     @Override
-    public void add(ProductCategory category) {
-        DatabaseConnection databaseConnection = DatabaseConnection.getInstance(this.filePath);
-        Connection connection = databaseConnection.getConnection();
-
-        String query = "INSERT INTO product_categories (name, description) VALUES (?, ?);";
+    public void add(ProductCategory category) throws SQLException{
+        String addQuery = "INSERT INTO product_categories (name, description) VALUES (?, ?);";
+        ArrayList<Object> infos = new ArrayList<>(Arrays.asList(category.getName(), category.getDescription()));
         if (find(category.getName()) == null) {
-            try {
-                PreparedStatement preparedStatement = connection.prepareStatement(query);
-
-                preparedStatement.setString(1, category.getName());
-                preparedStatement.setString(2, category.getDescription());
-
-
-                preparedStatement.executeUpdate();
-            } catch (SQLException e) {
-                e.printStackTrace();
+            try (Connection connection = databaseConnection.getConnection();
+                 PreparedStatement statement = databaseConnection.createAndSetPreparedStatement(connection, infos, addQuery)) {
+                statement.executeUpdate();
             }
         }
     }
 
     @Override
-    public ProductCategory find(int id) {
-        DatabaseConnection databaseConnection = DatabaseConnection.getInstance(this.filePath);
-        Connection connection = databaseConnection.getConnection();
-
-        String query = "SELECT * FROM product_categories WHERE id=?";
-
-        try {
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setInt(1, id);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {
-                ProductCategory productCategory = new ProductCategory(resultSet.getString("name"), resultSet.getString("description"));
-                productCategory.setId(resultSet.getInt("id"));
-                return productCategory;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
+    public ProductCategory find(int id) throws SQLException{
+        String getProductQuery = "SELECT * FROM product_categories WHERE id=?";
+        ArrayList<Object> infos = new ArrayList<>(Collections.singletonList(id));
+        return executeFindQuery(getProductQuery, infos);
     }
 
-    public ProductCategory find(String name){
-        DatabaseConnection databaseConnection = DatabaseConnection.getInstance(this.filePath);
-        Connection connection = databaseConnection.getConnection();
+    public ProductCategory find(String name) throws SQLException{
+        String getProductQuery = "SELECT * FROM product_categories WHERE name=?";
+        ArrayList<Object> infos = new ArrayList<>(Collections.singletonList(name));
+        return executeFindQuery(getProductQuery, infos);
+    }
 
-        String query = "SELECT * FROM product_categories WHERE name=?";
 
-        try {
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setString(1, name);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {
-                ProductCategory productCategory = new ProductCategory(resultSet.getString("name"), resultSet.getString("description"));
-                productCategory.setId(resultSet.getInt("id"));
-                return productCategory;
+    private ProductCategory executeFindQuery(String query, ArrayList<Object> infos) throws SQLException {
+        ProductCategory resultProductCategory = null;
+        try (Connection connection = databaseConnection.getConnection();
+             PreparedStatement statement = databaseConnection.createAndSetPreparedStatement(connection, infos, query);
+             ResultSet result = statement.executeQuery()) {
+
+            while (result.next()) {
+                resultProductCategory = new ProductCategory(result.getString("name"),
+                                                            result.getString("description"));
+                resultProductCategory.setId(result.getInt("id"));
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
-        return null;
+        return resultProductCategory;
+    }
+
+
+
+    @Override
+    public void remove(int id) throws SQLException {
+        String removeProductQuery = "DELETE FROM product_categories WHERE id = ?;";
+
+        ArrayList<Object> infos = new ArrayList<>(Collections.singletonList(id));
+        try (Connection connection = databaseConnection.getConnection();
+             PreparedStatement statement = databaseConnection.createAndSetPreparedStatement(connection, infos, removeProductQuery)){
+            statement.executeUpdate();
+        }
     }
 
     @Override
-    public void remove(int id) {
-        DatabaseConnection databaseConnection = DatabaseConnection.getInstance(this.filePath);
-        Connection connection = databaseConnection.getConnection();
+    public List<ProductCategory> getAll() throws SQLException {
+        List<ProductCategory> productCategoryList = new ArrayList<>();
+        String getProductCategoriesQuery = "SELECT * FROM product_categories;";
 
-        String query = "DELETE FROM product_categories WHERE id = ?;";
-
-        try {
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setInt(1, id);
-            preparedStatement.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    @Override
-    public List<ProductCategory> getAll() {
-        DatabaseConnection databaseConnection = DatabaseConnection.getInstance(this.filePath);
-        Connection connection = databaseConnection.getConnection();
-
-        String query = "SELECT * FROM product_categories;";
-
-        List<ProductCategory> productCategories = new ArrayList<>();
-
-        try {
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {
-                ProductCategory productCategory = new ProductCategory(resultSet.getString("name"), resultSet.getString("description"));
-                productCategory.setId(resultSet.getInt("id"));
-                productCategories.add(productCategory);
+        try (Connection connection = databaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(getProductCategoriesQuery);
+             ResultSet result = statement.executeQuery()) {
+            while (result.next()) {
+                ProductCategory productCategory = new ProductCategory(result.getString("name"),
+                                                                      result.getString("description"));
+                productCategory.setId(result.getInt("id"));
+                productCategoryList.add(productCategory);
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
-        return productCategories;
+        return productCategoryList;
     }
 }

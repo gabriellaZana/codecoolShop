@@ -8,16 +8,26 @@ import com.codecool.shop.model.Product;
 import com.codecool.shop.model.ProductCategory;
 import com.codecool.shop.model.ShoppingCart;
 import com.google.gson.Gson;
+import com.sun.org.apache.regexp.internal.RE;
+import org.eclipse.jetty.http.HttpStatus;
 import spark.ModelAndView;
 import spark.Request;
 import spark.Response;
 
+import java.sql.SQLException;
 import java.util.*;
 
 
 public class ProductController {
 
-    public static ModelAndView renderProducts(Request req, Response res) {
+    public static ModelAndView dummy(Request request, Response response) {
+        Map<String, Object> params = new HashMap<>();
+        response.status(HttpStatus.SERVICE_UNAVAILABLE_503);
+
+        return new ModelAndView(params, "product/cart");
+    }
+
+    public static ModelAndView renderProducts(Request req, Response res) throws SQLException{
         ProductCategoryDao productCategoryDataStore = ProductCategoryDaoJDBC.getInstance();
         List<ProductCategory> categories = productCategoryDataStore.getAll();
         ShoppingCart shoppingCart = ShoppingCart.getInstance();
@@ -35,13 +45,13 @@ public class ProductController {
         params.put("productAmount", shoppingCart.getProductsFromCart().size());
         params.put("Price", sum);
         params.put("categories", categories);
-        params.put("productAmount", shoppingCart.getProductsFromCart().size());
         return new ModelAndView(params, "product/index");
     }
 
-    public static String renderShoppingCartMini(Request req, Response res) {
+    public static String renderShoppingCartMini(Request req, Response res) throws SQLException {
         ShoppingCart shoppingCart = ShoppingCart.getInstance();
         ProductDaoJDBC productDaoJdbc = ProductDaoJDBC.getInstance();
+
         shoppingCart.putProductToCart(productDaoJdbc.find(Integer.parseInt(req.body().substring(1, req.body().length() - 1))));
 
 
@@ -66,7 +76,15 @@ public class ProductController {
 
     public static ModelAndView renderShoppingCart(Request req, Response res) {
         ShoppingCart shoppingCart = ShoppingCart.getInstance();
-        Set<Product> productSet = new HashSet<>(shoppingCart.getProductsFromCart());
+        List<Product> productList = shoppingCart.getProductsFromCart();
+        Set<Product> productSet = new HashSet<>();
+        List<Integer> ids = new ArrayList<>();
+        for (Product product: productList) {
+            ids.add(product.getId());
+            if(Collections.frequency(ids, product.getId()) == 1){
+                productSet.add(product);
+            }
+        }
 
         Map params = new HashMap<>();
 
@@ -81,7 +99,7 @@ public class ProductController {
         return "Deleted";
     }
 
-    public static ModelAndView submitCart(Request req, Response res) {
+    public static ModelAndView submitCart(Request req, Response res) throws SQLException {
         System.out.println("submit carrt");
         ShoppingCart shoppingCart = ShoppingCart.getInstance();
         shoppingCart.removeAllItem();
