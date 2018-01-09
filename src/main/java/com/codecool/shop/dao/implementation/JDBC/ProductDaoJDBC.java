@@ -8,6 +8,9 @@ import com.codecool.shop.model.ProductCategory;
 import com.codecool.shop.model.Supplier;
 import com.codecool.shop.utils.DatabaseConnection;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -16,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ProductDaoJDBC implements ProductDao {
+    private static final Logger logger = LoggerFactory.getLogger(ProductDaoJDBC.class);
     private static ProductDaoJDBC instance = null;
     private PreparedStatement statement = null;
     private String filePath = "src/main/resources/sql/connection.properties";
@@ -27,12 +31,15 @@ public class ProductDaoJDBC implements ProductDao {
     public static ProductDaoJDBC getInstance() {
         if (instance == null) {
             instance = new ProductDaoJDBC();
+            logger.debug("A new instance of {} has been created", ProductDaoJDBC.class.getSimpleName());
         }
         return instance;
     }
 
     public void setFilePath(String filePath) {
+        String oldFilePath = this.filePath;
         this.filePath = filePath;
+        logger.debug("Filepath has been set to {} from {}",this.filePath, oldFilePath);
     }
 
 
