@@ -8,8 +8,6 @@ import com.codecool.shop.model.Product;
 import com.codecool.shop.model.ProductCategory;
 import com.codecool.shop.model.ShoppingCart;
 import com.google.gson.Gson;
-import com.sun.org.apache.regexp.internal.RE;
-import org.eclipse.jetty.http.HttpStatus;
 import spark.ModelAndView;
 import spark.Request;
 import spark.Response;
@@ -19,13 +17,6 @@ import java.util.*;
 
 
 public class ProductController {
-
-    public static ModelAndView dummy(Request request, Response response) {
-        Map<String, Object> params = new HashMap<>();
-        response.status(HttpStatus.SERVICE_UNAVAILABLE_503);
-
-        return new ModelAndView(params, "product/cart");
-    }
 
     public static ModelAndView renderProducts(Request req, Response res) throws SQLException{
         ProductCategoryDao productCategoryDataStore = ProductCategoryDaoJDBC.getInstance();
