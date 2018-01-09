@@ -50,6 +50,7 @@ public class ProductDaoJDBC implements ProductDao {
         SupplierDaoJDBC supplierDaoJDBC = SupplierDaoJDBC.getInstance();
         ProductCategoryDaoJDBC productCategoryDaoJDBC = ProductCategoryDaoJDBC.getInstance();
         if (find(product.getName()) != null) {
+            logger.debug("Adding {} failed because already in database.", product.getName());
             return;
         }
         String addQuery = "INSERT INTO products (name, description, price, product_category_id, supplier_id, currency) " +
@@ -61,6 +62,7 @@ public class ProductDaoJDBC implements ProductDao {
         try (Connection connection = databaseConnection.getConnection();
              PreparedStatement statement = databaseConnection.createAndSetPreparedStatement(connection, infos, addQuery)) {
             statement.executeUpdate();
+            logger.info("{} added successfully to database.", product.getName());
         }
     }
 
@@ -92,6 +94,7 @@ public class ProductDaoJDBC implements ProductDao {
                         result.getString("currency"), result.getString("description"),
                         category.find(result.getInt("product_category_id")), supplier.find(result.getInt("supplier_id")));
                 resultProduct.setId(result.getInt("id"));
+                logger.debug("{} found in database.", resultProduct.getName());
             }
         }
         return resultProduct;
@@ -104,6 +107,7 @@ public class ProductDaoJDBC implements ProductDao {
         try (Connection connection = databaseConnection.getConnection();
              PreparedStatement statement = databaseConnection.createAndSetPreparedStatement(connection, infos, removeProductQuery)) {
             statement.executeUpdate();
+            logger.info("Product with id: {} has been removed from database", id);
         }
     }
 
