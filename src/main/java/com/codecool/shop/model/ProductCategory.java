@@ -4,11 +4,15 @@ import com.codecool.shop.dao.ProductDao;
 import com.codecool.shop.dao.implementation.JDBC.ProductCategoryDaoJDBC;
 import com.codecool.shop.dao.implementation.JDBC.ProductDaoJDBC;
 import com.codecool.shop.dao.implementation.JDBC.SupplierDaoJDBC;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import sun.rmi.runtime.Log;
 
 import java.util.*;
 
 
 public class ProductCategory extends BaseModel {
+    private static final Logger logger = LoggerFactory.getLogger(ProductCategory.class);
     private ArrayList<Product> products;
 
     public ProductCategory(String name, String description) {
@@ -24,6 +28,7 @@ public class ProductCategory extends BaseModel {
 
     public void addProduct(Product product) {
         this.products.add(product);
+        logger.info("{} is added", product.getName());
     }
 
     public Set<Supplier> getSuppliers() {
@@ -41,11 +46,13 @@ public class ProductCategory extends BaseModel {
             Supplier supplier = supplierDaoJDBC.find(id);
             suppliers.add(supplier);
         }
+        logger.info("Suppliers from getSuppliers method returns: {}", suppliers);
         return suppliers;
     }
 
     public List<Product> getProducts() {
         ProductDaoJDBC productDaoJDBC = ProductDaoJDBC.getInstance();
+        logger.info("Products from getProducts returns: {}", productDaoJDBC.getBy(this));   
         return productDaoJDBC.getBy(this);
     }
 
