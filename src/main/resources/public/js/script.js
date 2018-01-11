@@ -24,7 +24,7 @@ function addEventListenerToSupplierButtons() {
 }
 
 
-function addEventListenerToSupplierBanners() {
+function addEventListenerToCategoryBanners() {
     let categories = $(".clickable-category");
     for (let i = 0; i < categories.length; i++) {
         if (i > 0) {
@@ -33,21 +33,12 @@ function addEventListenerToSupplierBanners() {
 
         categories[i].addEventListener('click', function () {
             let productDiv = document.getElementById(`productsOfCategory${this.id.slice(8)}`);
-            //console.log(productDiv.style.display);
             if (productDiv.style.display === "none") {
                 productDiv.style.display = "";
             } else {
                 productDiv.style.display = "none";
 
             }
-            categories[i].addEventListener('click', function () {
-                let productDiv = document.getElementById(`productsOfCategory${this.id.slice(8)}`);
-                if (productDiv.style.display === "none") {
-                    productDiv.style.display = "";
-                } else {
-                    productDiv.style.display = "none";
-                }
-            })
         })
     }
 }
@@ -76,8 +67,6 @@ function getProductId() {
 function addEventListenerToTrashBin() {
     $(".trash_bin").on("click", function (event) {
         let prodId = event.target.parentNode.parentNode.id;
-        //console.log(prodId);
-        //console.log(event.target.parentNode.parentNode.id);
         $.ajax({
             url: '/delete-item',
             type: 'POST',
@@ -114,7 +103,7 @@ function addEventListenerToQuantity() {
 }
 
 
-function AddEventListenerToShopButton() {
+function addEventListenerToShopButton() {
     let user_form = document.getElementById("user_form");
     let shop = document.getElementById("shop");
     if (shop) {
@@ -132,8 +121,6 @@ function displayTotalPrice(){
     })
 
     $('#total_price').text( 'Total price is: ' + totalPrice);
-    //console.log(totalPrice);
-
 }
 
 function submitClicked(){
@@ -155,10 +142,10 @@ function submitClicked(){
 
 $(document).ready(function () {
     addEventListenerToSupplierButtons();
-    addEventListenerToSupplierBanners();
+    addEventListenerToCategoryBanners();
     addEventListenerToQuantity();
     addEventListenerToTrashBin();
-    AddEventListenerToShopButton();
+    addEventListenerToShopButton();
     getProductId();
     countFinalPrice();
     displayTotalPrice();

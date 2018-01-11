@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sun.rmi.runtime.Log;
 
+import java.sql.SQLException;
 import java.util.*;
 
 
@@ -31,26 +32,25 @@ public class ProductCategory extends BaseModel {
         logger.info("{} is added", product.getName());
     }
 
-    public Set<Supplier> getSuppliers() {
+    public Set<Supplier> getSuppliers() throws SQLException{
         Set<Supplier> suppliers = new HashSet<>();
         List<Product> products = this.getProducts();
         List<Integer> supplierIds = new ArrayList<>();
         SupplierDaoJDBC supplierDaoJDBC = SupplierDaoJDBC.getInstance();
         for (Product product: products) {
-            if (!supplierIds.contains(product.getSupplier().getId())) {
-                supplierIds.add(product.getSupplier().getId());
+            supplierIds.add(product.getSupplier().getId());
+            if(Collections.frequency(supplierIds, product.getSupplier().getId()) == 1){
+                suppliers.add(supplierDaoJDBC.find(product.getSupplier().getId()));
             }
         }
-
-        for (Integer id:supplierIds) {
-            Supplier supplier = supplierDaoJDBC.find(id);
-            suppliers.add(supplier);
+        for (Supplier supplier: suppliers) {
+            System.out.println(supplier);
         }
         logger.info("Suppliers from getSuppliers method returns: {}", suppliers);
         return suppliers;
     }
 
-    public List<Product> getProducts() {
+    public List<Product> getProducts() throws SQLException{
         ProductDaoJDBC productDaoJDBC = ProductDaoJDBC.getInstance();
         logger.info("Products from getProducts returns: {}", productDaoJDBC.getBy(this));   
         return productDaoJDBC.getBy(this);
