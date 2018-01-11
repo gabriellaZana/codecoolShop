@@ -12,8 +12,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SupplierDaoJDBC implements SupplierDao {
+    private static final Logger logger = LoggerFactory.getLogger(SupplierDaoJDBC.class);
+
     private static SupplierDaoJDBC instance = null;
     private String filePath = "src/main/resources/sql/connection.properties";
     private DatabaseConnection databaseConnection = DatabaseConnection.getInstance(this.filePath);
@@ -24,12 +28,14 @@ public class SupplierDaoJDBC implements SupplierDao {
     public static SupplierDaoJDBC getInstance() {
         if (instance == null) {
             instance = new SupplierDaoJDBC();
+            logger.info("SupplierDaoJDBC instantiated");
         }
         return instance;
     }
 
     public void setFilePath(String filePath) {
         this.filePath = filePath;
+        logger.info("Filepath is set to: {}", filePath);
     }
 
     @Override
@@ -41,7 +47,9 @@ public class SupplierDaoJDBC implements SupplierDao {
         ArrayList<Object> infos = new ArrayList<>(Arrays.asList(supplier.getName(), supplier.getDescription()));
         try (Connection connection = databaseConnection.getConnection();
              PreparedStatement statement = databaseConnection.createAndSetPreparedStatement(connection, infos, addQuery)) {
+             logger.info("Connected to database");
             statement.executeUpdate();
+            logger.info("Query done");
         }
     }
 
@@ -50,6 +58,7 @@ public class SupplierDaoJDBC implements SupplierDao {
     public Supplier find(int id) throws SQLException {
         String getProductQuery = "SELECT * FROM suppliers WHERE id=?;";
         ArrayList<Object> infos = new ArrayList<>(Collections.singletonList(id));
+        logger.info("Supplier found: {}", executeFindQuery(getProductQuery, infos));
         return executeFindQuery(getProductQuery, infos);
     }
 
@@ -57,6 +66,7 @@ public class SupplierDaoJDBC implements SupplierDao {
     public Supplier find(String name) throws SQLException {
         String getProductQuery = "SELECT * FROM suppliers WHERE name=?;";
         ArrayList<Object> infos = new ArrayList<>(Collections.singletonList(name));
+        logger.info("Supplier found: {}", executeFindQuery(getProductQuery, infos));
         return executeFindQuery(getProductQuery, infos);
 
     }
@@ -71,6 +81,7 @@ public class SupplierDaoJDBC implements SupplierDao {
                 resultSupplier.setId(result.getInt("id"));
             }
         }
+        logger.info("Supplier found: {}", resultSupplier);
         return resultSupplier;
     }
 
@@ -82,6 +93,7 @@ public class SupplierDaoJDBC implements SupplierDao {
              PreparedStatement statement = databaseConnection.createAndSetPreparedStatement(connection, infos, removeSupplierQuery)) {
             statement.executeUpdate();
         }
+        logger.info("Supplier with id {} removed:", id);
     }
 
     @Override
@@ -97,6 +109,7 @@ public class SupplierDaoJDBC implements SupplierDao {
                 supplierList.add(supplier);
             }
         }
+        logger.info("All suppliers are: {}", supplierList.toString());
         return supplierList;
     }
 }
