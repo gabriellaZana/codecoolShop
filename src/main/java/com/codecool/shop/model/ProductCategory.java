@@ -13,25 +13,45 @@ import java.util.*;
 
 
 public class ProductCategory extends BaseModel {
+
     private static final Logger logger = LoggerFactory.getLogger(ProductCategory.class);
     private ArrayList<Product> products;
 
+    /**
+     * Constructor
+     * @param   name    (required) name of the product category.
+     * @param   description (required) description of the product category
+     */
     public ProductCategory(String name, String description) {
+
         super(name);
         this.products = new ArrayList<>();
         this.description = description;
     }
 
+    /**
+     * Setter for products.
+     * @param products
+     */
     public void setProducts(ArrayList<Product> products) {
+
         this.products = products;
     }
 
-
+    /**
+     * Adds products.
+     * @param product
+     */
     public void addProduct(Product product) {
         this.products.add(product);
         logger.info("{} is added", product.getName());
     }
 
+    /**
+     * Gets all suppliers.
+     * @return Set of suppliers
+     * @throws SQLException
+     */
     public Set<Supplier> getSuppliers() throws SQLException{
         Set<Supplier> suppliers = new HashSet<>();
         List<Product> products = this.getProducts();
@@ -50,6 +70,11 @@ public class ProductCategory extends BaseModel {
         return suppliers;
     }
 
+    /**
+     * Gets all products
+     * @return List of products
+     * @throws SQLException
+     */
     public List<Product> getProducts() throws SQLException{
         ProductDaoJDBC productDaoJDBC = ProductDaoJDBC.getInstance();
         logger.info("Products from getProducts returns: {}", productDaoJDBC.getBy(this));   

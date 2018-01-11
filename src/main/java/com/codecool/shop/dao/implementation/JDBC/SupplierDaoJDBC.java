@@ -25,6 +25,10 @@ public class SupplierDaoJDBC implements SupplierDao {
     private SupplierDaoJDBC() {
     }
 
+    /**
+     * Constructor singleton
+     * @return SupplierDaoJDBC
+     */
     public static SupplierDaoJDBC getInstance() {
         if (instance == null) {
             instance = new SupplierDaoJDBC();
@@ -33,11 +37,20 @@ public class SupplierDaoJDBC implements SupplierDao {
         return instance;
     }
 
+    /**
+     * Set filepath for database.properties, used by testing.
+     * @param filePath
+     */
     public void setFilePath(String filePath) {
         this.filePath = filePath;
         logger.info("Filepath is set to: {}", filePath);
     }
 
+    /**
+     * Adds supplier to the database
+     * @param supplier
+     * @throws SQLException
+     */
     @Override
     public void add(Supplier supplier) throws SQLException {
         if (find(supplier.getName()) != null) {
@@ -53,7 +66,12 @@ public class SupplierDaoJDBC implements SupplierDao {
         }
     }
 
-
+    /**
+     * Finds a supplier by the given id
+     * @param id
+     * @return Supplier
+     * @throws SQLException
+     */
     @Override
     public Supplier find(int id) throws SQLException {
         String getProductQuery = "SELECT * FROM suppliers WHERE id=?;";
@@ -63,6 +81,12 @@ public class SupplierDaoJDBC implements SupplierDao {
     }
 
 
+    /**
+     * Finds supplier by given name
+     * @param name
+     * @return Supplier
+     * @throws SQLException
+     */
     public Supplier find(String name) throws SQLException {
         String getProductQuery = "SELECT * FROM suppliers WHERE name=?;";
         ArrayList<Object> infos = new ArrayList<>(Collections.singletonList(name));
@@ -71,6 +95,13 @@ public class SupplierDaoJDBC implements SupplierDao {
 
     }
 
+    /**
+     * Method for the find queries.
+     * @param query
+     * @param infos
+     * @return Supplier
+     * @throws SQLException
+     */
     private Supplier executeFindQuery(String query, ArrayList<Object> infos) throws SQLException {
         Supplier resultSupplier = null;
         try (Connection connection = databaseConnection.getConnection();
@@ -85,6 +116,11 @@ public class SupplierDaoJDBC implements SupplierDao {
         return resultSupplier;
     }
 
+    /**
+     * Removes supplier by id
+     * @param id
+     * @throws SQLException
+     */
     @Override
     public void remove(int id) throws SQLException {
         String removeSupplierQuery = "DELETE FROM suppliers WHERE id=?;";
@@ -96,6 +132,11 @@ public class SupplierDaoJDBC implements SupplierDao {
         logger.info("Supplier with id {} removed:", id);
     }
 
+    /**
+     * Gets all suppliers from the database
+     * @return list of suppliers
+     * @throws SQLException
+     */
     @Override
     public List<Supplier> getAll() throws SQLException {
         String getSuppliersQuery = "SELECT * FROM suppliers;";
