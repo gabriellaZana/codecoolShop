@@ -8,6 +8,9 @@ import com.codecool.shop.model.ProductCategory;
 import com.codecool.shop.model.Supplier;
 import com.codecool.shop.utils.DatabaseConnection;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -24,6 +27,7 @@ import java.util.List;
  * version 1.0
  */
 public class ProductDaoJDBC implements ProductDao {
+    private static final Logger logger = LoggerFactory.getLogger(ProductDaoJDBC.class);
     private static ProductDaoJDBC instance = null;
 
     /**
@@ -51,6 +55,7 @@ public class ProductDaoJDBC implements ProductDao {
     public static ProductDaoJDBC getInstance() {
         if (instance == null) {
             instance = new ProductDaoJDBC();
+            logger.debug("A new instance of {} has been created", ProductDaoJDBC.class.getSimpleName());
         }
         return instance;
     }
@@ -61,7 +66,9 @@ public class ProductDaoJDBC implements ProductDao {
      * @param filePath The path for the connection.properties file in string format.
      */
     public void setFilePath(String filePath) {
+        String oldFilePath = this.filePath;
         this.filePath = filePath;
+        logger.debug("Filepath has been set to {} from {}",this.filePath, oldFilePath);
     }
 
     /**
@@ -77,6 +84,7 @@ public class ProductDaoJDBC implements ProductDao {
         SupplierDaoJDBC supplierDaoJDBC = SupplierDaoJDBC.getInstance();
         ProductCategoryDaoJDBC productCategoryDaoJDBC = ProductCategoryDaoJDBC.getInstance();
         if (find(product.getName()) != null) {
+            logger.debug("Adding {} failed because already in database.", product.getName());
             return;
         }
         String addQuery = "INSERT INTO products (name, description, price, product_category_id, supplier_id, currency) " +
@@ -88,6 +96,7 @@ public class ProductDaoJDBC implements ProductDao {
         try (Connection connection = databaseConnection.getConnection();
              PreparedStatement statement = databaseConnection.createAndSetPreparedStatement(connection, infos, addQuery)) {
             statement.executeUpdate();
+            logger.info("{} added successfully to database.", product.getName());
         }
     }
 
@@ -147,6 +156,7 @@ public class ProductDaoJDBC implements ProductDao {
                         result.getString("currency"), result.getString("description"),
                         category.find(result.getInt("product_category_id")), supplier.find(result.getInt("supplier_id")));
                 resultProduct.setId(result.getInt("id"));
+                logger.debug("{} found in database.", resultProduct.getName());
             }
         }
         return resultProduct;
@@ -167,6 +177,7 @@ public class ProductDaoJDBC implements ProductDao {
         try (Connection connection = databaseConnection.getConnection();
              PreparedStatement statement = databaseConnection.createAndSetPreparedStatement(connection, infos, removeProductQuery)) {
             statement.executeUpdate();
+            logger.info("Product with id: {} has been removed from database", id);
         }
     }
 

@@ -1,6 +1,8 @@
 package com.codecool.shop.model;
 
 import java.util.ArrayList;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Supplier object
@@ -11,6 +13,8 @@ import java.util.ArrayList;
 public class Supplier extends BaseModel {
     /** products of the Supplier */
     private ArrayList<Product> products;
+    private static final Logger logger = LoggerFactory.getLogger(Supplier.class);
+
 
     /**
      * Constructos
@@ -20,6 +24,7 @@ public class Supplier extends BaseModel {
     public Supplier(String name, String description) {
         super(name, description);
         this.products = new ArrayList<>();
+        logger.debug("New supplier has been created: name: {}, description: {}", name, description);
     }
 
 
@@ -30,6 +35,7 @@ public class Supplier extends BaseModel {
      */
     public void setProducts(ArrayList<Product> products) {
         this.products = products;
+        logger.debug("Product list of {} has been set to: {}", this.getName(), products);
     }
 
 
@@ -50,6 +56,7 @@ public class Supplier extends BaseModel {
      */
     public void addProduct(Product product) {
         this.products.add(product);
+        logger.debug("{} has been added to product list of {}", product.getName(), this.getName());
     }
 
 

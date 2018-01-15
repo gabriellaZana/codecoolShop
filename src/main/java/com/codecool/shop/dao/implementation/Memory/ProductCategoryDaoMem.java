@@ -3,6 +3,9 @@ package com.codecool.shop.dao.implementation.Memory;
 import com.codecool.shop.dao.ProductCategoryDao;
 import com.codecool.shop.model.ProductCategory;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,6 +16,8 @@ import java.util.List;
  * version 1.0
  */
 public class ProductCategoryDaoMem implements ProductCategoryDao {
+    private static final Logger logger = LoggerFactory.getLogger(ProductCategoryDaoMem.class);
+
     /**
      * Storage of Product category objects in memory.
      */
@@ -47,6 +52,7 @@ public class ProductCategoryDaoMem implements ProductCategoryDao {
     public void add(ProductCategory category) {
         category.setId(DATA.size() + 1);
         DATA.add(category);
+        logger.info("{} has been saved to memory",category.getName());
     }
 
 
@@ -70,6 +76,7 @@ public class ProductCategoryDaoMem implements ProductCategoryDao {
     @Override
     public void remove(int id) {
         DATA.remove(find(id));
+        logger.info("Supplier with id {} has been removed from memory.", id);
     }
 
 

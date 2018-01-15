@@ -8,6 +8,8 @@ import com.codecool.shop.model.Product;
 import com.codecool.shop.model.ProductCategory;
 import com.codecool.shop.model.ShoppingCart;
 import com.google.gson.Gson;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import spark.ModelAndView;
 import spark.Request;
 import spark.Response;
@@ -24,13 +26,17 @@ import java.util.*;
  * @version 1.1
  */
 public class ProductController {
+    private static final Logger logger = LoggerFactory.getLogger(ProductController.class);
+
     /**
      * Collects the ProductCategories and the shopping cart content.
      * @param req a Request Object gotten from the client side.
      * @param res a Response Object.
      * @return Returns a ModelAndView with a Map for the thymeleaf template engine.
      */
+
     public static ModelAndView renderProducts(Request req, Response res) throws SQLException{
+
         ProductCategoryDao productCategoryDataStore = ProductCategoryDaoJDBC.getInstance();
         List<ProductCategory> categories = productCategoryDataStore.getAll();
         ShoppingCart shoppingCart = ShoppingCart.getInstance();
@@ -41,6 +47,7 @@ public class ProductController {
         for (Product product : shoppingCart.getProductsFromCart()) {
             sum += product.getDefaultPrice();
         }
+        logger.info("Shopping cart sum: {}", sum);
 
 
         Map<String, Object> params = new HashMap<>();
@@ -72,6 +79,7 @@ public class ProductController {
             price += prod.getDefaultPrice();
             quant++;
         }
+        logger.info("Item quantity in shopping cart: {}, total price: {}", quant, price);
 
 
         Map<String, Float> sumAndQuantity = new HashMap<>();
@@ -80,6 +88,7 @@ public class ProductController {
 
 
         Gson gson = new Gson();
+        logger.debug("", gson.toString());
         return gson.toJson(sumAndQuantity);
     }
 
@@ -105,6 +114,7 @@ public class ProductController {
 
         params.put("cart", shoppingCart);
         params.put("products", productSet);
+        logger.debug("Total products in shopping cart: {}", productSet.size());
         return new ModelAndView(params, "product/cart");
     }
 
@@ -117,6 +127,7 @@ public class ProductController {
     public static String deleteItem(Request req, Response res) {
         ShoppingCart shoppingCart = ShoppingCart.getInstance();
         shoppingCart.deleteItemFromCard(Integer.parseInt(req.body().substring(1, req.body().length() - 1)));
+        logger.debug("Deleted item id: {}", Integer.parseInt(req.body().substring(1, req.body().length() - 1)));
         return "Deleted";
     }
 
@@ -130,6 +141,7 @@ public class ProductController {
         System.out.println("submit carrt");
         ShoppingCart shoppingCart = ShoppingCart.getInstance();
         shoppingCart.removeAllItem();
+        logger.info("Order completed, shopping cart items deleted");
 
         return renderProducts(req, res);
     }

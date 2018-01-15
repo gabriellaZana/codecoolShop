@@ -8,11 +8,14 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Properties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Database connection class, which takes care about the connection to the database.
  */
 public class DatabaseConnection {
+    private static final Logger logger = LoggerFactory.getLogger(DatabaseConnection.class);
 
     private static DatabaseConnection instance = null;
 
@@ -37,6 +40,7 @@ public class DatabaseConnection {
         try {
             InputStream input = new FileInputStream(filePath);
             properties.load(input);
+            logger.info("Properties file has been loaded.");
             input.close();
         } catch (Exception e) {
             e.printStackTrace();
@@ -52,8 +56,10 @@ public class DatabaseConnection {
      */
     public static DatabaseConnection getInstance(String filePath) {
         if (instance == null) {
+            logger.debug("DatabaseConnection instance is new.");
             instance = new DatabaseConnection(filePath);
         }
+        logger.debug("DatabaseCOnnection instance has already been created.");
         return instance;
     }
 
@@ -62,9 +68,12 @@ public class DatabaseConnection {
      */
     private static void setup() {
         host = properties.getProperty("url");
+        logger.debug("Host of the database is: {}.", host);
         databaseName = properties.getProperty("database");
         DB_URL = "jdbc:postgresql://" + host + "/" + databaseName;
+        logger.debug("Database url is: {}.", DB_URL);
         USER = properties.getProperty("user");
+        logger.debug("User of the databse is: {}.", USER);
         PASSWORD = properties.getProperty("password");
     }
 
@@ -77,7 +86,7 @@ public class DatabaseConnection {
         try {
             //STEP 2: Register JDBC driver
             Class.forName(JDBC_DRIVER);
-            System.out.println("Connecting to database...");
+            logger.info("Connecting to database...");
 
             //STEP 3: Open a connection
             connection = DriverManager.getConnection(DB_URL, USER, PASSWORD);
@@ -102,14 +111,19 @@ public class DatabaseConnection {
      */
     public PreparedStatement createAndSetPreparedStatement(Connection conn, List<Object> infos, String sql) throws SQLException {
         PreparedStatement ps = conn.prepareStatement(sql);
+        logger.debug("SQL query to be set is: {}.", ps);
         for (int i = 0; i < infos.size(); i++) {
             int ColumnIndex = i + 1;
+            logger.debug("ColumnIndex is: {}.", ColumnIndex);
             Object actualInfo = infos.get(i);
             if (actualInfo instanceof String) {
+                logger.debug("Actual info is a string.");
                 ps.setString(ColumnIndex, actualInfo.toString());
             } else if (actualInfo instanceof Integer) {
+                logger.debug("Actual info is an integer.");
                 ps.setInt(ColumnIndex, (int) actualInfo);
             } else if (actualInfo instanceof Float) {
+                logger.debug("Actual info is a float.");
                 ps.setFloat(ColumnIndex, (float) actualInfo);
             }
         }
