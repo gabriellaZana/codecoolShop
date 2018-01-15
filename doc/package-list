@@ -1,4 +1,0 @@
-com.codecool.shop.dao
-com.codecool.shop.dao.implementation.JDBC
-com.codecool.shop.dao.implementation.Memory
-com.codecool.shop.model
