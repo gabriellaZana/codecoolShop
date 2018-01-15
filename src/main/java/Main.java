@@ -50,11 +50,27 @@ public class Main {
                 }
         );
         // Equivalent with above
-        get("/index", (Request req, Response res) -> new ThymeleafTemplateEngine().render(ProductController.renderProducts(req, res)));
+        get("/index", (Request request, Response response) -> {
+            try {
+                return new ThymeleafTemplateEngine().render(ProductController.renderProducts(request, response));
+            } catch (Exception e) {
+                response.status(HttpStatus.SERVICE_UNAVAILABLE_503);
+                return "<html><body><h1>" + response.raw().getStatus() + "</h1><p>SERVICE UNAVAILABLE</p></body></html>";
+            }
+
+        });
 
         post("/shopping-cart", ProductController::renderShoppingCartMini);
 
-        get("/cart", (Request req, Response res) -> new ThymeleafTemplateEngine().render(ProductController.renderShoppingCart(req, res)));
+        get("/cart", (Request request, Response response) -> {
+            try {
+                return new ThymeleafTemplateEngine().render(ProductController.renderShoppingCart(request, response));
+            } catch (Exception e) {
+                response.status(HttpStatus.SERVICE_UNAVAILABLE_503);
+                return "<html><body><h1>" + response.raw().getStatus() + "</h1><p>SERVICE UNAVAILABLE</p></body></html>";
+            }
+
+        });
 
         post("/delete-item", ProductController::deleteItem);
 

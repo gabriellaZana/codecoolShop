@@ -1,8 +1,13 @@
 package com.codecool.shop.model;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Currency;
 
 public class Product extends BaseModel {
+
+    private static Logger logger = LoggerFactory.getLogger(Product.class);
 
     private float defaultPrice;
     private Currency defaultCurrency;
@@ -23,6 +28,7 @@ public class Product extends BaseModel {
 
     public void setDefaultPrice(float defaultPrice) {
         this.defaultPrice = defaultPrice;
+        logger.debug("Product({}) defaultPrice setted to: {}", this.getId(), defaultPrice);
     }
 
     public Currency getDefaultCurrency() {
@@ -31,6 +37,7 @@ public class Product extends BaseModel {
 
     public void setDefaultCurrency(Currency defaultCurrency) {
         this.defaultCurrency = defaultCurrency;
+        logger.debug("Product({}) defaultCurrency setted to: {}", this.getId(), defaultCurrency);
     }
 
     public String getPrice() {
@@ -40,6 +47,7 @@ public class Product extends BaseModel {
     public void setPrice(float price, String currency) {
         this.defaultPrice = price;
         this.defaultCurrency = Currency.getInstance(currency);
+        logger.info("Product({}) Price setted to: {} in {}", this.getId(), defaultPrice, defaultCurrency);
     }
 
     public ProductCategory getProductCategory() {
