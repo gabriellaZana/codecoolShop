@@ -12,10 +12,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * ProductCategory class which implements the ProductCategory Interface with database.
+ */
 
 public class ProductCategoryDaoJDBC implements ProductCategoryDao {
     private static final Logger logger = LoggerFactory.getLogger(ProductCategoryDaoJDBC.class);
@@ -27,6 +29,11 @@ public class ProductCategoryDaoJDBC implements ProductCategoryDao {
     private ProductCategoryDaoJDBC() {
     }
 
+    /**
+         * The method is written with Singleton pattern, creates a ProductCategoryDaoJDBC instance if it doesn't exists,
+         * returns the existing one otherwise.
+     * @return Returns the ProductCategoryDaoJDBC instance.
+     */
     public static ProductCategoryDaoJDBC getInstance() {
         if (instance == null) {
             instance = new ProductCategoryDaoJDBC();
@@ -35,11 +42,20 @@ public class ProductCategoryDaoJDBC implements ProductCategoryDao {
         return instance;
     }
 
+    /**
+     * Sets the filePath of the instance so it can reach the .properties file.
+     * @param filePath The path for the .properties file in string format.
+     */
     public void setFilePath(String filePath) {
         this.filePath = filePath;
         logger.debug("FilePath has been set to {}.", filePath);
     }
 
+    /**
+     * Adds the given ProductCategory object to the database by getting a connection, setting up a preparedStatement and
+     * executing the query.
+     * @param category The ProductCategory object which needs to be added.
+     */
     @Override
     public void add(ProductCategory category) throws SQLException{
         String addQuery = "INSERT INTO product_categories (name, description) VALUES (?, ?);";
@@ -57,6 +73,11 @@ public class ProductCategoryDaoJDBC implements ProductCategoryDao {
         logger.warn("Product category is already in database with name {}.", category.getName());
     }
 
+    /**
+     * Finds the product category with the given id in the database.
+     * @param id A unique number for identifying the product category in the database.
+     * @return Returns the ProductCategory object if found, <code>null</code> otherwise.
+     */
     @Override
     public ProductCategory find(int id) throws SQLException{
         String getProductQuery = "SELECT * FROM product_categories WHERE id=?";
@@ -65,6 +86,11 @@ public class ProductCategoryDaoJDBC implements ProductCategoryDao {
         return executeFindQuery(getProductQuery, infos);
     }
 
+    /**
+     * Finds the product category with the given name in the database.
+     * @param name The name of the product category which needs to be find.
+     * @return Returns the ProductCategory object if found, <code>null</code> otherwise.
+     */
     public ProductCategory find(String name) throws SQLException{
         String getProductQuery = "SELECT * FROM product_categories WHERE name=?";
         ArrayList<Object> infos = new ArrayList<>(Collections.singletonList(name));
@@ -72,7 +98,14 @@ public class ProductCategoryDaoJDBC implements ProductCategoryDao {
         return executeFindQuery(getProductQuery, infos);
     }
 
-
+    /**
+     * Helps to execute the find queries by getting the connection, setting up a prepared statement, because of their
+     * different given parameters.
+     * @param query The query which needs to be set up, in string format.
+     * @param infos A list, which has the id or name in object format.
+     * @return Returns the found product category.
+     * @throws SQLException
+     */
     private ProductCategory executeFindQuery(String query, ArrayList<Object> infos) throws SQLException {
         ProductCategory resultProductCategory = null;
         try (Connection connection = databaseConnection.getConnection();
@@ -91,7 +124,11 @@ public class ProductCategoryDaoJDBC implements ProductCategoryDao {
     }
 
 
-
+    /**
+     * Removes the product category from the database with the given id by getting a connection, setting up a prepared
+     * statement and executing a query.
+     * @param id A unique number for identifying the product category in the database.
+     */
     @Override
     public void remove(int id) throws SQLException {
         String removeProductQuery = "DELETE FROM product_categories WHERE id = ?;";
@@ -105,6 +142,12 @@ public class ProductCategoryDaoJDBC implements ProductCategoryDao {
         }
     }
 
+
+    /**
+     * Getting a connection, setting up a prepared statement, executing a query and collecting all the product categories
+     * from the database.
+     * @return Returns all the ProductCategory objects in a list, which can be empty as well.
+     */
     @Override
     public List<ProductCategory> getAll() throws SQLException {
         List<ProductCategory> productCategoryList = new ArrayList<>();

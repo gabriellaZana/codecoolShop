@@ -8,11 +8,12 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Properties;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
+/**
+ * Database connection class, which takes care about the connection to the database.
+ */
 public class DatabaseConnection {
     private static final Logger logger = LoggerFactory.getLogger(DatabaseConnection.class);
 
@@ -30,7 +31,10 @@ public class DatabaseConnection {
     private static String PASSWORD;
     private String pass= "src/main/resources/sql/connection.properties";
 
-
+    /**
+     * Constructor for the DatabaseConnection class.
+     * @param filePath The path for the .properties file in string format.
+     */
     private DatabaseConnection(String filePath) {
         // load a properties file
         try {
@@ -44,6 +48,12 @@ public class DatabaseConnection {
         setup();
     }
 
+    /**
+     * The method is written with Singleton pattern, creates a DatabaseConnection instance if it doesn't exists,
+     * returns the existing one otherwise.
+     * @param filePath The path for the .properties file in string format.
+     * @return Returns the DatabaseConnection instance.
+     */
     public static DatabaseConnection getInstance(String filePath) {
         if (instance == null) {
             logger.debug("DatabaseConnection instance is new.");
@@ -53,7 +63,9 @@ public class DatabaseConnection {
         return instance;
     }
 
-    
+    /**
+     * Sets up the database credentials from the .properties file.
+     */
     private static void setup() {
         host = properties.getProperty("url");
         logger.debug("Host of the database is: {}.", host);
@@ -65,7 +77,10 @@ public class DatabaseConnection {
         PASSWORD = properties.getProperty("password");
     }
 
-
+    /**
+     * Connects to the database by registering the JDBC driver and opening the connection.
+     * @return Returns the Connection object.
+     */
     public Connection getConnection() {
         Connection connection = null;
         try {
@@ -86,6 +101,14 @@ public class DatabaseConnection {
         return connection;
     }
 
+    /**
+     * Setting up a prepared statement on a given connection with the given parameters.
+     * @param conn A Connection object.
+     * @param infos List of information which needs to be set up in the sql query with.
+     * @param sql An sql query in string format.
+     * @return Returns a prepared statement to execute in other methods.
+     * @throws SQLException
+     */
     public PreparedStatement createAndSetPreparedStatement(Connection conn, List<Object> infos, String sql) throws SQLException {
         PreparedStatement ps = conn.prepareStatement(sql);
         logger.debug("SQL query to be set is: {}.", ps);
