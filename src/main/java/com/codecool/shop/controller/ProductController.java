@@ -1,5 +1,6 @@
 package com.codecool.shop.controller;
 
+
 import com.codecool.shop.dao.ProductCategoryDao;
 import com.codecool.shop.dao.implementation.JDBC.ProductCategoryDaoJDBC;
 import com.codecool.shop.dao.implementation.JDBC.ProductDaoJDBC;
@@ -7,6 +8,7 @@ import com.codecool.shop.dao.implementation.JDBC.ProductDaoJDBC;
 import com.codecool.shop.model.Product;
 import com.codecool.shop.model.ProductCategory;
 import com.codecool.shop.model.ShoppingCart;
+import com.codecool.shop.utils.Mailer;
 import com.google.gson.Gson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -142,6 +144,7 @@ public class ProductController {
         ShoppingCart shoppingCart = ShoppingCart.getInstance();
         shoppingCart.removeAllItem();
         logger.info("Order completed, shopping cart items deleted");
+        Mailer.send("grannyshop.javengers@gmail.com","grannyshop", "nopiwork@gmail.com", "test", "test message");
 
         return renderProducts(req, res);
     }
