@@ -17,6 +17,7 @@
 
     <script src="/js/script.js" defer=""></script>
 
+
     <link rel="stylesheet" type="text/css" href="/css/custom.css"/>
 </head>
 
@@ -37,12 +38,40 @@
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
-                <li><a href="#">Register<span class="sr-only"></span></a></li>
-                <li><a href="#">Login</a></li>
+                <li><a href="#" data-toggle="modal" data-target="#register-modal">Register</a></li>
+                <li><a href="#" data-toggle="modal" data-target="#login-modal">Login</a></li>
             </ul>
         </div><!-- /.navbar-collapse -->
     </div><!-- /.container-fluid -->
 </nav>
+
+<div class="modal fade" id="login-modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="loginmodal-container">
+            <h1>Login to Your Account</h1><br></br>
+            <form>
+                <input type="text" name="user" placeholder="Username"></input>
+                <input type="password" name="pass" placeholder="Password"></input>
+                <input type="submit" name="login" class="login loginmodal-submit" value="Login"></input>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="register-modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="registermodal-container">
+            <h1>Register Yourself</h1><br></br>
+            <form>
+                <input type="text" name="user" placeholder="Your chosen username"></input>
+                <input type="password" name="pass" placeholder="Your password">
+                <input type="password" name="pass" placeholder="Your password again"></input>
+                <input type="email" name="email" placeholder="Your e-mail address"></input>
+                <input type="submit" name="register" class="register registermodal-submit" value="Register"/></input>
+            </form>
+        </div>
+    </div>
+</div>
+
 <div class="jumbotron text-center">
     <h1>Codecool Granny Shop</h1>
     <div style="display: none">
@@ -104,12 +133,13 @@
 
 </div>
 
+
 <div th:replace="footer :: copy"></div>
 
 
 <script src="https://code.jquery.com/jquery-3.2.1.js" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" crossorigin="anonymous"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" crossorigin="anonymous"></script>
 
 
 
