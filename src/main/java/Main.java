@@ -6,6 +6,7 @@ import com.codecool.shop.dao.*;
 import com.codecool.shop.dao.implementation.JDBC.ProductCategoryDaoJDBC;
 import com.codecool.shop.dao.implementation.JDBC.ProductDaoJDBC;
 import com.codecool.shop.dao.implementation.JDBC.SupplierDaoJDBC;
+import com.codecool.shop.dao.implementation.JDBC.UserDaoJDBC;
 import com.codecool.shop.dao.implementation.Memory.ProductCategoryDaoMem;
 import com.codecool.shop.dao.implementation.Memory.ProductDaoMem;
 import com.codecool.shop.dao.implementation.Memory.SupplierDaoMem;
@@ -17,6 +18,7 @@ import spark.template.thymeleaf.ThymeleafTemplateEngine;
 
 import javax.xml.ws.ResponseWrapper;
 import java.sql.SQLException;
+import java.util.Objects;
 
 public class Main {
 
@@ -75,6 +77,13 @@ public class Main {
         post("/delete-item", ProductController::deleteItem);
 
         post("/submit-cart", ProductController::submitCart);
+
+        post("/checkLogin/:username/:password", (Request request, Response response) -> {
+            UserDao userDao = UserDaoJDBC.getInstance();
+            User user = userDao.find(request.params("email"));
+            if (user == null) return false;
+            return Objects.equals(user.getPassword(), request.params("password"));
+        });
 
         // Add this line to your project to enable the debug screen
         enableDebugScreen();
