@@ -8,6 +8,7 @@ import com.codecool.shop.model.Product;
 import com.codecool.shop.model.ProductCategory;
 import com.codecool.shop.model.ShoppingCart;
 import com.google.gson.Gson;
+import com.sun.org.apache.xpath.internal.operations.Mod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import spark.ModelAndView;
@@ -144,6 +145,16 @@ public class ProductController {
         logger.info("Order completed, shopping cart items deleted");
 
         return renderProducts(req, res);
+    }
+
+    public static String register(Request req, Response res) {
+        String fromJson = req.body();
+        System.out.println(fromJson);
+
+
+        Gson gson = new Gson();
+        logger.debug("", gson.toString());
+        return gson.toJson("success");
     }
 }
 

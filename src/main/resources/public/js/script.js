@@ -140,6 +140,24 @@ function submitClicked(){
 }
 
 
+function register(){
+    $('#register').on('submit', function (event) {
+        event.preventDefault();
+        let userData = $('#register').serializeArray();
+        alert("Successfull reg");
+        $.ajax({
+            url:'/register',
+            type: 'POST',
+            contentType: 'application/json; charset=UTF-8',
+            data:JSON.stringify(userData),
+            success: function (response) {
+                console.log(response);
+            }
+        })
+    })
+}
+
+
 $(document).ready(function () {
     addEventListenerToSupplierButtons();
     addEventListenerToCategoryBanners();
@@ -150,5 +168,6 @@ $(document).ready(function () {
     countFinalPrice();
     displayTotalPrice();
     submitClicked();
+    register();
     
 });

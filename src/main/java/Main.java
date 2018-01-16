@@ -76,6 +76,8 @@ public class Main {
 
         post("/submit-cart", ProductController::submitCart);
 
+        post("/register", ProductController::register);
+
         // Add this line to your project to enable the debug screen
         enableDebugScreen();
     }
