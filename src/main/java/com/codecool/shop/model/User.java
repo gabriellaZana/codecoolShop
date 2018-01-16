@@ -2,6 +2,7 @@ package com.codecool.shop.model;
 
 public class User {
     private String email, password, shipping_address, billing_address, firstname, lastname;
+    int id;
 
 
     public User(String email, String password, String shipping_address, String billing_address, String firstname, String lastname) {
@@ -11,6 +12,14 @@ public class User {
         this.shipping_address = shipping_address;
         this.firstname = firstname;
         this.lastname = lastname;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getEmail() {
