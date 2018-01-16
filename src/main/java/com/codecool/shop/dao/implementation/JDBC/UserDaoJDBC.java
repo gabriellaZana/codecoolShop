@@ -51,9 +51,7 @@ public class UserDaoJDBC implements UserDao{
              ResultSet result = statement.executeQuery()) {
 
             while (result.next()) {
-                resultUser = new User(result.getString("email"), result.getString("password"),
-                        result.getString("shipping_address"), result.getString("billing_address"),
-                        result.getString("firstname"), result.getString("lastname"));
+                resultUser = new User(result.getString("email"), result.getString("password"));
                 resultUser.setId(result.getInt("id"));
             }
         }
