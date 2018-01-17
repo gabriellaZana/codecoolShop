@@ -143,8 +143,8 @@ function submitClicked(){
 function register(){
     $('#register').on('submit', function (event) {
         event.preventDefault();
-        let email = $("#useremail").val();
-        let password = $("#password").val();
+        let email = $("#useremailreg").val();
+        let password = $("#passwordreg").val();
         let userDatas = [];
         userDatas.push(email);
         userDatas.push(password);
@@ -156,8 +156,36 @@ function register(){
             data:JSON.stringify(userDatas),
             success: function (response) {
                 console.log(response);
+                if(response == '"failure"'){
+                    alert("Email is already in use!");
+                } else {
+                    alert("Thank you for registering!");
+                    $(".registermodal-container").hide();
+                }
             }
         })
+    })
+}
+
+function login(){
+    $('#login').on('submit', function (event) {
+        event.preventDefault();
+        let email = $('#useremaillogin').val();
+        let password = $('#passwordlogin').val();
+        let userDatas = [];
+        userDatas.push(email);
+        userDatas.push(password);
+        $.ajax({
+            url:'/login',
+            type: 'POST',
+            contentType: 'application/json; charset=UTF-8',
+            data:JSON.stringify(userDatas),
+            success: function (response) {
+                console.log(response)
+
+            }
+        })
+
     })
 }
 
@@ -173,5 +201,6 @@ $(document).ready(function () {
     displayTotalPrice();
     submitClicked();
     register();
+    login();
     
 });

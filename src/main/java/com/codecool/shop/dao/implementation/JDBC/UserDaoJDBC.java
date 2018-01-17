@@ -63,7 +63,7 @@ public class UserDaoJDBC implements UserDao{
             return null;
         }
         return executeFindQuery(query, infos);
-        
+
     }
 
     private User executeFindQuery(String query, ArrayList<Object> infos) throws SQLException {
@@ -73,6 +73,7 @@ public class UserDaoJDBC implements UserDao{
              ResultSet result = statement.executeQuery()) {
             while (result.next()) {
                 resultUser = new User(result.getString("email"));
+                resultUser.setPassword(result.getString("password"));
                 //resultUser.setId(result.getInt("id"));
             }
         }

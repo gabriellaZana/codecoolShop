@@ -79,6 +79,8 @@ public class Main {
 
         post("/register", UserController::register);
 
+        post("/login", UserController::login);
+
         // Add this line to your project to enable the debug screen
         enableDebugScreen();
     }

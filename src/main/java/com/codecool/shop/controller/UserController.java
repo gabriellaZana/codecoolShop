@@ -36,9 +36,30 @@ public class UserController {
         if (userDaoJDBC.find(userEmail) == null){
             userDaoJDBC.add(user);
         } else {
-            return gson.toJson("Email already in use!");
+            return gson.toJson("failure");
         }
 
         return gson.toJson("success");
+    }
+
+    public static String login(Request request, Response response) throws SQLException, PasswordStorage.InvalidHashException, PasswordStorage.CannotPerformOperationException {
+        String loginData = request.body();
+        System.out.println(loginData);
+        Gson gson = new Gson();
+        ArrayList<String> list = gson.fromJson(loginData, new TypeToken<ArrayList<String>>() {}.getType());
+
+        String userEmail = list.get(0);
+        String passwordRaw = list.get(1);
+
+        UserDaoJDBC userDaoJDBC = UserDaoJDBC.getInstance();
+        User user = userDaoJDBC.find(userEmail);
+
+        String storedPassword = user.getPassword();
+        System.out.println(storedPassword);
+
+        if(PasswordStorage.verifyPassword(passwordRaw, storedPassword)){
+            return gson.toJson("success");
+        }
+        return gson.toJson("failure");
     }
 }
