@@ -143,13 +143,19 @@ function submitClicked(){
 function register(){
     $('#register').on('submit', function (event) {
         event.preventDefault();
-        let userData = $('#register').serializeArray();
-        alert("Successfull reg");
+        let email = $("#useremail").val();
+        let username = $("#username").val();
+        let password = $("#password").val();
+        let userDatas = [];
+        userDatas.push(email);
+        userDatas.push(username);
+        userDatas.push(password);
+        //alert("Successfull reg");
         $.ajax({
             url:'/register',
             type: 'POST',
             contentType: 'application/json; charset=UTF-8',
-            data:JSON.stringify(userData),
+            data:JSON.stringify(userDatas),
             success: function (response) {
                 console.log(response);
             }

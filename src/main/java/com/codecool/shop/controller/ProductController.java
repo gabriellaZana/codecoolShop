@@ -7,16 +7,22 @@ import com.codecool.shop.dao.implementation.JDBC.ProductDaoJDBC;
 import com.codecool.shop.model.Product;
 import com.codecool.shop.model.ProductCategory;
 import com.codecool.shop.model.ShoppingCart;
+import com.codecool.shop.model.User;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.sun.org.apache.xpath.internal.operations.Mod;
+import jdk.nashorn.internal.parser.JSONParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import spark.ModelAndView;
 import spark.Request;
 import spark.Response;
 
+import java.lang.reflect.Array;
+import java.lang.reflect.Type;
 import java.sql.SQLException;
 import java.util.*;
+import org.json.*;
 
 /**
  * ProductController
@@ -148,11 +154,21 @@ public class ProductController {
     }
 
     public static String register(Request req, Response res) {
-        String fromJson = req.body();
-        System.out.println(fromJson);
+        String regData = req.body();
+        System.out.println(regData);
+
+
+
 
 
         Gson gson = new Gson();
+
+        ArrayList<String> list = gson.fromJson(regData, new TypeToken<ArrayList<String>>() {}.getType());
+
+        for (String item: list){
+            System.out.println(item);
+        }
+
         logger.debug("", gson.toString());
         return gson.toJson("success");
     }
