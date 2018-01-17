@@ -144,11 +144,9 @@ function register(){
     $('#register').on('submit', function (event) {
         event.preventDefault();
         let email = $("#useremail").val();
-        let username = $("#username").val();
         let password = $("#password").val();
         let userDatas = [];
         userDatas.push(email);
-        userDatas.push(username);
         userDatas.push(password);
         //alert("Successfull reg");
         $.ajax({

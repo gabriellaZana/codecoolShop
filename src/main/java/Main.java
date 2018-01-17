@@ -2,6 +2,7 @@ import static spark.Spark.*;
 import static spark.debug.DebugScreen.enableDebugScreen;
 
 import com.codecool.shop.controller.ProductController;
+import com.codecool.shop.controller.UserController;
 import com.codecool.shop.dao.*;
 import com.codecool.shop.dao.implementation.JDBC.ProductCategoryDaoJDBC;
 import com.codecool.shop.dao.implementation.JDBC.ProductDaoJDBC;
@@ -76,7 +77,7 @@ public class Main {
 
         post("/submit-cart", ProductController::submitCart);
 
-        post("/register", ProductController::register);
+        post("/register", UserController::register);
 
         // Add this line to your project to enable the debug screen
         enableDebugScreen();

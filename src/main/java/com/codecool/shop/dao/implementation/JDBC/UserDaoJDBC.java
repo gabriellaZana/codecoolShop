@@ -6,9 +6,11 @@ import com.codecool.shop.utils.DatabaseConnection;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,6 +56,26 @@ public class UserDaoJDBC implements UserDao{
     
     @Override
     public User find(String email) throws SQLException {
-        return null;
+
+        String query = "SELECT * FROM users WHERE email =?;";
+        ArrayList<Object> infos = new ArrayList<>(Collections.singletonList(email));
+        if(executeFindQuery(query, infos) == null){
+            return null;
+        }
+        return executeFindQuery(query, infos);
+        
+    }
+
+    private User executeFindQuery(String query, ArrayList<Object> infos) throws SQLException {
+        User resultUser = null;
+        try (Connection connection = databaseConnection.getConnection();
+             PreparedStatement statement = databaseConnection.createAndSetPreparedStatement(connection, infos, query);
+             ResultSet result = statement.executeQuery()) {
+            while (result.next()) {
+                resultUser = new User(result.getString("email"));
+                //resultUser.setId(result.getInt("id"));
+            }
+        }
+        return resultUser;
     }
 }
