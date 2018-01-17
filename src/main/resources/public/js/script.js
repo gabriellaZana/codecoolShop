@@ -160,7 +160,11 @@ function register(){
                     alert("Email is already in use!");
                 } else {
                     alert("Thank you for registering!");
-                    $(".registermodal-container").hide();
+                    $("body").removeClass("modal-open");
+                    $("#register-modal").removeClass("in");
+                    $("#passwordreg").val("");
+                    $("#passwordreg2").val("");
+                    $("#useremailreg").val("");
                 }
             }
         })

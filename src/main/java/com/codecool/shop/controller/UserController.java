@@ -8,6 +8,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import spark.Request;
 import spark.Response;
+import spark.Session;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -56,6 +57,10 @@ public class UserController {
 
         String storedPassword = user.getPassword();
         System.out.println(storedPassword);
+
+        Session session =  request.session(true);
+        session.attribute("user", user.getEmail());
+
 
         if(PasswordStorage.verifyPassword(passwordRaw, storedPassword)){
             return gson.toJson("success");
