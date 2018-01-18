@@ -4,6 +4,7 @@ import com.codecool.shop.dao.ProductCategoryDao;
 import com.codecool.shop.dao.implementation.JDBC.ProductCategoryDaoJDBC;
 import com.codecool.shop.dao.implementation.JDBC.ProductDaoJDBC;
 
+import com.codecool.shop.exception.ConnectToStorageFailed;
 import com.codecool.shop.model.Product;
 import com.codecool.shop.model.ProductCategory;
 import com.codecool.shop.model.ShoppingCart;
@@ -35,7 +36,7 @@ public class ProductController {
      * @return Returns a ModelAndView with a Map for the thymeleaf template engine.
      */
 
-    public static ModelAndView renderProducts(Request req, Response res) throws SQLException{
+    public static ModelAndView renderProducts(Request req, Response res) throws ConnectToStorageFailed{
 
         ProductCategoryDao productCategoryDataStore = ProductCategoryDaoJDBC.getInstance();
         List<ProductCategory> categories = productCategoryDataStore.getAll();
@@ -64,7 +65,7 @@ public class ProductController {
      * @param res a Response Object.
      * @return Returns a JSON with the ShoppingCart calculated price and Product quantity.
      */
-    public static String renderShoppingCartMini(Request req, Response res) throws SQLException {
+    public static String renderShoppingCartMini(Request req, Response res) throws ConnectToStorageFailed {
 
         ShoppingCart shoppingCart = ShoppingCart.getInstance();
         ProductDaoJDBC productDaoJdbc = ProductDaoJDBC.getInstance();
@@ -137,7 +138,7 @@ public class ProductController {
      * @param res a Response object.
      * @return Returns the renderProducts ModelAndView.
      */
-    public static ModelAndView submitCart(Request req, Response res) throws SQLException {
+    public static ModelAndView submitCart(Request req, Response res) throws ConnectToStorageFailed {
         System.out.println("submit carrt");
         ShoppingCart shoppingCart = ShoppingCart.getInstance();
         shoppingCart.removeAllItem();
