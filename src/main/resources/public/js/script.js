@@ -201,6 +201,11 @@ function login(){
                     });
                     $("#useremaillogin").val("");
                     $("#passwordlogin").val("");
+                    document.getElementById("cart").style.display = "block";
+                    var x = document.getElementsByClassName("add-to-cart-button");
+                    for (var i = 0; i < x.length; i++) {
+                        x[i].style.display = 'block';
+                    }
                 }
             }
         })
@@ -208,8 +213,7 @@ function login(){
     })
 }
 
-function checkPass()
-{
+function checkPass() {
     var pass1 = document.getElementById('passwordreg');
     var pass2 = document.getElementById('passwordreg2');
     var message = document.getElementById('confirmMessage');
