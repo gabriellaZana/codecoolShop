@@ -165,7 +165,8 @@ function addEventListenerToProceedButton() {
         let payment_form = $("#payment_form").find("input");
         for (let i = 0; i < payment_form.length; i++) {
             payment_form[i].addEventListener('change', function() {
-                $("#paypal-button").toggle();
+                $('#paypal-button').toggle();
+                $('#credit_card_form').toggle();
             })
         }
     }

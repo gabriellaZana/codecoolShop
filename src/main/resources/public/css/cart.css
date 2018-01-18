@@ -26,3 +26,11 @@ td{
 #user_form, #payment_form, #paypal-button {
     display: none;
 }
+
+#credit_card_form, #paypal-button {
+    padding: 10px;
+}
+
+#credit_card_form input, select {
+    margin-top: 10px;
+}
