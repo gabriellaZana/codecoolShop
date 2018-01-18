@@ -1,5 +1,6 @@
 package com.codecool.shop.dao;
 
+import com.codecool.shop.exception.ConnectToStorageFailed;
 import com.codecool.shop.model.Supplier;
 import com.codecool.shop.model.Product;
 import com.codecool.shop.model.ProductCategory;
@@ -14,7 +15,7 @@ public interface ProductDao {
      * @param product
      * @throws SQLException
      */
-    void add(Product product) throws SQLException;
+    void add(Product product) throws ConnectToStorageFailed;
 
     /**
      * finds product by id
@@ -22,21 +23,21 @@ public interface ProductDao {
      * @return Product
      * @throws SQLException
      */
-    Product find(int id) throws SQLException;
+    Product find(int id) throws ConnectToStorageFailed;
 
     /**
      * Removes product by id
      * @param id
      * @throws SQLException
      */
-    void remove(int id) throws SQLException;
+    void remove(int id) throws ConnectToStorageFailed;
 
     /**
      * Gets all products
      * @return list of products
      * @throws SQLException
      */
-    List<Product> getAll() throws SQLException;
+    List<Product> getAll() throws ConnectToStorageFailed;
 
     /**
      * Gets products from a supplier
@@ -44,7 +45,7 @@ public interface ProductDao {
      * @return list of products
      * @throws SQLException
      */
-    List<Product> getBy(Supplier supplier) throws SQLException;
+    List<Product> getBy(Supplier supplier) throws ConnectToStorageFailed;
 
     /**
      * Gets products by product category
@@ -52,6 +53,6 @@ public interface ProductDao {
      * @return list of products
      * @throws SQLException
      */
-    List<Product> getBy(ProductCategory productCategory) throws SQLException;
+    List<Product> getBy(ProductCategory productCategory) throws ConnectToStorageFailed;
 
 }
