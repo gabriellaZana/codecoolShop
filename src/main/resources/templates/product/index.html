@@ -51,7 +51,7 @@
         <div class="loginmodal-container">
             <h1>Login to Your Account</h1><br></br>
             <form id="login" method="post">
-                <input id="useremaillogin" type="email" name="email" placeholder="Your e-mail address" required="required"></input>
+                <input id="useremaillogin" type="email" name="email" placeholder="Your e-mail address" required="required" autofocus="autofocus"></input>
                 <input id="passwordlogin" type="password" name="pass" placeholder="Password" required="required"></input>
                 <input type="submit" name="login" class="login loginmodal-submit" value="Login"></input>
             </form>
@@ -63,7 +63,7 @@
         <div class="registermodal-container">
             <h1>Register Yourself</h1><br></br>
             <form name="register" method="post" id="register">
-                <input id="useremailreg" type="email" name="email" placeholder="Your e-mail address" required="required"></input>
+                <input id="useremailreg" type="email" name="email" placeholder="Your e-mail address" required="required" autofocus="autofocus"></input>
                 <input id="passwordreg" type="password" name="pass" placeholder="Your password" required="required">
                 <input id="passwordreg2" type="password" name="pass2" onkeyup="checkPass(); return false;" placeholder="Your password again" required="required"></input>
                 <span id="confirmMessage" class="confirmMessage"></span>
