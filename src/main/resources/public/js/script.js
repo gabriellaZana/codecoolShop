@@ -121,65 +121,135 @@ function displayTotalPrice() {
     $('#total_price').text('Total price is: ' + totalPrice);
 }
 
+
 function addEventListenerToProceedButton() {
     let payment_form = $("#payment_form");
     let user_form = $("#user_form");
     if (payment_form) {
         user_form.on('submit', function (e) {
             e.preventDefault();
-            /*$.ajax({
-                url: '/save_user_information', // form action url
-                dataType: 'json', // request type html/json/xml
-                data: user_form.serialize(), // serialize form data
-                success: function(response) {
-
-                },
-                error: function(e) {
-                    console.log(e)
-                }
-            });*/
             user_form.hide();
             payment_form.show();
-
         })
     }
 }
 
-    function submitClicked() {
-        $('#submit').on('click', function () {
-            alert('Successful order!');
-            $.ajax({
-                url: '/submit-cart',
-                type: 'POST',
-                contentType: 'application/json; charset=UTF-8',
-                data: JSON.stringify("asd"),
-                success: function (response) {
-                    $(location).attr('href', '/');
-                }
-            });
-
+function addEventListenerToPaymentRadioButtons() {
+    let payment_form = $("#payment_form").find("input");
+    for (let i = 0; i < payment_form.length; i++) {
+        payment_form[i].addEventListener('change', function () {
+            $("#paypal-button").toggle();
         })
     }
+}
 
-    function addEventListenerToPaymentRadioButtons() {
-        let payment_form = $("#payment_form").find("input");
-        for (let i = 0; i < payment_form.length; i++) {
-            payment_form[i].addEventListener('change', function() {
-                $("#paypal-button").toggle();
+function register() {
+    $('#register').on('submit', function (event) {
+        event.preventDefault();
+        let email = $("#useremailreg").val();
+        let password = $("#passwordreg").val();
+        let userDatas = [];
+        userDatas.push(email);
+        userDatas.push(password);
+        $.ajax({
+            url: '/register',
+            type: 'POST',
+            contentType: 'application/json; charset=UTF-8',
+            data: JSON.stringify(userDatas),
+            success: function (response) {
+                console.log(response);
+                if (response == '"failure"') {
+                    alert("Email is already in use!");
+                    $("#passwordreg").val("");
+                    $("#passwordreg2").val("");
+                    $("#useremailreg").val("");
+                } else {
+                    $("#register-modal").hide();
+                    alert("Thank you for registering!");
+                    $(function () {
+                        $('#register-modal').modal('toggle');
+                    });
+                    $("#passwordreg").val("");
+                    $("#passwordreg2").val("");
+                    $("#useremailreg").val("");
+                }
+            }
+        })
+    })
+}
+
+function login() {
+    $('#login').on('submit', function (event) {
+            event.preventDefault();
+            let email = $('#useremaillogin').val();
+            let password = $('#passwordlogin').val();
+            let userDatas = [];
+            userDatas.push(email);
+            userDatas.push(password);
+            $.ajax({
+                url: '/login',
+                type: 'POST',
+                contentType: 'application/json; charset=UTF-8',
+                data: JSON.stringify(userDatas),
+                success: function (response) {
+                    console.log(response)
+                    if (response == '"failure"') {
+                        alert("Incorrect password or e-mail address!");
+                        $("#useremaillogin").val("");
+                        $("#passwordlogin").val("");
+                    } else {
+                        alert("Logged in, welcome:)");
+                        $(function () {
+                            $('#login-modal').modal('toggle');
+                        });
+                        $("#useremaillogin").val("");
+                        $("#passwordlogin").val("");
+                        $("#regbutton").hide();
+
+                        $("#loginbutton").attr("id", "logout");
+                        $("#logout").html('<a id="log-out" href="/logout">Logout</a>');
+                        $("#logout").wrap('<strong></strong>');
+
+                        location.reload();
+                    }
+                }
             })
+
         }
+    )
+}
+
+function checkPass() {
+    var pass1 = document.getElementById('passwordreg');
+    var pass2 = document.getElementById('passwordreg2');
+    var message = document.getElementById('confirmMessage');
+    var goodColor = "#66cc66";
+    var badColor = "#ff6666";
+
+    if (pass1.value == pass2.value) {
+        pass2.style.backgroundColor = goodColor;
+        message.style.color = goodColor;
+        message.innerHTML = "Passwords Match!"
+    } else {
+        pass2.style.backgroundColor = badColor;
+        message.style.color = badColor;
+        message.innerHTML = "Passwords Do Not Match!"
     }
+}
 
 
-    $(document).ready(function () {
-        addEventListenerToSupplierButtons();
-        addEventListenerToCategoryBanners();
-        addEventListenerToQuantity();
-        addEventListenerToTrashBin();
-        addEventListenerToShopButton();
-        getProductId();
-        countFinalPrice();
-        displayTotalPrice();
-        addEventListenerToProceedButton();
-        addEventListenerToPaymentRadioButtons();
-    });
+$(document).ready(function () {
+    addEventListenerToSupplierButtons();
+    addEventListenerToCategoryBanners();
+    addEventListenerToQuantity();
+    addEventListenerToTrashBin();
+    addEventListenerToShopButton();
+    getProductId();
+    countFinalPrice();
+    displayTotalPrice();
+    register();
+    login();
+    addEventListenerToPaymentRadioButtons();
+    addEventListenerToProceedButton();
+});
+

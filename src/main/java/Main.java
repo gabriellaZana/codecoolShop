@@ -2,6 +2,7 @@ import static spark.Spark.*;
 import static spark.debug.DebugScreen.enableDebugScreen;
 
 import com.codecool.shop.controller.ProductController;
+import com.codecool.shop.controller.UserController;
 import com.codecool.shop.dao.*;
 import com.codecool.shop.dao.implementation.JDBC.ProductCategoryDaoJDBC;
 import com.codecool.shop.dao.implementation.JDBC.ProductDaoJDBC;
@@ -78,6 +79,12 @@ public class Main {
 
         get("/empty-cart", ProductController::emptyCart);
 //        post("/save_user_information"); //TODO Save user information while checking out.
+
+        post("/register", UserController::register);
+
+        post("/login", UserController::login);
+
+        get("/logout", UserController::logout);
 
         // Add this line to your project to enable the debug screen
         enableDebugScreen();

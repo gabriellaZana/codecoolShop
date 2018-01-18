@@ -6,6 +6,7 @@ import com.codecool.shop.dao.implementation.JDBC.OrderDaoJDBC;
 import com.codecool.shop.dao.implementation.JDBC.ProductCategoryDaoJDBC;
 import com.codecool.shop.dao.implementation.JDBC.ProductDaoJDBC;
 
+
 import com.codecool.shop.exception.ConnectToStorageFailed;
 import com.codecool.shop.model.Order;
 import com.codecool.shop.model.Product;
@@ -14,12 +15,26 @@ import com.codecool.shop.model.ShoppingCart;
 import com.codecool.shop.utils.Mailer;
 import com.google.gson.Gson;
 import org.eclipse.jetty.http.HttpStatus;
+
+import com.codecool.shop.dao.implementation.JDBC.UserDaoJDBC;
+import com.codecool.shop.model.Product;
+import com.codecool.shop.model.ProductCategory;
+import com.codecool.shop.model.ShoppingCart;
+import com.codecool.shop.model.User;
+import com.codecool.shop.utils.PasswordStorage;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.sun.org.apache.xpath.internal.operations.Mod;
+import jdk.nashorn.internal.parser.JSONParser;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import spark.ModelAndView;
 import spark.Request;
 import spark.Response;
 
+import java.lang.reflect.Array;
+import java.lang.reflect.Type;
 import java.sql.SQLException;
 import java.util.*;
 
@@ -49,7 +64,14 @@ public class ProductController {
         List<ProductCategory> categories = productCategoryDataStore.getAll();
         ShoppingCart shoppingCart = ShoppingCart.getInstance();
         ProductDaoJDBC productDaoJDBC = ProductDaoJDBC.getInstance();
-        
+
+        boolean session;
+        if (req.session().attribute("user") != null){
+            session = true;
+        } else {
+            session = false;
+        }
+
         Float sum = 0f;
 
         for (Product product : shoppingCart.getProductsFromCart()) {
@@ -64,6 +86,7 @@ public class ProductController {
         params.put("Price", sum);
         params.put("categories", categories);
 
+        params.put("session", session);
         return new ModelAndView(params, "product/index");
     }
 
@@ -74,6 +97,7 @@ public class ProductController {
      * @param res a Response Object.
      * @return Returns a JSON with the ShoppingCart calculated price and Product quantity.
      */
+
     public static String renderShoppingCartMini(Request req, Response res) {
         try {
             ShoppingCart shoppingCart = ShoppingCart.getInstance();
@@ -86,7 +110,6 @@ public class ProductController {
             }else{
                 shoppingCart.putProductToCart(product);
             }
-
 
             Float price = 0f;
             Float quant = 0f;
@@ -159,13 +182,16 @@ public class ProductController {
      */
 
     public static String emptyCart(Request req, Response res) throws ConnectToStorageFailed {
+        UserDaoJDBC userDaoJDBC = UserDaoJDBC.getInstance();
+        User user = userDaoJDBC.find(req.session().attribute("user"));
+
         OrderDaoJDBC orderDaoJDBC = OrderDaoJDBC.getInstance();
         ShoppingCart shoppingCart = ShoppingCart.getInstance();
-        int orderId = orderDaoJDBC.add(1, shoppingCart);
+        int orderId = orderDaoJDBC.add(Integer.parseInt(user.getId()), shoppingCart);
 
         shoppingCart.removeAllItem();
         logger.info("Order completed, shopping cart items deleted");
-        //Mailer.send("grannyshop.javengers@gmail.com","grannyshop", "nopiwork@gmail.com", "test", "test message");
+        Mailer.send("grannyshop.javengers@gmail.com","grannyshop", user.getEmail(), "Order Completed", "Thank you for your order.");
         Gson gson = new Gson();
         return gson.toJson(orderId);
     }
