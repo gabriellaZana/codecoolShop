@@ -56,7 +56,7 @@ public class Main {
                 return new ThymeleafTemplateEngine().render(ProductController.renderProducts(request, response));
             } catch (Exception e) {
                 response.status(HttpStatus.SERVICE_UNAVAILABLE_503);
-                return "<html><body><h1>" + response.raw().getStatus() + "</h1><p>SERVICE UNAVAILABLE</p></body></html>";
+                return "<html><body><h1>" + response.raw().getStatus() + "</h1><p>SERVICE UNAVAILABLE</p><p><img src='/img/errorgranny.gif'></p></body></html>";
             }
 
         });
@@ -68,7 +68,7 @@ public class Main {
                 return new ThymeleafTemplateEngine().render(ProductController.renderShoppingCart(request, response));
             } catch (Exception e) {
                 response.status(HttpStatus.SERVICE_UNAVAILABLE_503);
-                return "<html><body><h1>" + response.raw().getStatus() + "</h1><p>SERVICE UNAVAILABLE</p></body></html>";
+                return "<html><body><h1>" + response.raw().getStatus() + "</h1><p>SERVICE UNAVAILABLE</p><p><img src='/img/errorgranny.gif'></p></body></html>";
             }
 
         });
