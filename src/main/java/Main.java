@@ -61,6 +61,7 @@ public class Main {
         });
 
         post("/shopping-cart", ProductController::renderShoppingCartMini);
+        get("/shopping-cart-total-price", ProductController::getTotalPriceOfCart);
 
         get("/cart", (Request request, Response response) -> {
             try {
@@ -74,7 +75,8 @@ public class Main {
 
         post("/delete-item", ProductController::deleteItem);
 
-        post("/submit-cart", ProductController::submitCart);
+        get("/empty-cart", ProductController::emptyCart);
+//        post("/save_user_information"); //TODO Save user information while checking out.
 
         // Add this line to your project to enable the debug screen
         enableDebugScreen();
