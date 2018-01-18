@@ -186,7 +186,15 @@ function login(){
             data:JSON.stringify(userDatas),
             success: function (response) {
                 console.log(response)
-
+                if(response == '"failure"'){
+                    alert("Incorrect password!");
+                } else {
+                    alert("Logged in, welcome:)");
+                    $("body").removeClass("modal-open");
+                    $("#login-modal").removeClass("in");
+                    $("#useremaillogin").val("");
+                    $("#passwordlogin").val("");
+                }
             }
         })
 
