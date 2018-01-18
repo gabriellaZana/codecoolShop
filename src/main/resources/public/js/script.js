@@ -213,6 +213,12 @@ function login(){
                     for (var i = 0; i < x.length; i++) {
                         x[i].style.display = 'block';
                     }
+
+                    var z = document.getElementById("navbar");
+                    console.log(z);
+                    var node = document.createElement("li");
+                    node.innerHTML = "\nLogged in as " + email.split("@", 1);
+                    z.appendChild(node);
                 }
             }
         })
