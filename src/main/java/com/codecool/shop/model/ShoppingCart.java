@@ -1,7 +1,7 @@
 package com.codecool.shop.model;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,6 +47,20 @@ public final class ShoppingCart {
         return products;
     }
 
+
+    public Set<Product> getProductsFromCartInSet() {
+        Set<Product> products = new HashSet<>();
+        List<Product> productList = getProductsFromCart();
+        List<String> productNames = new ArrayList<>();
+        for (Product product: productList) {
+            productNames.add(product.getName());
+            if(Collections.frequency(productNames, product.getName()) == 1){
+                products.add(product);
+            }
+        }
+        return products;
+    }
+
     /**
      * Iterates through the products in the cart and counting the quantity of the given product.
      * @param product A Product object which needs to be counted.
@@ -61,6 +75,14 @@ public final class ShoppingCart {
         }
         logger.info("Quantity of this product in cart is: {}.", quant);
         return quant;
+    }
+
+    public Float getTotalPrice() {
+        Float totalPrice = 0f;
+        for (Product prod : products) {
+            totalPrice += prod.getDefaultPrice();
+        }
+        return totalPrice;
     }
 
     /**

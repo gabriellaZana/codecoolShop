@@ -10,6 +10,7 @@ import com.codecool.shop.dao.implementation.JDBC.SupplierDaoJDBC;
 import com.codecool.shop.dao.implementation.Memory.ProductCategoryDaoMem;
 import com.codecool.shop.dao.implementation.Memory.ProductDaoMem;
 import com.codecool.shop.dao.implementation.Memory.SupplierDaoMem;
+import com.codecool.shop.exception.ConnectToStorageFailed;
 import com.codecool.shop.model.*;
 import org.eclipse.jetty.http.HttpStatus;
 import spark.Request;
@@ -32,7 +33,7 @@ public class Main {
         try {
             populateData();
 
-        } catch (SQLException e) {
+        } catch (ConnectToStorageFailed e) {
             e.printStackTrace();
         }
 
@@ -45,7 +46,7 @@ public class Main {
                         return new ThymeleafTemplateEngine().render(ProductController.renderProducts(request, response));
                     } catch (Exception e) {
                         response.status(HttpStatus.SERVICE_UNAVAILABLE_503);
-                        return "<html><body><h1>" + response.raw().getStatus() + "</h1><p>SERVICE UNAVAILABLE</p></body></html>";
+                        return "<html><body><h1>" + response.raw().getStatus() + "</h1><p>SERVICE UNAVAILABLE</p><p><img src='/img/errorgranny.gif'></p></body></html>";
                     }
 
                 }
@@ -56,26 +57,28 @@ public class Main {
                 return new ThymeleafTemplateEngine().render(ProductController.renderProducts(request, response));
             } catch (Exception e) {
                 response.status(HttpStatus.SERVICE_UNAVAILABLE_503);
-                return "<html><body><h1>" + response.raw().getStatus() + "</h1><p>SERVICE UNAVAILABLE</p></body></html>";
+                return "<html><body><h1>" + response.raw().getStatus() + "</h1><p>SERVICE UNAVAILABLE</p><p><img src='/img/errorgranny.gif'></p></body></html>";
             }
 
         });
 
         post("/shopping-cart", ProductController::renderShoppingCartMini);
+        get("/shopping-cart-total-price", ProductController::getTotalPriceOfCart);
 
         get("/cart", (Request request, Response response) -> {
             try {
                 return new ThymeleafTemplateEngine().render(ProductController.renderShoppingCart(request, response));
             } catch (Exception e) {
                 response.status(HttpStatus.SERVICE_UNAVAILABLE_503);
-                return "<html><body><h1>" + response.raw().getStatus() + "</h1><p>SERVICE UNAVAILABLE</p></body></html>";
+                return "<html><body><h1>" + response.raw().getStatus() + "</h1><p>SERVICE UNAVAILABLE</p><p><img src='/img/errorgranny.gif'></p></body></html>";
             }
 
         });
 
         post("/delete-item", ProductController::deleteItem);
 
-        post("/submit-cart", ProductController::submitCart);
+        get("/empty-cart", ProductController::emptyCart);
+//        post("/save_user_information"); //TODO Save user information while checking out.
 
         post("/register", UserController::register);
 
@@ -85,9 +88,19 @@ public class Main {
 
         // Add this line to your project to enable the debug screen
         enableDebugScreen();
+
+        get("/order-details/:id", (Request request, Response response) -> {
+            try {
+                return new ThymeleafTemplateEngine().render(ProductController.renderOrderPage(request, response));
+            } catch (Exception e) {
+                response.status(HttpStatus.SERVICE_UNAVAILABLE_503);
+                return "<html><body><h1>" + response.raw().getStatus() + "</h1><p>SERVICE UNAVAILABLE</p><p><img src='/img/errorgranny.gif'></p></body></html>";
+            }
+
+        });
     }
 
-    public static void populateData() throws SQLException {
+    public static void populateData() throws ConnectToStorageFailed {
 
         ProductDao productDataStore = ProductDaoJDBC.getInstance();
         ProductCategoryDao productCategoryDataStore = ProductCategoryDaoJDBC.getInstance();

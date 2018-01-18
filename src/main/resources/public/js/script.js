@@ -53,7 +53,6 @@ function getProductId() {
                 contentType: 'application/json; charset=UTF-8',
                 data: JSON.stringify(clickedProductId),
                 success: function (response) {
-                    //console.log("sent")
                     let parsed = $.parseJSON(response);
                     $("#sum").text('Sum: ' + '$' + parsed['sum']);
                     $("#quantity").text(parsed['quantity'] + ' item(s)');
@@ -116,29 +115,34 @@ function addEventListenerToShopButton() {
 function displayTotalPrice() {
     let totalPrice = 0;
     $('.finalPrice').each(function (i, obj) {
-        console.log(obj.innerHTML);
         totalPrice += parseFloat(obj.innerHTML);
-    })
+    });
 
     $('#total_price').text('Total price is: ' + totalPrice);
 }
 
-function submitClicked() {
-    $('#submit').on('click', function () {
-        alert('Successful order!');
-        $.ajax({
-            url: '/submit-cart',
-            type: 'POST',
-            contentType: 'application/json; charset=UTF-8',
-            data: JSON.stringify("asd"),
-            success: function (response) {
-                $(location).attr('href', '/');
-            }
-        });
 
-    })
+function addEventListenerToProceedButton() {
+    let payment_form = $("#payment_form");
+    let user_form = $("#user_form");
+    if (payment_form) {
+        user_form.on('submit', function (e) {
+            e.preventDefault();
+            user_form.hide();
+            payment_form.show();
+        })
+    }
 }
 
+function addEventListenerToPaymentRadioButtons() {
+    let payment_form = $("#payment_form").find("input");
+    for (let i = 0; i < payment_form.length; i++) {
+        payment_form[i].addEventListener('change', function() {
+            $('#paypal-button').toggle();
+            $('#credit_card_form').toggle();
+        })
+    }
+}
 
 function register() {
     $('#register').on('submit', function (event) {
@@ -148,7 +152,6 @@ function register() {
         let userDatas = [];
         userDatas.push(email);
         userDatas.push(password);
-        //alert("Successfull reg");
         $.ajax({
             url: '/register',
             type: 'POST',
@@ -178,44 +181,44 @@ function register() {
 
 function login() {
     $('#login').on('submit', function (event) {
-        event.preventDefault();
-        let email = $('#useremaillogin').val();
-        let password = $('#passwordlogin').val();
-        let userDatas = [];
-        userDatas.push(email);
-        userDatas.push(password);
-        $.ajax({
-            url: '/login',
-            type: 'POST',
-            contentType: 'application/json; charset=UTF-8',
-            data: JSON.stringify(userDatas),
-            success: function (response) {
-                console.log(response)
-                if (response == '"failure"') {
-                    alert("Incorrect password or e-mail address!");
-                    $("#useremaillogin").val("");
-                    $("#passwordlogin").val("");
-                } else {
-                    alert("Logged in, welcome:)");
-                    $(function () {
-                        $('#login-modal').modal('toggle');
-                    });
-                    $("#useremaillogin").val("");
-                    $("#passwordlogin").val("");
-                    $("#regbutton").hide();
+            event.preventDefault();
+            let email = $('#useremaillogin').val();
+            let password = $('#passwordlogin').val();
+            let userDatas = [];
+            userDatas.push(email);
+            userDatas.push(password);
+            $.ajax({
+                url: '/login',
+                type: 'POST',
+                contentType: 'application/json; charset=UTF-8',
+                data: JSON.stringify(userDatas),
+                success: function (response) {
+                    console.log(response)
+                    if (response == '"failure"') {
+                        alert("Incorrect password or e-mail address!");
+                        $("#useremaillogin").val("");
+                        $("#passwordlogin").val("");
+                    } else {
+                        alert("Logged in, welcome:)");
+                        $(function () {
+                            $('#login-modal').modal('toggle');
+                        });
+                        $("#useremaillogin").val("");
+                        $("#passwordlogin").val("");
+                        $("#regbutton").hide();
 
-                    $("#loginbutton").attr("id", "logout");
-                    $("#logout").html('<a id="log-out" href="/logout">Logout</a>');
-                    $("#logout").wrap('<strong></strong>');
+                        $("#loginbutton").attr("id", "logout");
+                        $("#logout").html('<a id="log-out" href="/logout">Logout</a>');
+                        $("#logout").wrap('<strong></strong>');
 
-                    location.reload();
-            }
+                        location.reload();
+                    }
+                }
+
+            })
+
         }
-    })
-
-}
-
-)
+    )
 }
 
 function checkPass() {
@@ -246,7 +249,9 @@ $(document).ready(function () {
     getProductId();
     countFinalPrice();
     displayTotalPrice();
-    submitClicked();
     register();
     login();
+    addEventListenerToPaymentRadioButtons();
+    addEventListenerToProceedButton();
 });
+

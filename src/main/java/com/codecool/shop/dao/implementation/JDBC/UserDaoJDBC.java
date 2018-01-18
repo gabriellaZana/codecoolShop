@@ -1,6 +1,7 @@
 package com.codecool.shop.dao.implementation.JDBC;
 
 import com.codecool.shop.dao.UserDao;
+import com.codecool.shop.exception.ConnectToStorageFailed;
 import com.codecool.shop.model.User;
 import com.codecool.shop.utils.DatabaseConnection;
 
@@ -39,7 +40,7 @@ public class UserDaoJDBC implements UserDao{
 
 
     @Override
-    public void add(User user) throws SQLException {
+    public void add(User user) throws ConnectToStorageFailed {
 
         String addQuery = "INSERT INTO users (email, password) VALUES (?, ?);";
 
@@ -48,14 +49,15 @@ public class UserDaoJDBC implements UserDao{
              PreparedStatement statement = databaseConnection.createAndSetPreparedStatement(connection, infos, addQuery)) {
             logger.info("Connected to database");
             statement.executeUpdate();
-            logger.info("Query done");
+        }catch (SQLException e){
+            throw new ConnectToStorageFailed(e.getMessage());
         }
 
     }
 
     
     @Override
-    public User find(String email) throws SQLException {
+    public User find(String email) throws ConnectToStorageFailed {
 
         String query = "SELECT * FROM users WHERE email =?;";
         ArrayList<Object> infos = new ArrayList<>(Collections.singletonList(email));
@@ -66,7 +68,7 @@ public class UserDaoJDBC implements UserDao{
 
     }
 
-    private User executeFindQuery(String query, ArrayList<Object> infos) throws SQLException {
+    private User executeFindQuery(String query, ArrayList<Object> infos) throws ConnectToStorageFailed {
         User resultUser = null;
         try (Connection connection = databaseConnection.getConnection();
              PreparedStatement statement = databaseConnection.createAndSetPreparedStatement(connection, infos, query);
@@ -74,9 +76,12 @@ public class UserDaoJDBC implements UserDao{
             while (result.next()) {
                 resultUser = new User(result.getString("email"));
                 resultUser.setPassword(result.getString("password"));
-                resultUser.setId("id");
-                //resultUser.setId(result.getInt("id"));
+                //resultUser.setId("id");
+                resultUser.setId(result.getString("id"));
             }
+        }
+        catch (SQLException e){
+            throw new ConnectToStorageFailed(e.getMessage());
         }
         return resultUser;
     }

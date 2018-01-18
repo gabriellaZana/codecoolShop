@@ -2,7 +2,9 @@ package com.codecool.shop.controller;
 
 import com.codecool.shop.dao.UserDao;
 import com.codecool.shop.dao.implementation.JDBC.UserDaoJDBC;
+import com.codecool.shop.exception.ConnectToStorageFailed;
 import com.codecool.shop.model.User;
+import com.codecool.shop.utils.Mailer;
 import com.codecool.shop.utils.PasswordStorage;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -13,7 +15,7 @@ import java.util.ArrayList;
 
 public class UserController {
 
-    public static String register(Request req, Response res) throws SQLException, PasswordStorage.CannotPerformOperationException {
+    public static String register(Request req, Response res) throws ConnectToStorageFailed, PasswordStorage.CannotPerformOperationException {
 
 
 
@@ -34,6 +36,7 @@ public class UserController {
 
         if (userDaoJDBC.find(userEmail) == null){
             userDaoJDBC.add(user);
+            Mailer.send("grannyshop.javengers@gmail.com","grannyshop", userEmail, "Registration", "Welcome to the GrannyWebshop");
         } else {
             return gson.toJson("failure");
         }
@@ -41,7 +44,7 @@ public class UserController {
         return gson.toJson("success");
     }
 
-    public static String login(Request request, Response response) throws SQLException, PasswordStorage.InvalidHashException, PasswordStorage.CannotPerformOperationException {
+    public static String login(Request request, Response response) throws ConnectToStorageFailed, PasswordStorage.InvalidHashException, PasswordStorage.CannotPerformOperationException {
         String loginData = request.body();
         System.out.println(loginData);
         Gson gson = new Gson();
