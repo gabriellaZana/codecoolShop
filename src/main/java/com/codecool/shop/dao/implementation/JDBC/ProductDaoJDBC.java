@@ -3,6 +3,7 @@ package com.codecool.shop.dao.implementation.JDBC;
 import com.codecool.shop.dao.ProductCategoryDao;
 import com.codecool.shop.dao.ProductDao;
 import com.codecool.shop.dao.SupplierDao;
+import com.codecool.shop.exception.ConnectToStorageFailed;
 import com.codecool.shop.model.Product;
 import com.codecool.shop.model.ProductCategory;
 import com.codecool.shop.model.Supplier;
@@ -80,7 +81,7 @@ public class ProductDaoJDBC implements ProductDao {
      * @see SQLException
      */
     @Override
-    public void add(Product product) throws SQLException {
+    public void add(Product product) throws ConnectToStorageFailed {
         SupplierDaoJDBC supplierDaoJDBC = SupplierDaoJDBC.getInstance();
         ProductCategoryDaoJDBC productCategoryDaoJDBC = ProductCategoryDaoJDBC.getInstance();
         if (find(product.getName()) != null) {
@@ -97,6 +98,8 @@ public class ProductDaoJDBC implements ProductDao {
              PreparedStatement statement = databaseConnection.createAndSetPreparedStatement(connection, infos, addQuery)) {
             statement.executeUpdate();
             logger.info("{} added successfully to database.", product.getName());
+        }catch (SQLException e){
+            throw new ConnectToStorageFailed(e.getMessage());
         }
     }
 
@@ -110,7 +113,7 @@ public class ProductDaoJDBC implements ProductDao {
      * @see SQLException
      */
     @Override
-    public Product find(int id) throws SQLException {
+    public Product find(int id) throws ConnectToStorageFailed {
         String getProductQuery = "SELECT * FROM products WHERE id=?;";
         ArrayList<Object> infos = new ArrayList<>(Collections.singletonList(id));
         return executeFindQuery(getProductQuery, infos);
@@ -126,7 +129,7 @@ public class ProductDaoJDBC implements ProductDao {
      * @see Product
      * @see SQLException
      */
-    public Product find(String name) throws SQLException {
+    public Product find(String name) throws ConnectToStorageFailed {
         String getProductByNameQuery = "SELECT * FROM products WHERE name=?;";
         ArrayList<Object> infos = new ArrayList<>(Collections.singletonList(name));
         return executeFindQuery(getProductByNameQuery, infos);
@@ -143,7 +146,7 @@ public class ProductDaoJDBC implements ProductDao {
      * or the sql execution itself fails.
      * @see SQLException
      */
-    private Product executeFindQuery(String query, ArrayList<Object> infos) throws SQLException {
+    private Product executeFindQuery(String query, ArrayList<Object> infos) throws ConnectToStorageFailed {
         Product resultProduct = null;
         try (Connection connection = databaseConnection.getConnection();
              PreparedStatement statement = databaseConnection.createAndSetPreparedStatement(connection, infos, query);
@@ -158,6 +161,8 @@ public class ProductDaoJDBC implements ProductDao {
                 resultProduct.setId(result.getInt("id"));
                 logger.debug("{} found in database.", resultProduct.getName());
             }
+        }catch (SQLException e){
+            throw new ConnectToStorageFailed(e.getMessage());
         }
         return resultProduct;
     }
@@ -171,13 +176,15 @@ public class ProductDaoJDBC implements ProductDao {
      * @see SQLException
      */
     @Override
-    public void remove(int id) throws SQLException {
+    public void remove(int id) throws ConnectToStorageFailed {
         String removeProductQuery = "DELETE FROM products WHERE id=?;";
         ArrayList<Object> infos = new ArrayList<>(Collections.singletonList(id));
         try (Connection connection = databaseConnection.getConnection();
              PreparedStatement statement = databaseConnection.createAndSetPreparedStatement(connection, infos, removeProductQuery)) {
             statement.executeUpdate();
             logger.info("Product with id: {} has been removed from database", id);
+        }catch (SQLException e){
+            throw new ConnectToStorageFailed(e.getMessage());
         }
     }
 
@@ -190,7 +197,7 @@ public class ProductDaoJDBC implements ProductDao {
      * @see SQLException
      */
     @Override
-    public List<Product> getAll() throws SQLException {
+    public List<Product> getAll() throws ConnectToStorageFailed {
         List<Product> productList = new ArrayList<>();
         String getProductsQuery = "SELECT * FROM products;";
         try (Connection connection = databaseConnection.getConnection();
@@ -205,6 +212,8 @@ public class ProductDaoJDBC implements ProductDao {
                         category.find(result.getInt("product_category_id")), supplier.find(result.getInt("supplier_id")));
                 productList.add(product);
             }
+        } catch (SQLException e){
+            throw new ConnectToStorageFailed(e.getMessage());
         }
         return productList;
     }
@@ -221,7 +230,7 @@ public class ProductDaoJDBC implements ProductDao {
      * @see SQLException
      */
     @Override
-    public List<Product> getBy(Supplier supplier) throws SQLException {
+    public List<Product> getBy(Supplier supplier) throws ConnectToStorageFailed {
         List<Product> productListBySupplier = new ArrayList<>();
         ArrayList<Object> infos = new ArrayList<>(Collections.singletonList(supplier.getId()));
         String getProductsBySupplierQuery = "SELECT products.id," +
@@ -257,6 +266,8 @@ public class ProductDaoJDBC implements ProductDao {
                         }});
                 productListBySupplier.add(product);
             }
+        } catch (SQLException e){
+            throw new ConnectToStorageFailed(e.getMessage());
         }
         return productListBySupplier;
     }
@@ -273,7 +284,7 @@ public class ProductDaoJDBC implements ProductDao {
      * @see SQLException
      */
     @Override
-    public List<Product> getBy(ProductCategory productCategory) throws SQLException {
+    public List<Product> getBy(ProductCategory productCategory) throws ConnectToStorageFailed {
         List<Product> productListByCategory = new ArrayList<>();
         String getProductsByCategoryQuery = "SELECT products.id," +
                 "  products.name," +
@@ -310,6 +321,8 @@ public class ProductDaoJDBC implements ProductDao {
                 product.setId(result.getInt("id"));
                 productListByCategory.add(product);
             }
+        } catch (SQLException e){
+            throw new ConnectToStorageFailed(e.getMessage());
         }
         return productListByCategory;
     }
