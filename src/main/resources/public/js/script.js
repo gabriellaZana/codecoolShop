@@ -164,8 +164,9 @@ function register(){
                 } else {
                     $("#register-modal").hide();
                     alert("Thank you for registering!");
-                    $("body").removeClass("modal-open");
-                    $("#register-modal").removeClass("in");
+                    $(function () {
+                        $('#register-modal').modal('toggle');
+                    });
                     $("#passwordreg").val("");
                     $("#passwordreg2").val("");
                     $("#useremailreg").val("");
@@ -191,12 +192,13 @@ function login(){
             success: function (response) {
                 console.log(response)
                 if(response == '"failure"'){
-                    alert("Incorrect password!");
+                    alert("Incorrect password or e-mail address!");
                     $("#passwordlogin").val("");
                 } else {
                     alert("Logged in, welcome:)");
-                    $("body").removeClass("modal-open");
-                    $("#login-modal").removeClass("in");
+                    $(function () {
+                        $('#login-modal').modal('toggle');
+                    });
                     $("#useremaillogin").val("");
                     $("#passwordlogin").val("");
                 }
