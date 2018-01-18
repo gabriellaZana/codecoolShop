@@ -66,6 +66,14 @@ body
     margin: 0 0 11px;
 }
 
+#logout {
+    padding-top: 15px;
+}
+
+a, #log-out:hover {
+    color: black; !important;
+    text-decoration: none;}
+
 #trolley
 {
     width: 10%;

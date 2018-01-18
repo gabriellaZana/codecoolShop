@@ -46,14 +46,12 @@
         </div>
         <div th:unless="${session}">
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                <ul class="nav navbar-nav">
+                <ul class="nav navbar-nav" id="navbar">
                     <li id="regbutton"><a href="#" data-toggle="modal" data-target="#register-modal"><strong>Register</strong></a></li>
                     <li id="loginbutton"><a href="#" data-toggle="modal" data-target="#login-modal"><strong>Login</strong></a></li>
                 </ul>
             </div><!-- /.navbar-collapse -->
         </div>
-
-
 
     </div><!-- /.container-fluid -->
 </nav>
@@ -63,7 +61,7 @@
         <div class="loginmodal-container">
             <h1>Login to Your Account</h1><br></br>
             <form id="login" method="post">
-                <input id="useremaillogin" type="email" name="email" placeholder="Your e-mail address" required="required"></input>
+                <input id="useremaillogin" type="email" name="email" placeholder="Your e-mail address" required="required" autofocus="autofocus"></input>
                 <input id="passwordlogin" type="password" name="pass" placeholder="Password" required="required"></input>
                 <input type="submit" name="login" class="login loginmodal-submit" value="Login"></input>
             </form>
@@ -75,7 +73,7 @@
         <div class="registermodal-container">
             <h1>Register Yourself</h1><br></br>
             <form name="register" method="post" id="register">
-                <input id="useremailreg" type="email" name="email" placeholder="Your e-mail address" required="required"></input>
+                <input id="useremailreg" type="email" name="email" placeholder="Your e-mail address" required="required" autofocus="autofocus"></input>
                 <input id="passwordreg" type="password" name="pass" placeholder="Your password" required="required">
                 <input id="passwordreg2" type="password" name="pass2" onkeyup="checkPass(); return false;" placeholder="Your password again" required="required"></input>
                 <span id="confirmMessage" class="confirmMessage"></span>
