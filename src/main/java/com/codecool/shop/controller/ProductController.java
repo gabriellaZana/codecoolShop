@@ -2,6 +2,7 @@ package com.codecool.shop.controller;
 
 
 import com.codecool.shop.dao.ProductCategoryDao;
+import com.codecool.shop.dao.implementation.JDBC.OrderDaoJDBC;
 import com.codecool.shop.dao.implementation.JDBC.ProductCategoryDaoJDBC;
 import com.codecool.shop.dao.implementation.JDBC.ProductDaoJDBC;
 
@@ -21,7 +22,7 @@ import java.util.*;
 
 /**
  * ProductController
- *
+ * <p>
  * <p>Controls the data from the client and the server</p>
  *
  * @author Javengers
@@ -32,18 +33,19 @@ public class ProductController {
 
     /**
      * Collects the ProductCategories and the shopping cart content.
+     *
      * @param req a Request Object gotten from the client side.
      * @param res a Response Object.
      * @return Returns a ModelAndView with a Map for the thymeleaf template engine.
      */
 
-    public static ModelAndView renderProducts(Request req, Response res) throws SQLException{
+    public static ModelAndView renderProducts(Request req, Response res) throws SQLException {
 
         ProductCategoryDao productCategoryDataStore = ProductCategoryDaoJDBC.getInstance();
         List<ProductCategory> categories = productCategoryDataStore.getAll();
         ShoppingCart shoppingCart = ShoppingCart.getInstance();
         ProductDaoJDBC productDaoJDBC = ProductDaoJDBC.getInstance();
-
+        
         Float sum = 0f;
 
         for (Product product : shoppingCart.getProductsFromCart()) {
@@ -57,11 +59,13 @@ public class ProductController {
         params.put("productAmount", shoppingCart.getProductsFromCart().size());
         params.put("Price", sum);
         params.put("categories", categories);
+
         return new ModelAndView(params, "product/index");
     }
 
     /**
      * Calculate the data for the ShoppingCart.
+     *
      * @param req a Request Object.
      * @param res a Response Object.
      * @return Returns a JSON with the ShoppingCart calculated price and Product quantity.
@@ -96,6 +100,7 @@ public class ProductController {
 
     /**
      * Collects the Products for the ShoppingCart view.
+     *
      * @param req a Request object from the client.
      * @param res a Response object.
      * @return Returns a ModelAndView with a Map for the thymeleaf template engine.
@@ -105,9 +110,9 @@ public class ProductController {
         List<Product> productList = shoppingCart.getProductsFromCart();
         Set<Product> productSet = new HashSet<>();
         List<Integer> ids = new ArrayList<>();
-        for (Product product: productList) {
+        for (Product product : productList) {
             ids.add(product.getId());
-            if(Collections.frequency(ids, product.getId()) == 1){
+            if (Collections.frequency(ids, product.getId()) == 1) {
                 productSet.add(product);
             }
         }
@@ -122,6 +127,7 @@ public class ProductController {
 
     /**
      * Deletes an Product from the ShoppingCart.
+     *
      * @param req a Request object.
      * @param res a Response object.
      * @return Returns a String.
@@ -135,18 +141,18 @@ public class ProductController {
 
     /**
      * Removes all Product from the ShoppingCart.
+     *
      * @param req a Request object.
      * @param res a Response object.
      * @return Returns the renderProducts ModelAndView.
      */
-    public static ModelAndView submitCart(Request req, Response res) throws SQLException {
+    public static String submitCart(Request req, Response res) throws SQLException {
         System.out.println("submit carrt");
         ShoppingCart shoppingCart = ShoppingCart.getInstance();
         shoppingCart.removeAllItem();
         logger.info("Order completed, shopping cart items deleted");
-        Mailer.send("grannyshop.javengers@gmail.com","grannyshop", "nopiwork@gmail.com", "test", "test message");
-
-        return renderProducts(req, res);
+        //Mailer.send("grannyshop.javengers@gmail.com","grannyshop", "nopiwork@gmail.com", "test", "test message");
+        return "Order placed";
     }
 }
 

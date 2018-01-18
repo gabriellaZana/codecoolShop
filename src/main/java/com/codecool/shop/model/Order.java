@@ -19,4 +19,12 @@ public class Order {
     public List<Product> getProductList() {
         return productList;
     }
+
+    @Override
+    public String toString() {
+        return "Order{" +
+                "userId=" + userId +
+                ", productListSize=" + productList.size() +
+                '}';
+    }
 }

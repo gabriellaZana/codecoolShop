@@ -1,7 +1,7 @@
 package com.codecool.shop.model;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,6 +44,20 @@ public final class ShoppingCart {
      * @return Returns the products list, which are items in the shopping cart.
      */
     public List<Product> getProductsFromCart(){
+        return products;
+    }
+
+
+    public Set<Product> getProductsFromCartInSet() {
+        Set<Product> products = new HashSet<>();
+        List<Product> productList = getProductsFromCart();
+        List<String> productNames = new ArrayList<>();
+        for (Product product: productList) {
+            productNames.add(product.getName());
+            if(Collections.frequency(productNames, product.getName()) == 1){
+                products.add(product);
+            }
+        }
         return products;
     }
 
