@@ -193,6 +193,7 @@ function login(){
                 console.log(response)
                 if(response == '"failure"'){
                     alert("Incorrect password or e-mail address!");
+                    $("#useremaillogin").val("");
                     $("#passwordlogin").val("");
                 } else {
                     alert("Logged in, welcome:)");
@@ -202,10 +203,9 @@ function login(){
                     $("#useremaillogin").val("");
                     $("#passwordlogin").val("");
                     $("#regbutton").hide();
-                    $("#loginbutton").text("Logout");
-                    //$("#loginbutton").addClass("btn");
+
                     $("#loginbutton").attr("id", "logout");
-                    $("#logout").html('<a href="/logout">Logut</a>');
+                    $("#logout").html('<a id="log-out" href="/logout">Logout</a>');
                     $("#logout").wrap('<strong></strong>');
 
                     document.getElementById("cart").style.display = "block";
