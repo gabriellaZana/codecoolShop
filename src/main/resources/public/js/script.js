@@ -194,6 +194,12 @@ function login(){
                     $("#login-modal").removeClass("in");
                     $("#useremaillogin").val("");
                     $("#passwordlogin").val("");
+                    $("#regbutton").hide();
+                    $("#loginbutton").text("Logout");
+                    //$("#loginbutton").addClass("btn");
+                    $("#loginbutton").attr("id", "logout");
+                    $("#logout").html('<a href="/logout">Logut</a>');
+                    $("#logout").wrap('<strong></strong>');
                 }
             }
         })
@@ -229,6 +235,7 @@ function checkPass()
         message.innerHTML = "Passwords Do Not Match!"
     }
 }
+
 
 
 $(document).ready(function () {

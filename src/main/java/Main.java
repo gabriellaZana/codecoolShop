@@ -81,6 +81,8 @@ public class Main {
 
         post("/login", UserController::login);
 
+        get("/logout", UserController::logout);
+
         // Add this line to your project to enable the debug screen
         enableDebugScreen();
     }

@@ -6,9 +6,7 @@ import com.codecool.shop.model.User;
 import com.codecool.shop.utils.PasswordStorage;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import spark.Request;
-import spark.Response;
-import spark.Session;
+import spark.*;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -64,5 +62,11 @@ public class UserController {
             return gson.toJson("success");
         }
         return gson.toJson("failure");
+    }
+
+    public static Route logout(Request request, Response response) {
+        request.session().removeAttribute("user");
+        response.redirect("/");
+        return null;
     }
 }
