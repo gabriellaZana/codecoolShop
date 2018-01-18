@@ -79,6 +79,10 @@ public class ProductController {
 
         shoppingCart.putProductToCart(productDaoJdbc.find(Integer.parseInt(req.body().substring(1, req.body().length() - 1))));
 
+        if (req.session().attribute("user") != null ){
+            String userId = req.session().attribute("user");
+            System.out.println(userId);
+        }
 
         Float price = 0f;
         Float quant = 0f;

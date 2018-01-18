@@ -56,11 +56,9 @@ public class UserController {
         User user = userDaoJDBC.find(userEmail);
 
         String storedPassword = user.getPassword();
-        System.out.println(storedPassword);
+        request.session().attribute("user", user.getEmail());
 
-        Session session =  request.session(true);
-        session.attribute("user", user.getEmail());
-
+        String userSession = request.session().attribute("user");
 
         if(PasswordStorage.verifyPassword(passwordRaw, storedPassword)){
             return gson.toJson("success");

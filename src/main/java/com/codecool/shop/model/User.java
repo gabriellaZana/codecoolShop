@@ -1,7 +1,7 @@
 package com.codecool.shop.model;
 
 public class User {
-    private String email, password, shipping_address, billing_address, firstname, lastname;
+    private String id, email, password, shipping_address, billing_address, firstname, lastname;
 
 
     public User(String email) {
@@ -56,4 +56,11 @@ public class User {
         this.lastname = lastname;
     }
 
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 }
