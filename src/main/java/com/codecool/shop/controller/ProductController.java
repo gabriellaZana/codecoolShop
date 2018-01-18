@@ -137,13 +137,19 @@ public class ProductController {
      * @param res a Response object.
      * @return Returns the renderProducts ModelAndView.
      */
-    public static ModelAndView submitCart(Request req, Response res) throws SQLException {
-        System.out.println("submit carrt");
+    public static ModelAndView emptyCart(Request req, Response res) throws SQLException {
         ShoppingCart shoppingCart = ShoppingCart.getInstance();
         shoppingCart.removeAllItem();
         logger.info("Order completed, shopping cart items deleted");
 
         return renderProducts(req, res);
+    }
+
+    public static String getTotalPriceOfCart(Request req, Response res) {
+        ShoppingCart shoppingCart = ShoppingCart.getInstance();
+//        res.body(shoppingCart.getTotalPrice().toString());
+        Gson gson = new Gson();
+        return gson.toJson(shoppingCart.getTotalPrice());
     }
 }
 
