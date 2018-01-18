@@ -140,6 +140,60 @@ function submitClicked(){
 }
 
 
+function register(){
+    $('#register').on('submit', function (event) {
+        event.preventDefault();
+        let email = $("#useremailreg").val();
+        let password = $("#passwordreg").val();
+        let userDatas = [];
+        userDatas.push(email);
+        userDatas.push(password);
+        //alert("Successfull reg");
+        $.ajax({
+            url:'/register',
+            type: 'POST',
+            contentType: 'application/json; charset=UTF-8',
+            data:JSON.stringify(userDatas),
+            success: function (response) {
+                console.log(response);
+                if(response == '"failure"'){
+                    alert("Email is already in use!");
+                } else {
+                    alert("Thank you for registering!");
+                    $("body").removeClass("modal-open");
+                    $("#register-modal").removeClass("in");
+                    $("#passwordreg").val("");
+                    $("#passwordreg2").val("");
+                    $("#useremailreg").val("");
+                }
+            }
+        })
+    })
+}
+
+function login(){
+    $('#login').on('submit', function (event) {
+        event.preventDefault();
+        let email = $('#useremaillogin').val();
+        let password = $('#passwordlogin').val();
+        let userDatas = [];
+        userDatas.push(email);
+        userDatas.push(password);
+        $.ajax({
+            url:'/login',
+            type: 'POST',
+            contentType: 'application/json; charset=UTF-8',
+            data:JSON.stringify(userDatas),
+            success: function (response) {
+                console.log(response)
+
+            }
+        })
+
+    })
+}
+
+
 $(document).ready(function () {
     addEventListenerToSupplierButtons();
     addEventListenerToCategoryBanners();
@@ -150,5 +204,7 @@ $(document).ready(function () {
     countFinalPrice();
     displayTotalPrice();
     submitClicked();
+    register();
+    login();
     
 });

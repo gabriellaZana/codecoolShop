@@ -49,9 +49,9 @@
     <div class="modal-dialog">
         <div class="loginmodal-container">
             <h1>Login to Your Account</h1><br></br>
-            <form>
-                <input type="text" name="user" placeholder="Username"></input>
-                <input type="password" name="pass" placeholder="Password"></input>
+            <form id="login" method="post">
+                <input id="useremaillogin" type="email" name="email" placeholder="Your e-mail address"></input>
+                <input id="passwordlogin" type="password" name="pass" placeholder="Password"></input>
                 <input type="submit" name="login" class="login loginmodal-submit" value="Login"></input>
             </form>
         </div>
@@ -61,11 +61,10 @@
     <div class="modal-dialog">
         <div class="registermodal-container">
             <h1>Register Yourself</h1><br></br>
-            <form>
-                <input type="text" name="user" placeholder="Your chosen username"></input>
-                <input type="password" name="pass" placeholder="Your password">
-                <input type="password" name="pass" placeholder="Your password again"></input>
-                <input type="email" name="email" placeholder="Your e-mail address"></input>
+            <form name="register" method="post" id="register">
+                <input id="useremailreg" type="email" name="email" placeholder="Your e-mail address"></input>
+                <input id="passwordreg" type="password" name="pass" placeholder="Your password">
+                <input id="passwordreg2" type="password" name="pass" placeholder="Your password again"></input>
                 <input type="submit" name="register" class="register registermodal-submit" value="Register"/></input>
             </form>
         </div>

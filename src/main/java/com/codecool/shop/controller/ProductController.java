@@ -4,16 +4,24 @@ import com.codecool.shop.dao.ProductCategoryDao;
 import com.codecool.shop.dao.implementation.JDBC.ProductCategoryDaoJDBC;
 import com.codecool.shop.dao.implementation.JDBC.ProductDaoJDBC;
 
+import com.codecool.shop.dao.implementation.JDBC.UserDaoJDBC;
 import com.codecool.shop.model.Product;
 import com.codecool.shop.model.ProductCategory;
 import com.codecool.shop.model.ShoppingCart;
+import com.codecool.shop.model.User;
+import com.codecool.shop.utils.PasswordStorage;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.sun.org.apache.xpath.internal.operations.Mod;
+import jdk.nashorn.internal.parser.JSONParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import spark.ModelAndView;
 import spark.Request;
 import spark.Response;
 
+import java.lang.reflect.Array;
+import java.lang.reflect.Type;
 import java.sql.SQLException;
 import java.util.*;
 
