@@ -97,7 +97,7 @@ function countFinalPrice() {
 
 function addEventListenerToQuantity() {
     let quantity = $(".quantity");
-    quantity.on('change', function() {
+    quantity.on('change', function () {
         countFinalPrice()
     });
 }
@@ -107,23 +107,23 @@ function addEventListenerToShopButton() {
     let user_form = document.getElementById("user_form");
     let shop = document.getElementById("shop");
     if (shop) {
-        shop.addEventListener('click', function() {
+        shop.addEventListener('click', function () {
             user_form.style.display = "inline";
         });
     }
 }
 
-function displayTotalPrice(){
+function displayTotalPrice() {
     let totalPrice = 0;
     $('.finalPrice').each(function (i, obj) {
         console.log(obj.innerHTML);
         totalPrice += parseFloat(obj.innerHTML);
     })
 
-    $('#total_price').text( 'Total price is: ' + totalPrice);
+    $('#total_price').text('Total price is: ' + totalPrice);
 }
 
-function submitClicked(){
+function submitClicked() {
     $('#submit').on('click', function () {
         alert('Successful order!');
         $.ajax({
@@ -140,6 +140,103 @@ function submitClicked(){
 }
 
 
+function register() {
+    $('#register').on('submit', function (event) {
+        event.preventDefault();
+        let email = $("#useremailreg").val();
+        let password = $("#passwordreg").val();
+        let userDatas = [];
+        userDatas.push(email);
+        userDatas.push(password);
+        //alert("Successfull reg");
+        $.ajax({
+            url: '/register',
+            type: 'POST',
+            contentType: 'application/json; charset=UTF-8',
+            data: JSON.stringify(userDatas),
+            success: function (response) {
+                console.log(response);
+                if (response == '"failure"') {
+                    alert("Email is already in use!");
+                    $("#passwordreg").val("");
+                    $("#passwordreg2").val("");
+                    $("#useremailreg").val("");
+                } else {
+                    $("#register-modal").hide();
+                    alert("Thank you for registering!");
+                    $(function () {
+                        $('#register-modal').modal('toggle');
+                    });
+                    $("#passwordreg").val("");
+                    $("#passwordreg2").val("");
+                    $("#useremailreg").val("");
+                }
+            }
+        })
+    })
+}
+
+function login() {
+    $('#login').on('submit', function (event) {
+        event.preventDefault();
+        let email = $('#useremaillogin').val();
+        let password = $('#passwordlogin').val();
+        let userDatas = [];
+        userDatas.push(email);
+        userDatas.push(password);
+        $.ajax({
+            url: '/login',
+            type: 'POST',
+            contentType: 'application/json; charset=UTF-8',
+            data: JSON.stringify(userDatas),
+            success: function (response) {
+                console.log(response)
+                if (response == '"failure"') {
+                    alert("Incorrect password or e-mail address!");
+                    $("#useremaillogin").val("");
+                    $("#passwordlogin").val("");
+                } else {
+                    alert("Logged in, welcome:)");
+                    $(function () {
+                        $('#login-modal').modal('toggle');
+                    });
+                    $("#useremaillogin").val("");
+                    $("#passwordlogin").val("");
+                    $("#regbutton").hide();
+
+                    $("#loginbutton").attr("id", "logout");
+                    $("#logout").html('<a id="log-out" href="/logout">Logout</a>');
+                    $("#logout").wrap('<strong></strong>');
+
+                    location.reload();
+            }
+        }
+    })
+
+}
+
+)
+}
+
+function checkPass() {
+    var pass1 = document.getElementById('passwordreg');
+    var pass2 = document.getElementById('passwordreg2');
+    var message = document.getElementById('confirmMessage');
+    var goodColor = "#66cc66";
+    var badColor = "#ff6666";
+
+    if (pass1.value == pass2.value) {
+        pass2.style.backgroundColor = goodColor;
+        message.style.color = goodColor;
+        message.innerHTML = "Passwords Match!"
+    } else {
+        pass2.style.backgroundColor = badColor;
+        message.style.color = badColor;
+        message.innerHTML = "Passwords Do Not Match!"
+    }
+}
+
+
 $(document).ready(function () {
     addEventListenerToSupplierButtons();
     addEventListenerToCategoryBanners();
@@ -150,5 +247,6 @@ $(document).ready(function () {
     countFinalPrice();
     displayTotalPrice();
     submitClicked();
-    
+    register();
+    login();
 });

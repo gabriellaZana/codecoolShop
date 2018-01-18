@@ -1,4 +1,5 @@
 ALTER TABLE IF EXISTS ONLY public.orders DROP CONSTRAINT IF EXISTS pk_orders_id CASCADE;
+ALTER TABLE IF EXISTS ONLY public.orders DROP CONSTRAINT IF EXISTS fk_user_id CASCADE;
 ALTER TABLE IF EXISTS ONLY public.suppliers DROP CONSTRAINT IF EXISTS pk_suppliers_id CASCADE;
 ALTER TABLE IF EXISTS ONLY public.product_categories DROP CONSTRAINT IF EXISTS pk_product_categories_id CASCADE;
 ALTER TABLE IF EXISTS ONLY public.products DROP CONSTRAINT IF EXISTS pk_products_id CASCADE;
@@ -7,6 +8,7 @@ ALTER TABLE IF EXISTS ONLY public.products DROP CONSTRAINT IF EXISTS fk_supplier
 ALTER TABLE IF EXISTS ONLY public.products_of_order DROP CONSTRAINT IF EXISTS pk_products_of_order_id CASCADE;
 ALTER TABLE IF EXISTS ONLY public.products_of_order DROP CONSTRAINT IF EXISTS fk_order_id CASCADE;
 ALTER TABLE IF EXISTS ONLY public.products_of_order DROP CONSTRAINT IF EXISTS fk_product_id CASCADE;
+ALTER TABLE IF EXISTS ONLY public.users DROP CONSTRAINT IF EXISTS pk_users_id CASCADE;
 
 
 DROP TABLE IF EXISTS public.orders;
@@ -52,6 +54,18 @@ CREATE TABLE products_of_order(
 );
 
 
+DROP TABLE IF EXISTS public.users;
+CREATE TABLE users(
+  id SERIAL NOT NULL,
+  email CHARACTER VARYING(255) NOT NULL,
+  password CHARACTER VARYING(255) NOT NULL,
+  shipping_address CHARACTER VARYING(255),
+  billing_address CHARACTER VARYING(255),
+  firstname CHARACTER VARYING(255),
+  lastname CHARACTER VARYING(255)
+);
+
+
 
 ALTER TABLE ONLY orders
     ADD CONSTRAINT pk_orders_id PRIMARY KEY (id);
@@ -68,6 +82,9 @@ ALTER TABLE ONLY products
 ALTER TABLE ONLY products_of_order
   ADD CONSTRAINT pk_products_of_order_id PRIMARY KEY (id);
 
+ALTER TABLE ONLY users
+  ADD CONSTRAINT pk_users_id PRIMARY KEY (id);
+
 
 
 
@@ -82,4 +99,7 @@ ALTER TABLE ONLY products_of_order
   ADD CONSTRAINT fk_order_id FOREIGN KEY (order_id) REFERENCES orders(id);
 
 ALTER TABLE ONLY products_of_order
-ADD CONSTRAINT fk_product_id FOREIGN KEY (product_id) REFERENCES products(id);
+  ADD CONSTRAINT fk_product_id FOREIGN KEY (product_id) REFERENCES products(id);
+
+ALTER TABLE ONLY orders
+    ADD CONSTRAINT fk_user_id FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;

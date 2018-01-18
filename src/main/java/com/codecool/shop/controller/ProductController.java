@@ -4,16 +4,24 @@ import com.codecool.shop.dao.ProductCategoryDao;
 import com.codecool.shop.dao.implementation.JDBC.ProductCategoryDaoJDBC;
 import com.codecool.shop.dao.implementation.JDBC.ProductDaoJDBC;
 
+import com.codecool.shop.dao.implementation.JDBC.UserDaoJDBC;
 import com.codecool.shop.model.Product;
 import com.codecool.shop.model.ProductCategory;
 import com.codecool.shop.model.ShoppingCart;
+import com.codecool.shop.model.User;
+import com.codecool.shop.utils.PasswordStorage;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.sun.org.apache.xpath.internal.operations.Mod;
+import jdk.nashorn.internal.parser.JSONParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import spark.ModelAndView;
 import spark.Request;
 import spark.Response;
 
+import java.lang.reflect.Array;
+import java.lang.reflect.Type;
 import java.sql.SQLException;
 import java.util.*;
 
@@ -42,6 +50,12 @@ public class ProductController {
         ShoppingCart shoppingCart = ShoppingCart.getInstance();
         ProductDaoJDBC productDaoJDBC = ProductDaoJDBC.getInstance();
 
+        boolean session;
+        if (req.session().attribute("user") != null){
+            session = true;
+        } else {
+            session = false;
+        }
         Float sum = 0f;
 
         for (Product product : shoppingCart.getProductsFromCart()) {
@@ -55,6 +69,7 @@ public class ProductController {
         params.put("productAmount", shoppingCart.getProductsFromCart().size());
         params.put("Price", sum);
         params.put("categories", categories);
+        params.put("session", session);
         return new ModelAndView(params, "product/index");
     }
 
@@ -71,6 +86,10 @@ public class ProductController {
 
         shoppingCart.putProductToCart(productDaoJdbc.find(Integer.parseInt(req.body().substring(1, req.body().length() - 1))));
 
+        if (req.session().attribute("user") != null ){
+            String userId = req.session().attribute("user");
+            System.out.println(userId);
+        }
 
         Float price = 0f;
         Float quant = 0f;
