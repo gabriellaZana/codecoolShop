@@ -63,6 +63,14 @@ public final class ShoppingCart {
         return quant;
     }
 
+    public Float getTotalPrice() {
+        Float totalPrice = 0f;
+        for (Product prod : products) {
+            totalPrice += prod.getDefaultPrice();
+        }
+        return totalPrice;
+    }
+
     /**
      * Deletes item from the shopping cart with the given id by iterating through list of products and removing the item when found.
      * @param id A unique number for identifying the product in the cart (list of products).
