@@ -8,7 +8,7 @@ import java.sql.SQLException;
 
 public interface OrderDao {
 
-    void add(int userId, ShoppingCart shoppingCart) throws ConnectToStorageFailed;
+    int add(int userId, ShoppingCart shoppingCart) throws ConnectToStorageFailed;
     Order find(int orderId) throws ConnectToStorageFailed;
 
 }

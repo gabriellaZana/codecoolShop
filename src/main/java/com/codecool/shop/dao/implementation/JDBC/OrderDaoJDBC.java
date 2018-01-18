@@ -31,7 +31,7 @@ public class OrderDaoJDBC implements OrderDao {
     }
 
     @Override
-    public void add(int userId, ShoppingCart shoppingCart) throws ConnectToStorageFailed {
+    public int add(int userId, ShoppingCart shoppingCart) throws ConnectToStorageFailed {
         ProductDaoJDBC productDaoJDBC = ProductDaoJDBC.getInstance();
         String orderQuery = "INSERT INTO orders (user_id, order_time, status) VALUES (?, CURRENT_TIMESTAMP, 'new') RETURNING *;";
         String productOrderQuery = "INSERT INTO products_of_order (order_id, product_id, quantity) VALUES (?, ?, ?);";
@@ -51,11 +51,13 @@ public class OrderDaoJDBC implements OrderDao {
                     preparedStatement.execute();
                     loopConnection.close();
                 }
+                return orderId;
             }
         }
         catch (SQLException e){
             throw new ConnectToStorageFailed(e.getMessage());
         }
+        return 0;
     }
 
     @Override

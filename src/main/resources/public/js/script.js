@@ -53,7 +53,6 @@ function getProductId() {
                 contentType: 'application/json; charset=UTF-8',
                 data: JSON.stringify(clickedProductId),
                 success: function (response) {
-                    //console.log("sent")
                     let parsed = $.parseJSON(response);
                     $("#sum").text('Sum: ' + '$' + parsed['sum']);
                     $("#quantity").text(parsed['quantity'] + ' item(s)');
@@ -97,7 +96,7 @@ function countFinalPrice() {
 
 function addEventListenerToQuantity() {
     let quantity = $(".quantity");
-    quantity.on('change', function() {
+    quantity.on('change', function () {
         countFinalPrice()
     });
 }
@@ -107,48 +106,80 @@ function addEventListenerToShopButton() {
     let user_form = document.getElementById("user_form");
     let shop = document.getElementById("shop");
     if (shop) {
-        shop.addEventListener('click', function() {
+        shop.addEventListener('click', function () {
             user_form.style.display = "inline";
         });
     }
 }
 
-function displayTotalPrice(){
+function displayTotalPrice() {
     let totalPrice = 0;
     $('.finalPrice').each(function (i, obj) {
-        console.log(obj.innerHTML);
         totalPrice += parseFloat(obj.innerHTML);
-    })
+    });
 
-    $('#total_price').text( 'Total price is: ' + totalPrice);
+    $('#total_price').text('Total price is: ' + totalPrice);
 }
 
-function submitClicked(){
-    $('#submit').on('click', function () {
-        alert('Successful order!');
-        $.ajax({
-            url: '/submit-cart',
-            type: 'POST',
-            contentType: 'application/json; charset=UTF-8',
-            data: JSON.stringify("asd"),
-            success: function (response) {
-                $(location).attr('href', '/');
-            }
-        });
+function addEventListenerToProceedButton() {
+    let payment_form = $("#payment_form");
+    let user_form = $("#user_form");
+    if (payment_form) {
+        user_form.on('submit', function (e) {
+            e.preventDefault();
+            /*$.ajax({
+                url: '/save_user_information', // form action url
+                dataType: 'json', // request type html/json/xml
+                data: user_form.serialize(), // serialize form data
+                success: function(response) {
 
-    })
+                },
+                error: function(e) {
+                    console.log(e)
+                }
+            });*/
+            user_form.hide();
+            payment_form.show();
+
+        })
+    }
 }
 
+    function submitClicked() {
+        $('#submit').on('click', function () {
+            alert('Successful order!');
+            $.ajax({
+                url: '/submit-cart',
+                type: 'POST',
+                contentType: 'application/json; charset=UTF-8',
+                data: JSON.stringify("asd"),
+                success: function (response) {
+                    $(location).attr('href', '/');
+                }
+            });
 
-$(document).ready(function () {
-    addEventListenerToSupplierButtons();
-    addEventListenerToCategoryBanners();
-    addEventListenerToQuantity();
-    addEventListenerToTrashBin();
-    addEventListenerToShopButton();
-    getProductId();
-    countFinalPrice();
-    displayTotalPrice();
-    submitClicked();
-    
-});
+        })
+    }
+
+    function addEventListenerToPaymentRadioButtons() {
+        let payment_form = $("#payment_form").find("input");
+        for (let i = 0; i < payment_form.length; i++) {
+            payment_form[i].addEventListener('change', function() {
+                $("#paypal-button").toggle();
+            })
+        }
+    }
+
+
+    $(document).ready(function () {
+        addEventListenerToSupplierButtons();
+        addEventListenerToCategoryBanners();
+        addEventListenerToQuantity();
+        addEventListenerToTrashBin();
+        addEventListenerToShopButton();
+        getProductId();
+        countFinalPrice();
+        displayTotalPrice();
+        addEventListenerToProceedButton();
+        addEventListenerToPaymentRadioButtons();
+    });

@@ -15,6 +15,8 @@
           integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous"/>
 
     <script src="/js/script.js" defer=""></script>
+    <script src="/js/paypal.js" defer=""></script>
+    <script src="https://www.paypalobjects.com/api/checkout.js"></script>
 
     <link rel="stylesheet" type="text/css" href="/css/cart.css"/>
 </head>
@@ -41,7 +43,7 @@
             <td th:text="${product.name}">Product name</td>
             <td class="default_price" th:text="${product.defaultPrice}">Product price</td>
             <td><input class="quantity" onchange="countFinalPrice()" type="number" min="1"
-                       th:value="${cart.getQuantity(product)}"></input></td>
+                       th:value="${cart.getQuantity(product)}"/></td>
             <td class="finalPrice">Final Price</td>
             <td><img class="trash_bin" src="http://www.free-icons-download.net/images/trash-can-symbol-icon-504.png"/>
             </td>
@@ -58,7 +60,7 @@
         </tr>
     </table>
     <div class="container" id="user_form">
-        <form id="contact-form" method="post" action="contact.php" role="form">
+        <form id="contact-form" method="post" action="" role="form">
 
             <div class="messages"></div>
 
@@ -238,12 +240,10 @@
                                                 </select>
                                             </div>
                                         </div>
-
-                                    </div> <!-- .span8 -->
+                                    </div>
                                 </div>
                             </div>
                             <p></p>
-
                             <div><strong>Shipping Address</strong></div>
                             <div class="form-group">
                                 <div class="container">
@@ -377,21 +377,25 @@
                                                     </select>
                                                 </div>
                                             </div>
-
-                                        </div> <!-- .span8 -->
+                                        </div>
                                     </div>
-
-
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-12" id="submit">
-                        <input class="btn btn-success btn-send" value="Confirm"/>
+                        <input id="payment_button" type="submit" class="btn btn-success btn-send" value="Proceed to payment"/>
                     </div>
                 </div>
             </div>
-
+        </form>
+    </div>
+    <div class="container" id="payment_form">
+        <form method="post" action="/submit_cart" role="form">
+            <label for="payment_method" name="">Select payment Method</label><br/>
+            <input id="payment_method" type="radio" name="payment" value="Credit_Card" checked="checked"/> Credit card<br/>
+            <input type="radio" value="Paypal" name="payment"/> Paypal<br/>
+            <div id="paypal-button"></div>
         </form>
     </div>
 </div>

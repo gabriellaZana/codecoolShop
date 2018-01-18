@@ -62,6 +62,7 @@ public class Main {
         });
 
         post("/shopping-cart", ProductController::renderShoppingCartMini);
+        get("/shopping-cart-total-price", ProductController::getTotalPriceOfCart);
 
         get("/cart", (Request request, Response response) -> {
             try {
@@ -75,10 +76,21 @@ public class Main {
 
         post("/delete-item", ProductController::deleteItem);
 
-        post("/submit-cart", ProductController::submitCart);
+        get("/empty-cart", ProductController::emptyCart);
+//        post("/save_user_information"); //TODO Save user information while checking out.
 
         // Add this line to your project to enable the debug screen
         enableDebugScreen();
+
+        get("/order-details/:id", (Request request, Response response) -> {
+            try {
+                return new ThymeleafTemplateEngine().render(ProductController.renderOrderPage(request, response));
+            } catch (Exception e) {
+                response.status(HttpStatus.SERVICE_UNAVAILABLE_503);
+                return "<html><body><h1>" + response.raw().getStatus() + "</h1><p>SERVICE UNAVAILABLE</p><p><img src='/img/errorgranny.gif'></p></body></html>";
+            }
+
+        });
     }
 
     public static void populateData() throws ConnectToStorageFailed {

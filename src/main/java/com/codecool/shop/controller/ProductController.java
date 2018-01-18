@@ -7,6 +7,7 @@ import com.codecool.shop.dao.implementation.JDBC.ProductCategoryDaoJDBC;
 import com.codecool.shop.dao.implementation.JDBC.ProductDaoJDBC;
 
 import com.codecool.shop.exception.ConnectToStorageFailed;
+import com.codecool.shop.model.Order;
 import com.codecool.shop.model.Product;
 import com.codecool.shop.model.ProductCategory;
 import com.codecool.shop.model.ShoppingCart;
@@ -157,14 +158,41 @@ public class ProductController {
      * @return Returns the renderProducts ModelAndView.
      */
 
-    public static ModelAndView submitCart(Request req, Response res) throws ConnectToStorageFailed {
-
-        System.out.println("submit carrt");
+    public static String emptyCart(Request req, Response res) throws ConnectToStorageFailed {
+        OrderDaoJDBC orderDaoJDBC = OrderDaoJDBC.getInstance();
         ShoppingCart shoppingCart = ShoppingCart.getInstance();
+        int orderId = orderDaoJDBC.add(1, shoppingCart);
+
         shoppingCart.removeAllItem();
         logger.info("Order completed, shopping cart items deleted");
         //Mailer.send("grannyshop.javengers@gmail.com","grannyshop", "nopiwork@gmail.com", "test", "test message");
-        return renderProducts(req,res);
+        Gson gson = new Gson();
+        return gson.toJson(orderId);
     }
+
+    public static String getTotalPriceOfCart(Request req, Response res) {
+        ShoppingCart shoppingCart = ShoppingCart.getInstance();
+//        res.body(shoppingCart.getTotalPrice().toString());
+        Gson gson = new Gson();
+        return gson.toJson(shoppingCart.getTotalPrice());
+    }
+
+    public static ModelAndView renderOrderPage(Request req, Response res) throws ConnectToStorageFailed{
+        Integer orderId = Integer.parseInt(req.params(":id"));
+        System.out.println(orderId);
+        Order order = OrderDaoJDBC.getInstance().find(orderId);
+        List<Product> productList = order.getProductList();
+        Float price = 0f;
+        for (Product prod : productList) {
+            price += prod.getDefaultPrice();
+        }
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("products", productList);
+        params.put("finalPrice", price);
+        return new ModelAndView(params, "order_details");
+    }
+
+
 }
 
