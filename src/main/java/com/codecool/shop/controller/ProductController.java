@@ -50,6 +50,12 @@ public class ProductController {
         ShoppingCart shoppingCart = ShoppingCart.getInstance();
         ProductDaoJDBC productDaoJDBC = ProductDaoJDBC.getInstance();
 
+        boolean session;
+        if (req.session().attribute("user") != null){
+            session = true;
+        } else {
+            session = false;
+        }
         Float sum = 0f;
 
         for (Product product : shoppingCart.getProductsFromCart()) {
@@ -63,6 +69,7 @@ public class ProductController {
         params.put("productAmount", shoppingCart.getProductsFromCart().size());
         params.put("Price", sum);
         params.put("categories", categories);
+        params.put("session", session);
         return new ModelAndView(params, "product/index");
     }
 

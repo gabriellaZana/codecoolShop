@@ -97,7 +97,7 @@ function countFinalPrice() {
 
 function addEventListenerToQuantity() {
     let quantity = $(".quantity");
-    quantity.on('change', function() {
+    quantity.on('change', function () {
         countFinalPrice()
     });
 }
@@ -107,23 +107,23 @@ function addEventListenerToShopButton() {
     let user_form = document.getElementById("user_form");
     let shop = document.getElementById("shop");
     if (shop) {
-        shop.addEventListener('click', function() {
+        shop.addEventListener('click', function () {
             user_form.style.display = "inline";
         });
     }
 }
 
-function displayTotalPrice(){
+function displayTotalPrice() {
     let totalPrice = 0;
     $('.finalPrice').each(function (i, obj) {
         console.log(obj.innerHTML);
         totalPrice += parseFloat(obj.innerHTML);
     })
 
-    $('#total_price').text( 'Total price is: ' + totalPrice);
+    $('#total_price').text('Total price is: ' + totalPrice);
 }
 
-function submitClicked(){
+function submitClicked() {
     $('#submit').on('click', function () {
         alert('Successful order!');
         $.ajax({
@@ -140,7 +140,7 @@ function submitClicked(){
 }
 
 
-function register(){
+function register() {
     $('#register').on('submit', function (event) {
         event.preventDefault();
         let email = $("#useremailreg").val();
@@ -150,13 +150,13 @@ function register(){
         userDatas.push(password);
         //alert("Successfull reg");
         $.ajax({
-            url:'/register',
+            url: '/register',
             type: 'POST',
             contentType: 'application/json; charset=UTF-8',
-            data:JSON.stringify(userDatas),
+            data: JSON.stringify(userDatas),
             success: function (response) {
                 console.log(response);
-                if(response == '"failure"'){
+                if (response == '"failure"') {
                     alert("Email is already in use!");
                     $("#passwordreg").val("");
                     $("#passwordreg2").val("");
@@ -176,7 +176,7 @@ function register(){
     })
 }
 
-function login(){
+function login() {
     $('#login').on('submit', function (event) {
         event.preventDefault();
         let email = $('#useremaillogin').val();
@@ -185,13 +185,13 @@ function login(){
         userDatas.push(email);
         userDatas.push(password);
         $.ajax({
-            url:'/login',
+            url: '/login',
             type: 'POST',
             contentType: 'application/json; charset=UTF-8',
-            data:JSON.stringify(userDatas),
+            data: JSON.stringify(userDatas),
             success: function (response) {
                 console.log(response)
-                if(response == '"failure"'){
+                if (response == '"failure"') {
                     alert("Incorrect password or e-mail address!");
                     $("#passwordlogin").val("");
                 } else {
@@ -207,17 +207,14 @@ function login(){
                     $("#loginbutton").attr("id", "logout");
                     $("#logout").html('<a href="/logout">Logut</a>');
                     $("#logout").wrap('<strong></strong>');
-
-                    document.getElementById("cart").style.display = "block";
-                    var x = document.getElementsByClassName("add-to-cart-button");
-                    for (var i = 0; i < x.length; i++) {
-                        x[i].style.display = 'block';
-                    }
-                }
+                    location.reload();
             }
-        })
-
+        }
     })
+
+}
+
+)
 }
 
 function checkPass() {
@@ -227,17 +224,16 @@ function checkPass() {
     var goodColor = "#66cc66";
     var badColor = "#ff6666";
 
-    if(pass1.value == pass2.value){
+    if (pass1.value == pass2.value) {
         pass2.style.backgroundColor = goodColor;
         message.style.color = goodColor;
         message.innerHTML = "Passwords Match!"
-    }else{
+    } else {
         pass2.style.backgroundColor = badColor;
         message.style.color = badColor;
         message.innerHTML = "Passwords Do Not Match!"
     }
 }
-
 
 
 $(document).ready(function () {
