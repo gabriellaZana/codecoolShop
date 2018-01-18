@@ -201,6 +201,7 @@ function login(){
                     });
                     $("#useremaillogin").val("");
                     $("#passwordlogin").val("");
+                    document.getElementById("reg-button").style.display = "none";
                     document.getElementById("cart").style.display = "block";
                     var x = document.getElementsByClassName("add-to-cart-button");
                     for (var i = 0; i < x.length; i++) {
