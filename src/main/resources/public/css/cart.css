@@ -23,7 +23,6 @@ td{
     padding-top: 20px !important;
 }
 
-#user_form {
+#user_form, #payment_form, #paypal-button {
     display: none;
-
 }
