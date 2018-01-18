@@ -9,6 +9,7 @@ import com.codecool.shop.model.Product;
 import com.codecool.shop.model.ProductCategory;
 import com.codecool.shop.model.ShoppingCart;
 import com.google.gson.Gson;
+import org.eclipse.jetty.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import spark.ModelAndView;
@@ -20,7 +21,7 @@ import java.util.*;
 
 /**
  * ProductController
- *
+ * <p>
  * <p>Controls the data from the client and the server</p>
  *
  * @author Javengers
@@ -31,12 +32,13 @@ public class ProductController {
 
     /**
      * Collects the ProductCategories and the shopping cart content.
+     *
      * @param req a Request Object gotten from the client side.
      * @param res a Response Object.
      * @return Returns a ModelAndView with a Map for the thymeleaf template engine.
      */
 
-    public static ModelAndView renderProducts(Request req, Response res) throws ConnectToStorageFailed{
+    public static ModelAndView renderProducts(Request req, Response res) throws ConnectToStorageFailed {
 
         ProductCategoryDao productCategoryDataStore = ProductCategoryDaoJDBC.getInstance();
         List<ProductCategory> categories = productCategoryDataStore.getAll();
@@ -61,40 +63,49 @@ public class ProductController {
 
     /**
      * Calculate the data for the ShoppingCart.
+     *
      * @param req a Request Object.
      * @param res a Response Object.
      * @return Returns a JSON with the ShoppingCart calculated price and Product quantity.
      */
-    public static String renderShoppingCartMini(Request req, Response res) throws ConnectToStorageFailed {
+    public static String renderShoppingCartMini(Request req, Response res) {
+        try {
+            ShoppingCart shoppingCart = ShoppingCart.getInstance();
+            ProductDaoJDBC productDaoJdbc = ProductDaoJDBC.getInstance();
+            Map<String, Float> sumAndQuantity = new HashMap<>();
+            Gson gson = new Gson();
+            Product product = productDaoJdbc.find(Integer.parseInt(req.body().substring(1, req.body().length() - 1)));
+            if (product == null) {
+                throw new ConnectToStorageFailed("No product with this id");
+            }else{
+                shoppingCart.putProductToCart(product);
+            }
 
-        ShoppingCart shoppingCart = ShoppingCart.getInstance();
-        ProductDaoJDBC productDaoJdbc = ProductDaoJDBC.getInstance();
 
-        shoppingCart.putProductToCart(productDaoJdbc.find(Integer.parseInt(req.body().substring(1, req.body().length() - 1))));
+            Float price = 0f;
+            Float quant = 0f;
+            for (Product prod : shoppingCart.getProductsFromCart()
+                    ) {
+                price += prod.getDefaultPrice();
+                quant++;
+            }
+            logger.info("Item quantity in shopping cart: {}, total price: {}", quant, price);
 
 
-        Float price = 0f;
-        Float quant = 0f;
-        for (Product prod : shoppingCart.getProductsFromCart()
-                ) {
-            price += prod.getDefaultPrice();
-            quant++;
+            sumAndQuantity.put("quantity", quant);
+            sumAndQuantity.put("sum", price);
+
+            logger.debug("", gson.toString());
+            return gson.toJson(sumAndQuantity);
+        } catch (ConnectToStorageFailed e) {
+            res.status(HttpStatus.NOT_FOUND_404);
+            return e.getMessage();
         }
-        logger.info("Item quantity in shopping cart: {}, total price: {}", quant, price);
-
-
-        Map<String, Float> sumAndQuantity = new HashMap<>();
-        sumAndQuantity.put("quantity", quant);
-        sumAndQuantity.put("sum", price);
-
-
-        Gson gson = new Gson();
-        logger.debug("", gson.toString());
-        return gson.toJson(sumAndQuantity);
     }
 
     /**
      * Collects the Products for the ShoppingCart view.
+     *
      * @param req a Request object from the client.
      * @param res a Response object.
      * @return Returns a ModelAndView with a Map for the thymeleaf template engine.
@@ -104,9 +115,9 @@ public class ProductController {
         List<Product> productList = shoppingCart.getProductsFromCart();
         Set<Product> productSet = new HashSet<>();
         List<Integer> ids = new ArrayList<>();
-        for (Product product: productList) {
+        for (Product product : productList) {
             ids.add(product.getId());
-            if(Collections.frequency(ids, product.getId()) == 1){
+            if (Collections.frequency(ids, product.getId()) == 1) {
                 productSet.add(product);
             }
         }
@@ -121,6 +132,7 @@ public class ProductController {
 
     /**
      * Deletes an Product from the ShoppingCart.
+     *
      * @param req a Request object.
      * @param res a Response object.
      * @return Returns a String.
@@ -134,6 +146,7 @@ public class ProductController {
 
     /**
      * Removes all Product from the ShoppingCart.
+     *
      * @param req a Request object.
      * @param res a Response object.
      * @return Returns the renderProducts ModelAndView.

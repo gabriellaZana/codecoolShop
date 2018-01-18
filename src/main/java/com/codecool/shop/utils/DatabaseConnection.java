@@ -95,6 +95,7 @@ public class DatabaseConnection {
 
         } catch (SQLException se) {
             //Handle errors for JDBC
+            se.printStackTrace();
             throw new ConnectToStorageFailed(se.getMessage());
         } catch (Exception e) {
             //Handle errors for Class.forName
