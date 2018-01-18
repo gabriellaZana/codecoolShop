@@ -40,6 +40,7 @@
             <ul class="nav navbar-nav">
                 <li id="regbutton"><a href="#" data-toggle="modal" data-target="#register-modal"><strong>Register</strong></a></li>
                 <li id="loginbutton"><a href="#" data-toggle="modal" data-target="#login-modal"><strong>Login</strong></a></li>
+
             </ul>
         </div><!-- /.navbar-collapse -->
     </div><!-- /.container-fluid -->
@@ -74,7 +75,7 @@
 
 <div class="jumbotron text-center">
     <h1>Codecool Granny Shop</h1>
-    <div style="display: none">
+    <div id="cart" style="display: none">
         <div class="row">
             <h3 id="sum" class="col-sm-10 text-right" th:text="${'Sum: $' + Price }">Sum: 0</h3>
             <a href="/cart">
