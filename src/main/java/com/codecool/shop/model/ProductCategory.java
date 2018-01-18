@@ -4,6 +4,7 @@ import com.codecool.shop.dao.ProductDao;
 import com.codecool.shop.dao.implementation.JDBC.ProductCategoryDaoJDBC;
 import com.codecool.shop.dao.implementation.JDBC.ProductDaoJDBC;
 import com.codecool.shop.dao.implementation.JDBC.SupplierDaoJDBC;
+import com.codecool.shop.exception.ConnectToStorageFailed;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sun.rmi.runtime.Log;
@@ -52,7 +53,7 @@ public class ProductCategory extends BaseModel {
      * @return Set of suppliers
      * @throws SQLException
      */
-    public Set<Supplier> getSuppliers() throws SQLException{
+    public Set<Supplier> getSuppliers() throws ConnectToStorageFailed{
         Set<Supplier> suppliers = new HashSet<>();
         List<Product> products = this.getProducts();
         List<Integer> supplierIds = new ArrayList<>();
@@ -75,7 +76,7 @@ public class ProductCategory extends BaseModel {
      * @return List of products
      * @throws SQLException
      */
-    public List<Product> getProducts() throws SQLException{
+    public List<Product> getProducts() throws ConnectToStorageFailed{
         ProductDaoJDBC productDaoJDBC = ProductDaoJDBC.getInstance();
         logger.info("Products from getProducts returns: {}", productDaoJDBC.getBy(this));   
         return productDaoJDBC.getBy(this);

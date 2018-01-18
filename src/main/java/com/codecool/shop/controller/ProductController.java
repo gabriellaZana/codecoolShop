@@ -6,11 +6,13 @@ import com.codecool.shop.dao.implementation.JDBC.OrderDaoJDBC;
 import com.codecool.shop.dao.implementation.JDBC.ProductCategoryDaoJDBC;
 import com.codecool.shop.dao.implementation.JDBC.ProductDaoJDBC;
 
+import com.codecool.shop.exception.ConnectToStorageFailed;
 import com.codecool.shop.model.Product;
 import com.codecool.shop.model.ProductCategory;
 import com.codecool.shop.model.ShoppingCart;
 import com.codecool.shop.utils.Mailer;
 import com.google.gson.Gson;
+import org.eclipse.jetty.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import spark.ModelAndView;
@@ -39,7 +41,8 @@ public class ProductController {
      * @return Returns a ModelAndView with a Map for the thymeleaf template engine.
      */
 
-    public static ModelAndView renderProducts(Request req, Response res) throws SQLException {
+    public static ModelAndView renderProducts(Request req, Response res) throws ConnectToStorageFailed {
+
 
         ProductCategoryDao productCategoryDataStore = ProductCategoryDaoJDBC.getInstance();
         List<ProductCategory> categories = productCategoryDataStore.getAll();
@@ -70,32 +73,39 @@ public class ProductController {
      * @param res a Response Object.
      * @return Returns a JSON with the ShoppingCart calculated price and Product quantity.
      */
-    public static String renderShoppingCartMini(Request req, Response res) throws SQLException {
+    public static String renderShoppingCartMini(Request req, Response res) {
+        try {
+            ShoppingCart shoppingCart = ShoppingCart.getInstance();
+            ProductDaoJDBC productDaoJdbc = ProductDaoJDBC.getInstance();
+            Map<String, Float> sumAndQuantity = new HashMap<>();
+            Gson gson = new Gson();
+            Product product = productDaoJdbc.find(Integer.parseInt(req.body().substring(1, req.body().length() - 1)));
+            if (product == null) {
+                throw new ConnectToStorageFailed("No product with this id");
+            }else{
+                shoppingCart.putProductToCart(product);
+            }
 
-        ShoppingCart shoppingCart = ShoppingCart.getInstance();
-        ProductDaoJDBC productDaoJdbc = ProductDaoJDBC.getInstance();
 
-        shoppingCart.putProductToCart(productDaoJdbc.find(Integer.parseInt(req.body().substring(1, req.body().length() - 1))));
+            Float price = 0f;
+            Float quant = 0f;
+            for (Product prod : shoppingCart.getProductsFromCart()
+                    ) {
+                price += prod.getDefaultPrice();
+                quant++;
+            }
+            logger.info("Item quantity in shopping cart: {}, total price: {}", quant, price);
 
 
-        Float price = 0f;
-        Float quant = 0f;
-        for (Product prod : shoppingCart.getProductsFromCart()
-                ) {
-            price += prod.getDefaultPrice();
-            quant++;
+            sumAndQuantity.put("quantity", quant);
+            sumAndQuantity.put("sum", price);
+
+            logger.debug("", gson.toString());
+            return gson.toJson(sumAndQuantity);
+        } catch (ConnectToStorageFailed e) {
+            res.status(HttpStatus.NOT_FOUND_404);
+            return e.getMessage();
         }
-        logger.info("Item quantity in shopping cart: {}, total price: {}", quant, price);
-
-
-        Map<String, Float> sumAndQuantity = new HashMap<>();
-        sumAndQuantity.put("quantity", quant);
-        sumAndQuantity.put("sum", price);
-
-
-        Gson gson = new Gson();
-        logger.debug("", gson.toString());
-        return gson.toJson(sumAndQuantity);
     }
 
     /**
@@ -146,13 +156,15 @@ public class ProductController {
      * @param res a Response object.
      * @return Returns the renderProducts ModelAndView.
      */
-    public static String submitCart(Request req, Response res) throws SQLException {
+
+    public static ModelAndView submitCart(Request req, Response res) throws ConnectToStorageFailed {
+
         System.out.println("submit carrt");
         ShoppingCart shoppingCart = ShoppingCart.getInstance();
         shoppingCart.removeAllItem();
         logger.info("Order completed, shopping cart items deleted");
         //Mailer.send("grannyshop.javengers@gmail.com","grannyshop", "nopiwork@gmail.com", "test", "test message");
-        return "Order placed";
+        return renderProducts(req,res);
     }
 }
 

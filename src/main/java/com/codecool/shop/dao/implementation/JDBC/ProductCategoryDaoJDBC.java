@@ -2,6 +2,7 @@ package com.codecool.shop.dao.implementation.JDBC;
 
 import com.codecool.shop.dao.ProductCategoryDao;
 import com.codecool.shop.dao.SupplierDao;
+import com.codecool.shop.exception.ConnectToStorageFailed;
 import com.codecool.shop.model.Product;
 import com.codecool.shop.model.ProductCategory;
 import com.codecool.shop.utils.DatabaseConnection;
@@ -57,7 +58,7 @@ public class ProductCategoryDaoJDBC implements ProductCategoryDao {
      * @param category The ProductCategory object which needs to be added.
      */
     @Override
-    public void add(ProductCategory category) throws SQLException{
+    public void add(ProductCategory category) throws ConnectToStorageFailed{
         String addQuery = "INSERT INTO product_categories (name, description) VALUES (?, ?);";
         ArrayList<Object> infos = new ArrayList<>(Arrays.asList(category.getName(), category.getDescription()));
         logger.debug("Infos list while adding product category is: {}.", infos);
@@ -68,6 +69,8 @@ public class ProductCategoryDaoJDBC implements ProductCategoryDao {
                 logger.debug("The query for adding product category is: {}.", statement);
                 statement.executeUpdate();
                 logger.info("Product category - {} - has been added.", category.getName());
+            } catch (SQLException e){
+                throw new ConnectToStorageFailed(e.getMessage());
             }
         }
         logger.warn("Product category is already in database with name {}.", category.getName());
@@ -79,7 +82,7 @@ public class ProductCategoryDaoJDBC implements ProductCategoryDao {
      * @return Returns the ProductCategory object if found, <code>null</code> otherwise.
      */
     @Override
-    public ProductCategory find(int id) throws SQLException{
+    public ProductCategory find(int id) throws ConnectToStorageFailed{
         String getProductQuery = "SELECT * FROM product_categories WHERE id=?";
         ArrayList<Object> infos = new ArrayList<>(Collections.singletonList(id));
         logger.debug("Infos list while trying to find product category is: {}.", infos);
@@ -91,7 +94,7 @@ public class ProductCategoryDaoJDBC implements ProductCategoryDao {
      * @param name The name of the product category which needs to be find.
      * @return Returns the ProductCategory object if found, <code>null</code> otherwise.
      */
-    public ProductCategory find(String name) throws SQLException{
+    public ProductCategory find(String name) throws ConnectToStorageFailed{
         String getProductQuery = "SELECT * FROM product_categories WHERE name=?";
         ArrayList<Object> infos = new ArrayList<>(Collections.singletonList(name));
         logger.debug("Infos list while trying to find product category by name is: {}.", infos);
@@ -106,7 +109,7 @@ public class ProductCategoryDaoJDBC implements ProductCategoryDao {
      * @return Returns the found product category.
      * @throws SQLException
      */
-    private ProductCategory executeFindQuery(String query, ArrayList<Object> infos) throws SQLException {
+    private ProductCategory executeFindQuery(String query, ArrayList<Object> infos) throws ConnectToStorageFailed {
         ProductCategory resultProductCategory = null;
         try (Connection connection = databaseConnection.getConnection();
              PreparedStatement statement = databaseConnection.createAndSetPreparedStatement(connection, infos, query);
@@ -119,6 +122,8 @@ public class ProductCategoryDaoJDBC implements ProductCategoryDao {
                 resultProductCategory.setId(result.getInt("id"));
                 logger.debug("The id of the result product category is: {}.", result.getInt("id"));
             }
+        } catch (SQLException e){
+            throw new ConnectToStorageFailed(e.getMessage());
         }
         return resultProductCategory;
     }
@@ -130,7 +135,7 @@ public class ProductCategoryDaoJDBC implements ProductCategoryDao {
      * @param id A unique number for identifying the product category in the database.
      */
     @Override
-    public void remove(int id) throws SQLException {
+    public void remove(int id) throws ConnectToStorageFailed {
         String removeProductQuery = "DELETE FROM product_categories WHERE id = ?;";
 
         ArrayList<Object> infos = new ArrayList<>(Collections.singletonList(id));
@@ -139,6 +144,8 @@ public class ProductCategoryDaoJDBC implements ProductCategoryDao {
              PreparedStatement statement = databaseConnection.createAndSetPreparedStatement(connection, infos, removeProductQuery)){
             statement.executeUpdate();
             logger.warn("Product category with id ({}) has been removed.", id);
+        } catch (SQLException e){
+            throw new ConnectToStorageFailed(e.getMessage());
         }
     }
 
@@ -149,7 +156,7 @@ public class ProductCategoryDaoJDBC implements ProductCategoryDao {
      * @return Returns all the ProductCategory objects in a list, which can be empty as well.
      */
     @Override
-    public List<ProductCategory> getAll() throws SQLException {
+    public List<ProductCategory> getAll() throws ConnectToStorageFailed {
         List<ProductCategory> productCategoryList = new ArrayList<>();
         String getProductCategoriesQuery = "SELECT * FROM product_categories;";
 
@@ -164,6 +171,8 @@ public class ProductCategoryDaoJDBC implements ProductCategoryDao {
                 productCategoryList.add(productCategory);
                 logger.debug("Product category list at the moment is: {}.", productCategoryList);
             }
+        } catch (SQLException e){
+            throw new ConnectToStorageFailed(e.getMessage());
         }
         return productCategoryList;
     }

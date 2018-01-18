@@ -8,6 +8,8 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Properties;
+
+import com.codecool.shop.exception.ConnectToStorageFailed;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -81,7 +83,7 @@ public class DatabaseConnection {
      * Connects to the database by registering the JDBC driver and opening the connection.
      * @return Returns the Connection object.
      */
-    public Connection getConnection() {
+    public Connection getConnection() throws ConnectToStorageFailed{
         Connection connection = null;
         try {
             //STEP 2: Register JDBC driver
@@ -94,6 +96,7 @@ public class DatabaseConnection {
         } catch (SQLException se) {
             //Handle errors for JDBC
             se.printStackTrace();
+            throw new ConnectToStorageFailed(se.getMessage());
         } catch (Exception e) {
             //Handle errors for Class.forName
             e.printStackTrace();

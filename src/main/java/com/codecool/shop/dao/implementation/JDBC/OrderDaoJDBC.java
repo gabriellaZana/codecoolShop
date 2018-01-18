@@ -1,6 +1,7 @@
 package com.codecool.shop.dao.implementation.JDBC;
 
 import com.codecool.shop.dao.OrderDao;
+import com.codecool.shop.exception.ConnectToStorageFailed;
 import com.codecool.shop.model.Order;
 import com.codecool.shop.model.Product;
 import com.codecool.shop.model.ShoppingCart;
@@ -30,7 +31,7 @@ public class OrderDaoJDBC implements OrderDao {
     }
 
     @Override
-    public void add(int userId, ShoppingCart shoppingCart) throws SQLException {
+    public void add(int userId, ShoppingCart shoppingCart) throws ConnectToStorageFailed {
         ProductDaoJDBC productDaoJDBC = ProductDaoJDBC.getInstance();
         String orderQuery = "INSERT INTO orders (user_id, order_time, status) VALUES (?, CURRENT_TIMESTAMP, 'new') RETURNING *;";
         String productOrderQuery = "INSERT INTO products_of_order (order_id, product_id, quantity) VALUES (?, ?, ?);";
@@ -52,10 +53,13 @@ public class OrderDaoJDBC implements OrderDao {
                 }
             }
         }
+        catch (SQLException e){
+            throw new ConnectToStorageFailed(e.getMessage());
+        }
     }
 
     @Override
-    public Order find(int orderId) throws SQLException{
+    public Order find(int orderId) throws ConnectToStorageFailed {
         ProductDaoJDBC productDaoJDBC = ProductDaoJDBC.getInstance();
         String findOrderQuery = "SELECT * FROM orders WHERE id = ?;";
         String findProductsOfOrderQuery = "SELECT * FROM products_of_order WHERE order_id = ?;";
@@ -78,6 +82,8 @@ public class OrderDaoJDBC implements OrderDao {
                 }
                 return new Order(userId, products);
             }
+        }catch (SQLException e){
+            throw new ConnectToStorageFailed(e.getMessage());
         }
         return null;
     }
